@@ -1,0 +1,7 @@
+unity版本2018.4.2
+QFramework 0.1.11
+GameDesigner 2019.9.1
+
+unity自身做服务器,发布出客户端测试
+问题
+1.客户端 容易出现崩溃
