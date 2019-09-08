@@ -27,6 +27,7 @@ namespace Server
             //添加网络转换类型
             Net.Share.NetConvert.AddNetworkType<NetScene>();
             Net.Share.NetConvert.AddNetworkType<List<NetScene>>();
+            Net.Share.NetConvert.AddNetworkType<Dictionary<string, NetScene>>();
         }
         protected override void OnStartupCompleted()
         {
@@ -39,6 +40,15 @@ namespace Server
         protected override void OnRemoveClient(NetPlayer client)
         {
             DebugLog($"客户端：{client.playerID.ToString()}断开链接......");
+
+            var scene = Scenes[client.sceneID];
+            scene.players.Remove(client as Player);
+            Multicast(scene.players, "RemovePlayer", RequestPlayer.acc);
+            if (scene.players.Count <= 0 && client.sceneID != DefaultScene)
+            {
+                Scenes.TryRemove(client.sceneID, out NetScene netScene);
+                DebugLog(client.sceneID + ":房间解散");
+            }
         }
         protected override void OnReceiveBuffer(NetPlayer client, byte cmd, byte[] buffer, int index, int count)
         {
@@ -69,7 +79,7 @@ namespace Server
         protected override KeyValuePair<string, NetScene> OnAddDefaultScene()
         {
             DebugLog("添加网络默认场景");
-            //new Thread(SendSceneInfoToLobbay) { IsBackground = true, Name = "SendSceneInfoToLobbay" }.Start();
+            new Thread(SendSceneInfoToLobbay) { IsBackground = true, Name = "SendSceneInfoToLobbay" }.Start();
             return base.OnAddDefaultScene();
         }
 
@@ -81,8 +91,11 @@ namespace Server
                 try
                 {
                     List<NetPlayer> players = Scenes[DefaultScene].players;
-                    List<NetScene> netScenes = GetScenes<NetScene>();
-                    if (players.Count > 0) Multicast(players, "OnLobbayReceiveScenesInfo", netScenes);
+
+                    Dictionary<string, NetScene> netSceneInfo = new Dictionary<string, NetScene>();
+                    foreach (var item in Scenes) netSceneInfo.Add(item.Key, item.Value);
+
+                    if (players.Count > 0) Multicast(players, "OnLobbayReceiveScenesInfo", netSceneInfo);
                 }
                 finally
                 {
@@ -175,8 +188,9 @@ namespace Server
             }
             else
             {
-                Scenes.TryAdd(roomName, new NetScene(sceneCapacity) { players = new List<NetPlayer>() { RequestPlayer } });
-                RequestPlayer.sceneID = roomName;
+                //Scenes.TryAdd(roomName, new NetScene(sceneCapacity) { players = new List<NetPlayer>() { RequestPlayer } });
+                Scenes.TryAdd(roomName, new NetScene(RequestPlayer, sceneCapacity));
+                RequestPlayer.sceneID = roomName;              
                 DebugLog($"客户端：{RequestPlayer.acc}创建了:{roomName}:房间");
                 Send(RequestPlayer, "CreateRoomResult", true, "创建房间成功");
             }
@@ -215,8 +229,6 @@ namespace Server
                 Send(RequestPlayer, "JoinRoomResult", true, "加入房间成功");
             }
         }
-
-
 
     }
 }

@@ -1,6 +1,6 @@
 Win64
 PlayerPath?
-C:/Users/Orz/Desktop/3D Game Kit/Build/Cilent.exe
+E:/UnityProject/Net3DGame/3D Game Kit/Client/Test.exe
 SceneListBegin?
 Assets/Sences/Main.unity
 Assets/Sences/MainScene.unity
@@ -74,7 +74,7 @@ abf1930d8126d0b2e00e9449129a0190 UnityEngine.UI.dll:UnityEngine.EventSystems.Tou
 71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:QF.PackageKit.Example.EventExample
 f542c1afca5bb4022f91fdda19b8d622 Unity.Postprocessing.Runtime.dll:UnityEngine.Rendering.PostProcessing.DepthOfField
 71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:Unidux.Example.SceneTransition.PageWatcher
-98ad81e9f689a492509f07e75b810aaa Unity.TextMeshPro.dll:TMPro.TMP_InputField
+b31ef1c110c5a7ed74ad67be3ae59038 Unity.TextMeshPro.dll:TMPro.TMP_InputField
 1e90d7d6a6263a531c8bfd67056e48ef Assembly-CSharp.dll:QFramework.UIManager
 201be9707a4b82c6ddce2b6e543da5cc Assembly-CSharp.dll:GameDesigner.StateMachineSetting
 cf9f5cf2c3145a37ac07f00e50e460f9 UnityEngine.UI.dll:UnityEngine.UI.AspectRatioFitter
@@ -162,7 +162,7 @@ d251bf88db6c95a6b1aa0b69298da9ef UnityEngine.SpatialTracking.dll:UnityEngine.Spa
 7e6ed836cbaa230e56d6a2bbae1b9bb5 Unity.Postprocessing.Runtime.dll:UnityEngine.Rendering.PostProcessing.PostProcessEffectSettings
 0f6a7c704ae12599d4a2ed961e09670d Assembly-CSharp.dll:Client.ClientNetworkManager
 ba07b45d178152a82b7cd36babe081ec Assembly-CSharp.dll:Client.SpwanerManager
-94017dcc9f00fe671ea7dc427b4da011 Unity.TextMeshPro.dll:TMPro.TMP_SpriteAsset
+b8a5e8091ab0b8861d2add371082c5e0 Unity.TextMeshPro.dll:TMPro.TMP_SpriteAsset
 71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:Unidux.Example.SceneTransition.PageTitleRenderer
 71bb6a6b6c8f052f948db64c7dd3ca4f UniRx.dll:UniRx.Triggers.ObservablePointerExitTrigger
 d8180c2853aab927be4b7d5d376450d2 Assembly-CSharp.dll:Unidux.Example.SceneTransition.PagePushButton
@@ -231,12 +231,11 @@ ad9173d3a69d99153f38ed4b62226129 UnityEngine.Networking.dll:UnityEngine.Networki
 aff505990b3b2335b9af16f2524559b7 Assembly-CSharp.dll:Unidux.Example.List.Unidux
 ea413867059a29f7672d63a412acd0e8 Assembly-CSharp.dll:Unidux.Example.Middlewares.MiddlewaresBehaviour
 71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:Net.Client.FrameSync
-510fefd6a544e16a3ffefa557ddcba39 Unity.TextMeshPro.dll:TMPro.PackageResourceImporterWindow
 71bb6a6b6c8f052f948db64c7dd3ca4f HTTP.dll:CI.HttpClient.Core.Dispatcher
 51ad6ea50218e03b03117cd9cce613ba Assembly-CSharp.dll:.BlueprintSetting
-aa82b3ce4c0c9b227036c0337315c5d3 Unity.TextMeshPro.dll:TMPro.TMP_FontAsset
+35a9693c388776aaf487636491a20f11 Unity.TextMeshPro.dll:TMPro.TMP_FontAsset
 71bb6a6b6c8f052f948db64c7dd3ca4f UniRx.dll:UniRx.Triggers.ObservableTransformChangedTrigger
-e51c09a4cc447f11db225afcd8e3e490 Unity.TextMeshPro.dll:TMPro.TMP_Settings
+e1300922cc039f41ab46a47f4cb05898 Unity.TextMeshPro.dll:TMPro.TMP_Settings
 9642254a40e46cbd2a6af5724f9d52ba Assembly-CSharp.dll:QFramework.HeNuoApp.ChatPanel
 7d27c2c5c0fbd8703a724aa925921424 Assembly-CSharp.dll:GameDesigner.State
 aff505990b3b2335b9af16f2524559b7 Assembly-CSharp.dll:Unidux.Example.Middlewares.Unidux
@@ -260,7 +259,7 @@ fb6a1ea36b4f6ef5948d283d93760765 UnityEngine.GoogleAudioSpatializer.dll:UnityEng
 e95a3c51d0cd60d780b35fa3cce043d6 Assembly-CSharp.dll:QFramework.Example.DVAExample
 71bb6a6b6c8f052f948db64c7dd3ca4f UniRx.dll:UniRx.Triggers.ObservableCollision2DTrigger
 71bb6a6b6c8f052f948db64c7dd3ca4f UniRx.dll:UniRx.Triggers.ObservablePointerEnterTrigger
-a4f0a4f62100f1a4fb5cbe0e00dde83f Unity.TextMeshPro.dll:TMPro.TextMeshProUGUI
+ee0cef6caaac8ae485bfa82f000f0f7b Unity.TextMeshPro.dll:TMPro.TextMeshProUGUI
 71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:Client.RoomManager
 5fc094978ce3e3591a7500ed380d854a Unity.Analytics.DataPrivacy.dll:UnityEngine.Analytics.DataPrivacyButton
 71bb6a6b6c8f052f948db64c7dd3ca4f UniRx.dll:UniRx.Triggers.ObservableFixedUpdateTrigger
@@ -290,7 +289,7 @@ c0176761ddd2c0e85cab0f5fae95c053 Assembly-CSharp.dll:Unidux.Example.Todo.TodoFil
 d5630f96bd5a6a6eed7e1754c3fb8703 Unity.Postprocessing.Runtime.dll:UnityEngine.Rendering.PostProcessing.PostProcessVolume
 71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:Unidux.Example.SceneTransition.PagePopButton
 d0987ce3e9092dbe0fa30d73f333fffa Unity.Postprocessing.Runtime.dll:UnityEngine.Rendering.PostProcessing.Grain
-c6666661329916e218bee7f5e79e60f5 Unity.TextMeshPro.dll:TMPro.TextMeshPro
+5372ed2ce39229b1ac910757999a8be2 Unity.TextMeshPro.dll:TMPro.TextMeshPro
 3165968ba45c74472d279ba04455fccb Unity.TextMeshPro.dll:TMPro.TMP_ColorGradient
 f298529ec81c39d5e3741d52dee4cc42 Assembly-CSharp.dll:QFramework.HeNuoApp.LobbyPanel
 1499a48ac3d0845156558fd3f330ac71 Assembly-CSharp.dll:QFramework.UISpriteAnimation

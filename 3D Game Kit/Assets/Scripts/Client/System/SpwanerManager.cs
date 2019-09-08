@@ -6,34 +6,18 @@ using Net.Share;
 using UnityEngine.SceneManagement;
 using System.Threading;
 using System.Threading.Tasks;
+using QF;
 
 namespace Client
 {
     /// <summary>
     /// 生成管理器
     /// </summary>
-    public class SpwanerManager : NetBehaviour
+    [MonoSingletonPath("[GameDesigner]/SpwanerManager")]
+    public class SpwanerManager : NetClientMonoSingleton<SpwanerManager>
     {
         public GameObject player;
         Dictionary<string, GameObject> players = new Dictionary<string, GameObject>();
-        protected static SpwanerManager mInstance = null;
-        public static SpwanerManager Instance
-        {
-            get
-            {
-                if (mInstance == null)
-                {
-                    mInstance = GameObject.FindObjectOfType(typeof(SpwanerManager)) as SpwanerManager;
-                    if (mInstance == null)
-                    {
-                        mInstance = new GameObject("_ " + typeof(SpwanerManager).ToString(), typeof(SpwanerManager)).GetComponent<SpwanerManager>();
-                        DontDestroyOnLoad(mInstance);
-                        mInstance.transform.SetParent(ClientNetworkManager.Instance.transform);
-                    }
-                }
-                return mInstance;
-            }
-        }
 
         private bool isResponse = false;
         private int outTime = 10;
@@ -48,10 +32,11 @@ namespace Client
             }
         }
 
-        private void OnDestroy()
+        protected override void OnDestroy()
         {
+            base.OnDestroy();
+            //移除远程调用函数
             RemoveRpcDelegate(this);
-            mInstance = null;
         }
 
         public void SendCreatePlayerRequest()

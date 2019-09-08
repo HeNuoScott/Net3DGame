@@ -5,18 +5,20 @@ using Net.Client;
 using System.Net;
 using System;
 using Net.Server;
+using QF;
 
 namespace Client
 {
-    public class ClientNetworkManager : QF.MonoSingleton<ClientNetworkManager>
+    [MonoSingletonPath("[GameDesigner]/ClientNetworkManager")]
+    public class ClientNetworkManager : MonoSingleton<ClientNetworkManager>
     {
         public string playerName;
         public string Acc;
-        public Net.Client.UdpClient client = new Net.Client.UdpClient();
-        public List<NetScene> netScenes = new List<NetScene>();
-        public static event Action<List<NetScene>> UndataNetScenes;
 
-        private string logInfo = string.Empty;
+        public Net.Client.UdpClient client = new Net.Client.UdpClient();
+        public static event Action<Dictionary<string, NetScene>> UndataNetScenes;
+
+        public Queue<string> queueLogInfo = new Queue<string>();
 
         private void Start()
         {
@@ -24,20 +26,14 @@ namespace Client
             //添加网络转换类型
             client.AddNetType<NetScene>();
             client.AddNetType<List<NetScene>>();
+            client.AddNetType<Dictionary<string, NetScene>>();
         }
 
         public void Connect()
         {
             client.UseUnityThread = true;
-            client.Log += (str) =>
-            {
-                Debug.Log(str);
-                logInfo = str;
-            };
-            client.LogBug += (str) =>
-            {
-                Debug.Log("RPC远程调用失败" + str);
-            };
+            client.Log += (str) => DebugConnectLog(str);
+            client.LogBug += (str) => Debug.Log("RPC远程调用失败" + str);
             //IPAddress[] ips = Dns.GetHostAddresses("www.LocalHost.com");
             //Client.host = ips[0].ToString();
             //string ip = NetworkManager.GetLocalIP();
@@ -46,29 +42,31 @@ namespace Client
 
         public void Connect(string inputIP,int inputPort)
         {
-            client.Log += (str) =>
-            {
-                Debug.Log(str);
-                logInfo = str;
-            };
-            client.LogBug += (str) =>
-            {
-                Debug.Log("RPC远程调用失败" + str);
-            };
+            client.UseUnityThread = true;
+            client.Log += (str) => DebugConnectLog(str);
+            client.LogBug += (str) => Debug.Log("RPC远程调用失败" + str);
+
             //IPAddress[] ips = Dns.GetHostAddresses("www.LocalHost.com");
             //Client.host = ips[0].ToString();
             //string ip = NetworkManager.GetLocalIP();
             client.Connect(inputIP, inputPort, result => { if (result) client.Send(new byte[0]); });
         }
 
+        public void DebugConnectLog(string str)
+        {
+            Debug.Log(str);
+            queueLogInfo.Enqueue(str);
+        }
+
         private void Update()
         {
+            //unity线程运行客户端逻辑
             client.FixedUpdate();
 
-            if (logInfo != string.Empty)
+            if (queueLogInfo.Count > 0)
             {
-                NetMassageManager.OpenTitleMessage(logInfo);
-                logInfo = string.Empty;
+                string msg = queueLogInfo.Dequeue();
+                NetMassageManager.OpenTitleMessage(msg);
             }
         }
 
@@ -80,8 +78,8 @@ namespace Client
         [Net.Share.Rpc]//获取用户信息结果
         private void CetUserSelfInfoResult(string playerName, string acc)
         {
-            ClientNetworkManager.Instance.playerName = playerName;
-            ClientNetworkManager.Instance.Acc = acc;
+            this.playerName = playerName;
+            this.Acc = acc;
         }
         [Net.Share.Rpc]//其他地方登陆通知
         private void OtherLogin()
@@ -89,12 +87,10 @@ namespace Client
             NetMassageManager.OpenMessage("您的账号在其他地方登录，请注意密码安全！");
         }
         [Net.Share.Rpc]//在大厅时接收所有房间信息
-        private void OnLobbayReceiveScenesInfo(List<NetScene> scenes)
+        private void OnLobbayReceiveScenesInfo(Dictionary<string, NetScene> scenes)
         {
-            netScenes = scenes;
-            UndataNetScenes?.Invoke(netScenes);
+            UndataNetScenes?.Invoke(scenes);
         }
-
 
     }
 }

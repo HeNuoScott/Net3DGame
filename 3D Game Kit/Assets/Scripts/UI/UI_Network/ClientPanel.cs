@@ -48,10 +48,7 @@ namespace QFramework.HeNuoApp
 
                 Button_Login.interactable = false;
                 //10秒内不能重读点击登录
-                this.Delay(10, () =>
-                {
-                    Button_Login.interactable = true;
-                });
+                this.Delay(10, () => { Button_Login.interactable = true;});
             });
 
             //注册
@@ -77,10 +74,11 @@ namespace QFramework.HeNuoApp
 
         private void LoginOrRegister_LoginSucceedCallBack()
         {
+
+            this.DoTransition<LobbyPanel>(new FadeInOut(), UILevel.Common);
             //登陆成功之后跳转场景
             UnityEngine.SceneManagement.SceneManager.LoadScene(mData.defaultScene);
-            this.DoTransition<LobbyPanel>(new FadeInOut(), UILevel.Common);
-            this.CloseSelf();
+            //this.CloseSelf();
 
         }
 

@@ -155,6 +155,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 623ddc466582fd84384028877fb5e8c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  appType: 0
+  appType: 1
   IPAdress: 127.0.0.1
   port: 666

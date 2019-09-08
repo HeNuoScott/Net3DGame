@@ -1,0 +1,36 @@
+ManifestFileVersion: 0
+CRC: 1810841580
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: d53a9158c10261602ee0b0e286bb8a46
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 8e95b581048ed01be25ffa89f1211634
+HashAppended: 0
+ClassTypes:
+- Class: 1
+  Script: {instanceID: 0}
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 28
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+- Class: 114
+  Script: {fileID: 708705254, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 0d51f3a7c41ab0346b49ae50d456bece, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 26e1fdec15f2adf4e8d508d3b3727831, type: 3}
+- Class: 115
+  Script: {instanceID: 0}
+- Class: 128
+  Script: {instanceID: 0}
+- Class: 222
+  Script: {instanceID: 0}
+- Class: 224
+  Script: {instanceID: 0}
+Assets:
+- Assets/Prefabs/UI/UI_Network/TitleMassagePanel.prefab
+Dependencies: []

@@ -1,37 +1,22 @@
 using UnityEngine;
 using Net.Client;
+using QF;
 
 namespace Client
 {
     /// <summary>
     /// 登录和注册类
     /// </summary>
-    public class LoginManager : NetBehaviour
+    [MonoSingletonPath("[GameDesigner]/LoginManager")]
+    public class LoginManager : NetClientMonoSingleton<LoginManager>
     {
         public event System.Action LoginSucceedCallBack;
-        protected static LoginManager mInstance = null;
-        public static LoginManager Instance
+
+        protected override void OnDestroy()
         {
-            get
-            {
-                if (mInstance == null)
-                {
-                    mInstance = GameObject.FindObjectOfType(typeof(LoginManager)) as LoginManager;
-                    if (mInstance == null)
-                    {
-                        mInstance = new GameObject("_ " + typeof(LoginManager).ToString(), typeof(LoginManager)).GetComponent<LoginManager>();
-                        DontDestroyOnLoad(mInstance);
-                        mInstance.transform.SetParent(ClientNetworkManager.Instance.transform);
-                    }
-                }
-                return mInstance;
-            }
-        }
-        private void OnDestroy()
-        {
+            base.OnDestroy();
             //移除远程调用函数
             RemoveRpcDelegate(this);
-            mInstance = null;
         }
         //注册
         public void Register(string acc, string pass)

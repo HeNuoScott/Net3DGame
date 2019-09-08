@@ -4,32 +4,16 @@ using UnityEngine;
 using Net.Client;
 using Net.Share;
 using System;
+using QF;
 
 namespace Client
 {
     /// <summary>
     /// 聊天管理器
     /// </summary>
-    public class ChatManager : NetBehaviour
+    [MonoSingletonPath("[GameDesigner]/ChatManager")]
+    public class ChatManager : NetClientMonoSingleton<ChatManager>
     {
-        protected static ChatManager mInstance = null;
-        public static ChatManager Instance
-        {
-            get
-            {
-                if (mInstance == null)
-                {
-                    mInstance = GameObject.FindObjectOfType(typeof(ChatManager)) as ChatManager;
-                    if (mInstance == null)
-                    {
-                        mInstance = new GameObject("_ " + typeof(ChatManager).ToString(), typeof(ChatManager)).GetComponent<ChatManager>();
-                        DontDestroyOnLoad(mInstance);
-                        mInstance.transform.SetParent(ClientNetworkManager.Instance.transform);
-                    }
-                }
-                return mInstance;
-            }
-        }
         /// <summary>
         /// 显示消息事件
         /// </summary>
@@ -49,11 +33,11 @@ namespace Client
             }
         }
 
-        private void OnDestroy()
+        protected override void OnDestroy()
         {
+            base.OnDestroy();
             //移除远程调用函数
             RemoveRpcDelegate(this);
-            mInstance = null;
         }
 
         /// <summary>

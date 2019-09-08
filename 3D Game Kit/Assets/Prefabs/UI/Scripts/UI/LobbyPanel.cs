@@ -10,6 +10,9 @@
 
 namespace QFramework.HeNuoApp
 {
+    using Client;
+    using Net.Server;
+    using QF.Extensions;
     using System;
     using System.Collections;
     using System.Collections.Generic;
@@ -20,7 +23,9 @@ namespace QFramework.HeNuoApp
     
     public class LobbyPanelData : QFramework.UIPanelData
     {
-        public List<Net.Server.NetScene> netScenes = new List<Net.Server.NetScene>();
+        //网络场景信息
+        public Dictionary<string, NetScene> netScenes = new Dictionary<string, NetScene>();
+        //信息面板显示信息
         public Dictionary<string, ScenePanel> ScenePanels = new Dictionary<string, ScenePanel>();
     }
     
@@ -51,8 +56,33 @@ namespace QFramework.HeNuoApp
                     InputField_Msg.text = "";
                 }
             });
-
+            //接收场景信息
             Client.ClientNetworkManager.UndataNetScenes += ClientNetworkManager_UndataNetScenes;
+            Button_CreateRoom.onClick.AddListener(() =>
+            {
+                string roomName = InputField_RoomName.text.Trim();
+                
+                if (roomName == null || roomName == "")
+                {
+                    NetMassageManager.OpenMessage("房间名称不能为空!");
+                    return;
+                }
+                if (InputField_RoomCapacity.text == "")
+                {
+                    NetMassageManager.OpenMessage("请输入房间最大人数!");
+                    return;
+                }
+                int capacity = int.Parse(InputField_RoomCapacity.text);
+                if (capacity>8)
+                {
+                    NetMassageManager.OpenMessage("房间最大人数是8人!");
+                    return;
+                }
+
+                RoomManager.Instance.CreateRoom(roomName, capacity);
+
+
+            });
         }
 
         protected override void OnOpen(QFramework.IUIData uiData)
@@ -96,16 +126,83 @@ namespace QFramework.HeNuoApp
             MsgContent.text += msg;
         }
 
-        private void ClientNetworkManager_UndataNetScenes(List<Net.Server.NetScene> scenes)
+        private void ClientNetworkManager_UndataNetScenes(Dictionary<string, NetScene> scenes)
         {
+            Dictionary<string, NetScene> needDelScene = new Dictionary<string, NetScene>();
+
+            foreach (var item in scenes)
+            {
+                Debug.Log(item.Key);
+                Debug.Log(item.Value.SceneNumber);
+                //foreach (var scene in item.Value.players)
+                //{
+                //    Debug.Log(scene.playerID);
+                //}
+            }
+
+            //-----------------------------场景信息对比---------------------------------
             //1.
             //遍历现有的场景信息去对比 新得到的场景信息,
             //如有现有的信息在 新来的场景信息中找不到说明场景已经销毁  删除场景
+            foreach (var item in mData.netScenes)
+            {
+                if (!scenes.ContainsKey(item.Key))
+                {
+                    needDelScene.Add(item.Key,item.Value);
+                }
+            }
+            foreach (var sceneName in needDelScene)
+            {
+                mData.netScenes.Remove(sceneName.Key);
+            }
             //2.
             //遍历新来的场景信息  对比刚刚删除 销毁掉场景之后的场景信息
             //如果 有对应场景  查看更改
             //如果没有对应场景  新增场景
+            //Debug.Log("收到场景消息");
+            foreach (var newScene in scenes)
+            {
+                if (!mData.netScenes.ContainsKey(newScene.Key))
+                {
+                    mData.netScenes.Add(newScene.Key, newScene.Value);
+                }
+                else
+                {
+                    mData.netScenes[newScene.Key] = newScene.Value;
+                }
+            }
+            //-----------------------------显示信息更改-----------------------------------
+            foreach (var item in needDelScene)
+            {
+                if (mData.ScenePanels.ContainsKey(item.Key))
+                {
+                    ScenePanel scenePanel = mData.ScenePanels[item.Key];
+                    mData.ScenePanels.Remove(item.Key);
+                    Destroy(scenePanel.gameObject);
+                }
+            }
+            foreach (var item in mData.netScenes)
+            {
+                if (item.Key!= "MainScene")//不等于大厅 就展示
+                {
+                    if (mData.ScenePanels.ContainsKey(item.Key))
+                    {
+                        mData.ScenePanels[item.Key].ChangeInfo(item.Value);
+                    }
+                    else
+                    {
+                        ScenePanel.Instantiate()
+                                  .Parent(SceneContent)
+                                  .LocalIdentity()
+                                  .ApplySelfTo((self) => self.Init(item.Key, item.Value))
+                                  .ApplySelfTo((self) => mData.ScenePanels.Add(item.Key, self))
+                                  .Show();
+                    }
+                }
+
+            }
 
         }
+
     }
 }

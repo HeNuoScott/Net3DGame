@@ -39,10 +39,10 @@ namespace QFramework
 			switch (tmpMsg.ManagerID)
 			{
 				case QMgrID.UI:
-                    QFramework.UIManager.Instance.SendMsg(tmpMsg);
+					UIManager.Instance.SendMsg(tmpMsg);
 					return;
 				case QMgrID.Audio:
-                    QF.Res.AudioManager.Instance.SendMsg(tmpMsg);
+					AudioManager.Instance.SendMsg(tmpMsg);
 					return;
 			}
 

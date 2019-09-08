@@ -2,39 +2,22 @@ using Net.Client;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using QF;
 
 namespace Client
 {
     /// <summary>
     /// 房间管理器
     /// </summary>
-    public class RoomManager : NetBehaviour
+    [MonoSingletonPath("[GameDesigner]/RoomManager")]
+    public class RoomManager : NetClientMonoSingleton<RoomManager>
     {
-        protected static RoomManager mInstance = null;
-        public static RoomManager Instance
+        protected override void OnDestroy()
         {
-            get
-            {
-                if (mInstance == null)
-                {
-                    mInstance = GameObject.FindObjectOfType(typeof(RoomManager)) as RoomManager;
-                    if (mInstance == null)
-                    {
-                        mInstance = new GameObject("_ " + typeof(RoomManager).ToString(), typeof(RoomManager)).GetComponent<RoomManager>();
-                        DontDestroyOnLoad(mInstance);
-                        mInstance.transform.SetParent(ClientNetworkManager.Instance.transform);
-                    }
-                }
-                return mInstance;
-            }
-        }
-        private void OnDestroy()
-        {
+            base.OnDestroy();
             //移除远程调用函数
             RemoveRpcDelegate(this);
-            mInstance = null;
         }
-
         //发送创建房间的请求
         public void CreateRoom(string roomName,int number)
         {
@@ -57,6 +40,7 @@ namespace Client
             if (result)
             {
                 Debug.Log("创建房间成功");
+                //跳转场景
             }
             else
             {
@@ -76,6 +60,7 @@ namespace Client
                 Debug.Log("加入房间失败:" + info);
             }
         }
+
 
     }
 }
