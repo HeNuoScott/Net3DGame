@@ -108,6 +108,7 @@
     <Compile Include="Assets\GameDesigner\Net\Client\NetworkCondition.cs" />
     <Compile Include="Assets\GameDesigner\Net\Client\TcpClient.cs" />
     <Compile Include="Assets\GameDesigner\Net\Client\UdpClient.cs" />
+    <Compile Include="Assets\GameDesigner\Net\Entity\FileTransfer.cs" />
     <Compile Include="Assets\GameDesigner\Net\Server\FrameData.cs" />
     <Compile Include="Assets\GameDesigner\Net\Server\FrameSync.cs" />
     <Compile Include="Assets\GameDesigner\Net\Server\NetBehaviour.cs" />
@@ -419,8 +420,8 @@
     <Compile Include="Assets\QFramework\Framework\Plugins\MiniJSON\MiniJSON.cs" />
     <Compile Include="Assets\QFrameworkData\QAssets.cs" />
     <Compile Include="Assets\Scripts\Client\ClientNetworkManager.cs" />
+    <Compile Include="Assets\Scripts\Client\ClientPlayer.cs" />
     <Compile Include="Assets\Scripts\Client\NetMassageManager.cs" />
-    <Compile Include="Assets\Scripts\Client\Player.cs" />
     <Compile Include="Assets\Scripts\Client\System\ChatManager.cs" />
     <Compile Include="Assets\Scripts\Client\System\LoginManager.cs" />
     <Compile Include="Assets\Scripts\Client\System\RoomManager.cs" />
@@ -430,6 +431,8 @@
     <Compile Include="Assets\Scripts\Server\DataBase.cs" />
     <Compile Include="Assets\Scripts\Server\NetGameServer.cs" />
     <Compile Include="Assets\Scripts\Server\ServerManager.cs" />
+    <Compile Include="Assets\Scripts\Share\RoomInfo.cs" />
+    <Compile Include="Assets\Scripts\Share\ServerPlayer.cs" />
     <Compile Include="Assets\Scripts\StringColorExtension.cs" />
     <Compile Include="Assets\Scripts\UI\UI_Network\ChatPanel.cs" />
     <Compile Include="Assets\Scripts\UI\UI_Network\ChatPanel.Designer.cs" />
@@ -1073,10 +1076,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="HTTP.csproj">
-      <Project>{F9747135-4C58-3BF1-F7F3-01532EB0882D}</Project>
-      <Name>HTTP</Name>
-    </ProjectReference>
     <ProjectReference Include="QF.Extensions.csproj">
       <Project>{55B4FD44-11AA-E201-DEC2-FA19619C0EA5}</Project>
       <Name>QF.Extensions</Name>
@@ -1108,6 +1107,10 @@
     <ProjectReference Include="QF.Singleton.csproj">
       <Project>{302CD1E7-1F35-C488-2D07-06289CD1A06E}</Project>
       <Name>QF.Singleton</Name>
+    </ProjectReference>
+    <ProjectReference Include="HTTP.csproj">
+      <Project>{F9747135-4C58-3BF1-F7F3-01532EB0882D}</Project>
+      <Name>HTTP</Name>
     </ProjectReference>
     <ProjectReference Include="QF.SimpleHelper.csproj">
       <Project>{1BF35B11-EBE1-5A7F-0287-C3A2BA5374AD}</Project>

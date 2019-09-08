@@ -24,6 +24,8 @@ namespace Client
         private int outTime = 5;
         public string loginfo = string.Empty;
 
+        public string receiveTime, receivePlayerName, receiveInfo;
+
         private void Update()
         {
             if (loginfo != string.Empty)
@@ -72,6 +74,13 @@ namespace Client
         [Net.Share.Rpc]private void ChatMsg(string time, string playerName,string info)
         {
             isResponse = true;
+
+            if (receiveTime == time && receivePlayerName == playerName && receiveInfo == info) return;
+
+            receiveTime = time;
+            receiveInfo = info;
+            receivePlayerName = playerName;
+            
             string information = string.Empty;
             if (playerName == ClientNetworkManager.Instance.playerName)
             {

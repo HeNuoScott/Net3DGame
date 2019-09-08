@@ -9,18 +9,19 @@ using UnityEngine.UI;
 using QFramework;
 using Net.Server;
 using Client;
+using Net.Share;
 
 namespace QFramework.HeNuoApp
 {
 	public partial class ScenePanel : UIElement
 	{
-        private string mySceneName;
+        private string myRoomName;
 
         private void Awake()
 		{
             Join_Button.onClick.AddListener(() =>
             {
-                RoomManager.Instance.JoinRoom(mySceneName);
+                RoomManager.Instance.JoinRoom(myRoomName);
             });
 		}
 
@@ -28,20 +29,15 @@ namespace QFramework.HeNuoApp
 		{
 		}
 
-        public void Init(string sceneName, NetScene sceneInfo)
+        public void Init(string roomName, RoomInfo roomInfo)
         {
-            if (sceneName == "MainScene")
-            {
-                SceneName.text = mySceneName = "大厅";
-                Join_Button.interactable = false;
-            }
-            else SceneName.text = mySceneName = sceneName;
+            SceneName.text = myRoomName = roomName;
 
-            capacity.text = string.Format("房间人数:{0}/{1}", sceneInfo.SceneNumber, sceneInfo.sceneCapacity);
+            capacity.text = string.Format("房间人数:{0}/{1}", roomInfo.roomNumber, roomInfo.roomCapacity);
         }
-        public void ChangeInfo(NetScene sceneInfo)
+        public void ChangeInfo(RoomInfo roomInfo)
         {
-            capacity.text = string.Format("房间人数:{0}/{1}", sceneInfo.SceneNumber, sceneInfo.sceneCapacity);
+            capacity.text = string.Format("房间人数:{0}/{1}", roomInfo.roomNumber, roomInfo.roomCapacity);
         }
     }
 }

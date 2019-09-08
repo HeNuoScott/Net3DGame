@@ -50,6 +50,10 @@
         /// </summary>
         protected ConcurrentQueue<ReceiveBuffer> revdBufs = new ConcurrentQueue<ReceiveBuffer>();
         /// <summary>
+        /// 待处理的接受队列长度
+        /// </summary>
+        public int RevdQueueCount { get { return revdBufs.Count; } }
+        /// <summary>
         /// 服务器是否处于运行状态, 如果服务器套接字已经被释放则返回False, 否则返回True. 当调用Close方法后将改变状态
         /// </summary>
         public bool IsRunServer { get; private set; } = true;
@@ -57,6 +61,10 @@
         /// 获取或设置最大可排队人数， 如果未知客户端人数超出LineUp值将不处理超出排队的未知客户端数据请求 ， 默认排队1000人
         /// </summary>
         public int LineUp { get; set; } = 1000;
+        /// <summary>
+        /// 允许玩家在线人数最大值（玩家在线上限）
+        /// </summary>
+        public int OnlineLimit { get; set; } = 2000;
         /// <summary>
         /// 服务器主大厅默认场景名称
         /// </summary>
@@ -404,6 +412,8 @@
             }
             if (UnClients.Count >= LineUp)//排队人数
                 return;
+            if (Clients.Count >= OnlineLimit)//服务器最大在线人数
+                return;
             NetPlayer unClient = new NetPlayer(GUID, remotePoint);
             OnHasConnectHandle?.Invoke(unClient);
             Log?.Invoke("有客户端连接:" + remotePoint.ToString());
@@ -477,11 +487,11 @@
                     Send(client, buffer, index - 3, count + 3);//发送数据到这个客户端
                     break;
                 case NetCmd.SceneCmd:
-                    Parallel.For(0, Scenes[client.sceneID].players.Count, i => //并行当前场景的客户端
+                    Parallel.For(0, client.Scene.players.Count, i => //并行当前场景的客户端
                     {
-                        if (Scenes[client.sceneID].players[i] == null)
+                        if (client.Scene.players[i] == null)
                             return;
-                        Send(Scenes[client.sceneID].players[i], buffer, index - 3, count + 3);//发送数据到这个客户端
+                        Send(client.Scene.players[i], buffer, index - 3, count + 3);//发送数据到这个客户端
                     });
                     break;
                 case NetCmd.AllCmd:
@@ -579,7 +589,7 @@
         {
             foreach (var client in UnClients.Values)
             {
-                if (client.heart < 5)//有5次确认心跳包
+                if (client.heart < 3)//有3次确认心跳包
                 {
                     client.heart++;
                     Send(client, NetCmd.SendHeartbeat, new byte[1]);
@@ -613,7 +623,7 @@
         {
             foreach (var client in Clients.Values)
             {
-                if (client.heart < 5)//有5次确认心跳包
+                if (client.heart < 3)//有3次确认心跳包
                 {
                     client.heart++;
                     Send(client, NetCmd.SendHeartbeat, new byte[1]);

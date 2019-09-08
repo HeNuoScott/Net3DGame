@@ -276,7 +276,7 @@
                 case "System.Double":
                     return BitConverter.GetBytes((double)value);
                 case "System.Byte":
-                    return BitConverter.GetBytes((byte)value);
+                    return new byte[]{ (byte)value };
                 case "System.SByte":
                     return BitConverter.GetBytes((sbyte)value);
             }

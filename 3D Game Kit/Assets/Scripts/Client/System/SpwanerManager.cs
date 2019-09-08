@@ -66,7 +66,7 @@ namespace Client
         {
             isResponse = true;
             GameObject palyer = Instantiate(this.player, transform.position, transform.rotation);
-            player.GetComponent<Player>().playerName = playerName;
+            player.GetComponent<ClientPlayer>().playerName = playerName;
             ClientNetworkManager.Instance.playerName = playerName;
         }
 
@@ -76,7 +76,7 @@ namespace Client
             if (playerName == ClientNetworkManager.Instance.playerName) return;
             if (players.ContainsKey(playerName)) return;
             GameObject palyer = Instantiate(this.player, transform.position, transform.rotation);
-            player.GetComponent<Player>().playerName = playerName;
+            player.GetComponent<ClientPlayer>().playerName = playerName;
 
             players.Add(playerName, palyer);
         }

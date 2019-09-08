@@ -65,7 +65,7 @@
                 if (client.Rpcs[i].target.Equals(target) | client.Rpcs[i].method.Equals(null))
                 {
                     client.Rpcs.RemoveAt(i);
-                    i--;
+                    i = 0;
                 }
             }
         }

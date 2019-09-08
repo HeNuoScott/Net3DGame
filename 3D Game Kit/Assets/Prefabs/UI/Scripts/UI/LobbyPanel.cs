@@ -12,6 +12,7 @@ namespace QFramework.HeNuoApp
 {
     using Client;
     using Net.Server;
+    using Net.Share;
     using QF.Extensions;
     using System;
     using System.Collections;
@@ -24,7 +25,7 @@ namespace QFramework.HeNuoApp
     public class LobbyPanelData : QFramework.UIPanelData
     {
         //网络场景信息
-        public Dictionary<string, NetScene> netScenes = new Dictionary<string, NetScene>();
+        public Dictionary<string, RoomInfo> netScenes = new Dictionary<string, RoomInfo>();
         //信息面板显示信息
         public Dictionary<string, ScenePanel> ScenePanels = new Dictionary<string, ScenePanel>();
     }
@@ -126,20 +127,9 @@ namespace QFramework.HeNuoApp
             MsgContent.text += msg;
         }
 
-        private void ClientNetworkManager_UndataNetScenes(Dictionary<string, NetScene> scenes)
+        private void ClientNetworkManager_UndataNetScenes(Dictionary<string, RoomInfo> scenes)
         {
-            Dictionary<string, NetScene> needDelScene = new Dictionary<string, NetScene>();
-
-            foreach (var item in scenes)
-            {
-                Debug.Log(item.Key);
-                Debug.Log(item.Value.SceneNumber);
-                //foreach (var scene in item.Value.players)
-                //{
-                //    Debug.Log(scene.playerID);
-                //}
-            }
-
+            Dictionary<string, RoomInfo> needDelScene = new Dictionary<string, RoomInfo>();
             //-----------------------------场景信息对比---------------------------------
             //1.
             //遍历现有的场景信息去对比 新得到的场景信息,

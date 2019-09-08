@@ -1,22 +1,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Net.Server;
+using Net.Share;
 
 namespace Server
 {
-    public class Player : NetPlayer
-    {
-        public string acc, pass;
-        public Vector3 pos;
-        public Quaternion roto;
-    }
     //数据库  储存用户信息
     public class DataBase : Net.Server.ServerDataBase
     {
         /// <summary>
         /// 运行时使用这个  不用父类里面的ConcurrentDictionary<string, NetPlayer> PlayerInfos
         /// </summary>
-        public static Dictionary<string, Player> Users = new Dictionary<string, Player>();
+        public static Dictionary<string, ServerPlayer> Users = new Dictionary<string, ServerPlayer>();
 
         ///// <summary>
         ///// 初始化数据库
@@ -40,7 +35,7 @@ namespace Server
         /// <param name="playerName"></param>
         /// <param name="accountNumber"></param>
         /// <param name="password"></param>
-        public static void Add(Player player)
+        public static void Add(ServerPlayer player)
         {
             Users.Add(player.acc, player);
             //Save(player);

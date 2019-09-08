@@ -1581,10 +1581,6 @@
       <Project>{CA0F72E2-A558-822A-A54D-DF6F143DD663}</Project>
       <Name>Assembly-CSharp</Name>
     </ProjectReference>
-    <ProjectReference Include="HTTP.csproj">
-      <Project>{F9747135-4C58-3BF1-F7F3-01532EB0882D}</Project>
-      <Name>HTTP</Name>
-    </ProjectReference>
     <ProjectReference Include="QF.Extensions.csproj">
       <Project>{55B4FD44-11AA-E201-DEC2-FA19619C0EA5}</Project>
       <Name>QF.Extensions</Name>
@@ -1616,6 +1612,10 @@
     <ProjectReference Include="QF.Singleton.csproj">
       <Project>{302CD1E7-1F35-C488-2D07-06289CD1A06E}</Project>
       <Name>QF.Singleton</Name>
+    </ProjectReference>
+    <ProjectReference Include="HTTP.csproj">
+      <Project>{F9747135-4C58-3BF1-F7F3-01532EB0882D}</Project>
+      <Name>HTTP</Name>
     </ProjectReference>
     <ProjectReference Include="QF.SimpleHelper.csproj">
       <Project>{1BF35B11-EBE1-5A7F-0287-C3A2BA5374AD}</Project>

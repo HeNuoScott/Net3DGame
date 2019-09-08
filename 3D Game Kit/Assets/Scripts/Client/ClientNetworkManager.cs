@@ -4,8 +4,9 @@ using UnityEngine;
 using Net.Client;
 using System.Net;
 using System;
-using Net.Server;
+//using Net.Server;
 using QF;
+using Net.Share;
 
 namespace Client
 {
@@ -16,7 +17,7 @@ namespace Client
         public string Acc;
 
         public Net.Client.UdpClient client = new Net.Client.UdpClient();
-        public static event Action<Dictionary<string, NetScene>> UndataNetScenes;
+        public static event Action<Dictionary<string, RoomInfo>> UndataNetScenes;
 
         public Queue<string> queueLogInfo = new Queue<string>();
 
@@ -24,9 +25,9 @@ namespace Client
         {
             client.BindRpc(this);
             //添加网络转换类型
-            client.AddNetType<NetScene>();
-            client.AddNetType<List<NetScene>>();
-            client.AddNetType<Dictionary<string, NetScene>>();
+            client.AddNetType<RoomInfo>();
+            client.AddNetType<ServerPlayer>();
+            client.AddNetType<Dictionary<string, RoomInfo>>();
         }
 
         public void Connect()
@@ -87,7 +88,7 @@ namespace Client
             NetMassageManager.OpenMessage("您的账号在其他地方登录，请注意密码安全！");
         }
         [Net.Share.Rpc]//在大厅时接收所有房间信息
-        private void OnLobbayReceiveScenesInfo(Dictionary<string, NetScene> scenes)
+        private void OnLobbayReceiveScenesInfo(Dictionary<string, RoomInfo> scenes)
         {
             UndataNetScenes?.Invoke(scenes);
         }

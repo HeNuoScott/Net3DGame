@@ -33,6 +33,18 @@
     /// </summary>
     public class Rpc : RPCFun
     {
+        /// <summary>
+        /// 构造RPCFun函数特性
+        /// </summary>
+        public Rpc() { }
 
+        /// <summary>
+        /// 构造RPCFun函数特性
+        /// </summary>
+        /// <param name="cmd">自定义的网络命令</param>
+        public Rpc(byte cmd)
+        {
+            this.cmd = cmd;
+        }
     }
 }

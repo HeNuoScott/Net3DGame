@@ -130,5 +130,22 @@ namespace Net.Server
             }
             return RPCFuns;
         }
+
+        /// <summary>
+        /// 移除网络远程过程调用函数
+        /// </summary>
+        /// <param name="server">指定的服务器rpcs</param>
+        /// <param name="target">移除的rpc对象</param>
+        public static void RemoveRpc(NetServerBase server, object target)
+        {
+            for (int i = 0; i < server.Rpcs.Count; i++)
+            {
+                if (server.Rpcs[i].target == target | server.Rpcs[i].target.Equals(target))
+                {
+                    server.Rpcs.RemoveAt(i);
+                    i = 0;
+                }
+            }
+        }
     }
 }

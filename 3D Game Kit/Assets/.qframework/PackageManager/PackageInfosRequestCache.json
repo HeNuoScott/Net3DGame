@@ -1260,6 +1260,13 @@
       "readme": {
         "items": [
           {
+            "version": "v0.0.13",
+            "content": "add ilkitbehaviour",
+            "author": "liangxie",
+            "date": "2019 年 09 月 08 日 16:13",
+            "VersionNumber": 13
+          },
+          {
             "version": "v0.0.12",
             "content": "删除掉冗余代码",
             "author": "liangxie",
@@ -1346,6 +1353,25 @@
         ]
       },
       "PackageVersions": [
+        {
+          "Version": "v0.0.13",
+          "Type": 3,
+          "AccessRight": 0,
+          "DownloadUrl": "http://file.liangxiegame.com/ILKitv0_0_13_0bc22ab1_6a5f_4f25_aa53_ddbae97c3921.unitypackage",
+          "InstallPath": "Assets/ILKit/",
+          "DocUrl": null,
+          "Readme": {
+            "version": "v0.0.13",
+            "content": "add ilkitbehaviour",
+            "author": "liangxie",
+            "date": "2019 年 09 月 08 日 16:13",
+            "VersionNumber": 13
+          },
+          "Id": "c8b2a19b-2064-4964-b640-473cf16429ef",
+          "Name": "ILKit",
+          "VersionNumber": 13,
+          "FileName": "ILKit_v0.0.13.unitypackage"
+        },
         {
           "Version": "v0.0.12",
           "Type": 3,
@@ -1575,13 +1601,13 @@
           "FileName": "ILKit_v0.0.1.unitypackage"
         }
       ],
-      "Version": "v0.0.12",
-      "DownloadUrl": "http://file.liangxiegame.com/ILKitv0_0_12_bff655f6_f3b3_47b3_9cdf_8ba0f2833df2.unitypackage",
+      "Version": "v0.0.13",
+      "DownloadUrl": "http://file.liangxiegame.com/ILKitv0_0_13_0bc22ab1_6a5f_4f25_aa53_ddbae97c3921.unitypackage",
       "InstallPath": "Assets/ILKit/",
       "DocUrl": null,
       "Type": 3,
       "AccessRight": 0,
-      "VersionNumber": 12,
+      "VersionNumber": 13,
       "Installed": false
     },
     {

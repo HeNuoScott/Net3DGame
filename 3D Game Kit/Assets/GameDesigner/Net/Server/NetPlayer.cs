@@ -65,5 +65,14 @@
         {
             RemotePoint.Add(serverID, remotePoint);
         }
+
+        /// <summary>
+        /// 析构网络客户端
+        /// </summary>
+        ~NetPlayer()
+        {
+            Client?.Close();
+            Stream?.Close();
+        }
     }
 }

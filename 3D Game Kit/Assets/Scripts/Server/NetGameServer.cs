@@ -8,6 +8,7 @@ namespace Server
     using System.Text;
     using System.Threading.Tasks;
     using System.Net;
+    using Net.Share;
 
     public class NetGameServer : UdpServer
     {
@@ -15,7 +16,7 @@ namespace Server
         /// 请求操作的玩家
         /// 服务器所有方法即是在多线程中完成   多线程不能直接访问unity组件的属性和方法
         /// </summary>
-        private Player RequestPlayer;
+        private ServerPlayer RequestPlayer;
         public int OnLineCount{get { return Players.Count; }}
         public static event Action<string> ServerLog;
         public static void DebugLog(string str) => ServerLog?.Invoke(str);
@@ -25,9 +26,9 @@ namespace Server
             DebugLog("开始启动服务器");
             this.Log += (msg) => { DebugLog(msg); };
             //添加网络转换类型
-            Net.Share.NetConvert.AddNetworkType<NetScene>();
-            Net.Share.NetConvert.AddNetworkType<List<NetScene>>();
-            Net.Share.NetConvert.AddNetworkType<Dictionary<string, NetScene>>();
+            Net.Share.NetConvert.AddNetworkType<RoomInfo>();
+            Net.Share.NetConvert.AddNetworkType<ServerPlayer>();
+            Net.Share.NetConvert.AddNetworkType<Dictionary<string, RoomInfo>>();
         }
         protected override void OnStartupCompleted()
         {
@@ -42,7 +43,7 @@ namespace Server
             DebugLog($"客户端：{client.playerID.ToString()}断开链接......");
 
             var scene = Scenes[client.sceneID];
-            scene.players.Remove(client as Player);
+            scene.players.Remove(client as ServerPlayer);
             Multicast(scene.players, "RemovePlayer", RequestPlayer.acc);
             if (scene.players.Count <= 0 && client.sceneID != DefaultScene)
             {
@@ -58,7 +59,7 @@ namespace Server
         //用户调用客户端的Rpc函数时调用
         protected override void OnInvokeRpc(NetPlayer client)
         {
-            RequestPlayer = client as Player;
+            RequestPlayer = client as ServerPlayer;
         }
         //当用户发送请求时调用
         protected override NetPlayer OnUnClientRequest(NetPlayer unClient, byte cmd, byte[] buffer, int index, int count)
@@ -92,8 +93,16 @@ namespace Server
                 {
                     List<NetPlayer> players = Scenes[DefaultScene].players;
 
-                    Dictionary<string, NetScene> netSceneInfo = new Dictionary<string, NetScene>();
-                    foreach (var item in Scenes) netSceneInfo.Add(item.Key, item.Value);
+                    Dictionary<string, RoomInfo> netSceneInfo = new Dictionary<string, RoomInfo>();
+                    foreach (var item in Scenes)
+                    {
+                        netSceneInfo.Add(item.Key, new RoomInfo()
+                        {
+                            roomName = item.Key,
+                            roomCapacity = item.Value.sceneCapacity,
+                            roomNumber = item.Value.SceneNumber
+                        });
+                    }
 
                     if (players.Count > 0) Multicast(players, "OnLobbayReceiveScenesInfo", netSceneInfo);
                 }
@@ -115,7 +124,7 @@ namespace Server
                 Send(unClient, "RegisterResult", "账号已存在，注册失败！");
                 return;
             }
-            Player player = new Player();
+            ServerPlayer player = new ServerPlayer();
             player.acc = acc;
             player.pass = pass;
             player.playerID = acc;//用账号标识玩家的唯一标识ID
@@ -127,12 +136,12 @@ namespace Server
 
         }
         //登录
-        private Player Login(NetPlayer unClient, string acc, string pass)
+        private ServerPlayer Login(NetPlayer unClient, string acc, string pass)
         {
             //如果账号存在才能登陆
             if (DataBase.Users.ContainsKey(acc))
             {
-                Player player = DataBase.Users[acc];
+                ServerPlayer player = DataBase.Users[acc];
                 if (player.pass == pass)
                 {
                     //所有在线的客户端  玩家已经登录的状态
