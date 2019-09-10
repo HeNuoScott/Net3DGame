@@ -17,7 +17,8 @@ namespace QFramework.HeNuoApp
     using UnityEngine;
     using UnityEngine.UI;
     using QF.Extensions;
-    
+    using Client;
+
     public class ChatPanelData : QFramework.UIPanelData
     {
     }
@@ -35,6 +36,7 @@ namespace QFramework.HeNuoApp
             mData = uiData as ChatPanelData ?? new ChatPanelData();
             // please add init code here
             Client.ChatManager.ShowMassage += ChatManager_ShowMassage;
+            RoomManager.Instance.ExitRoomCallback += Instance_ExitRoomCallback;
             Button_Send.onClick.AddListener(() =>
             {
                 string msg = InputField_Msg.text.Trim();
@@ -44,6 +46,25 @@ namespace QFramework.HeNuoApp
                     InputField_Msg.text = "";
                 }
             });
+            Button_Close.onClick.AddListener(() =>
+            {
+                RoomManager.Instance.ExitRoom();
+            });
+        }
+
+        private void Instance_ExitRoomCallback()
+        {
+            Debug.Log("·µ»Ø´óÌü");
+            UIMgr.CloseAllPanel();
+            UIPanel loading = UIMgr.OpenPanel<LoadingPanel>(UILevel.Forward, new LoadingPanelData()
+            {
+                startLoading = false,
+                targetScene = "Lobby",
+                openPanel = "LobbyPanel",
+                uiLevel = UILevel.Common,
+                allowSceneActivation = true
+            });
+            UnityEngine.SceneManagement.SceneManager.LoadSceneAsync("Loading");
         }
 
         private void ChatManager_ShowMassage(string msg)
@@ -66,6 +87,7 @@ namespace QFramework.HeNuoApp
         protected override void OnClose()
         {
             Client.ChatManager.ShowMassage -= ChatManager_ShowMassage;
+            RoomManager.Instance.ExitRoomCallback -= Instance_ExitRoomCallback;
         }
     }
 }

@@ -25,6 +25,8 @@
 
 namespace QF.Extensions
 {
+	// 防止自动进行 clrbinding
+	#if UNITY_5_6_OR_NEWER
 	using Newtonsoft.Json.Linq;
 	using UnityEngine;
 
@@ -72,5 +74,6 @@ namespace QF.Extensions
 		{
 			return vector2.x + "," + vector2.y;
 		}
+		#endif
 	}
 }

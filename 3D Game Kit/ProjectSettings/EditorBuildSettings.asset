@@ -9,6 +9,12 @@ EditorBuildSettings:
     path: Assets/Sences/Main.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
   - enabled: 1
-    path: Assets/Sences/MainScene.unity
+    path: Assets/Sences/Lobby.unity
     guid: 5ac786a2f9d4db34491d23d5767e3ba6
+  - enabled: 1
+    path: Assets/Sences/Loading.unity
+    guid: 421a7a71941b0164d814334d547a6987
+  - enabled: 1
+    path: Assets/Sences/GameScene.unity
+    guid: b62cc4f0371fdf6469ae2dd51dde2bb1
   m_configObjects: {}

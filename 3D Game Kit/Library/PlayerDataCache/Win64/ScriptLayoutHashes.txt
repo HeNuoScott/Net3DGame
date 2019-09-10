@@ -3,7 +3,9 @@ PlayerPath?
 E:/UnityProject/Net3DGame/3D Game Kit/Build/Client/Test.exe
 SceneListBegin?
 Assets/Sences/Main.unity
-Assets/Sences/MainScene.unity
+Assets/Sences/Lobby.unity
+Assets/Sences/Loading.unity
+Assets/Sences/GameScene.unity
 SceneListEnd?
 71961c90b9e05ecb48b5969e15e1c70a Unity.Postprocessing.Runtime.dll:UnityEngine.Rendering.PostProcessing.PostProcessLayer
 8f078db0068932aa7fe682e2ba2742dd Assembly-CSharp.dll:GameDesigner.FunBlockNode
@@ -14,6 +16,7 @@ b13de7a0a457cb8e026d4237dc1b5797 Unity.Postprocessing.Runtime.dll:UnityEngine.Re
 71bb6a6b6c8f052f948db64c7dd3ca4f UniRx.dll:UniRx.MainThreadDispatcher
 71bb6a6b6c8f052f948db64c7dd3ca4f UniRx.dll:UniRx.Triggers.ObservableCancelTrigger
 01aa15e337e3a9c62f15153dfac6d589 Unity.TextMeshPro.dll:TMPro.TMP_Dropdown
+7072ea4c5158be811d3c2b14584c1357 Assembly-CSharp.dll:Client.ClientPlayer
 f9019f03075faf1fdd62cc121fdae881 Assembly-CSharp.dll:QF.Res.AudioManager
 71bb6a6b6c8f052f948db64c7dd3ca4f UnityEngine.Timeline.dll:UnityEngine.Timeline.ActivationPlayableAsset
 06f0fef534ca4c1d6064fd77a26bf722 UnityEngine.Timeline.dll:UnityEngine.Timeline.ActivationTrack
@@ -159,7 +162,7 @@ d251bf88db6c95a6b1aa0b69298da9ef UnityEngine.SpatialTracking.dll:UnityEngine.Spa
 7fb9de8dcf73854b6b328eca1f7a6e6d Unity.Analytics.Tracker.dll:UnityEngine.Analytics.AnalyticsTracker
 984dcc0ba3707b7691fbdca8ff508d28 Assembly-CSharp.dll:QFramework.Empty4Raycast
 7e6ed836cbaa230e56d6a2bbae1b9bb5 Unity.Postprocessing.Runtime.dll:UnityEngine.Rendering.PostProcessing.PostProcessEffectSettings
-0f6a7c704ae12599d4a2ed961e09670d Assembly-CSharp.dll:Client.ClientNetworkManager
+bf249a6e58a9371cc2621e50226f54a1 Assembly-CSharp.dll:Client.ClientNetworkManager
 ba07b45d178152a82b7cd36babe081ec Assembly-CSharp.dll:Client.SpwanerManager
 b8a5e8091ab0b8861d2add371082c5e0 Unity.TextMeshPro.dll:TMPro.TMP_SpriteAsset
 71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:Unidux.Example.SceneTransition.PageTitleRenderer
@@ -235,7 +238,7 @@ ea413867059a29f7672d63a412acd0e8 Assembly-CSharp.dll:Unidux.Example.Middlewares.
 35a9693c388776aaf487636491a20f11 Unity.TextMeshPro.dll:TMPro.TMP_FontAsset
 71bb6a6b6c8f052f948db64c7dd3ca4f UniRx.dll:UniRx.Triggers.ObservableTransformChangedTrigger
 e1300922cc039f41ab46a47f4cb05898 Unity.TextMeshPro.dll:TMPro.TMP_Settings
-9642254a40e46cbd2a6af5724f9d52ba Assembly-CSharp.dll:QFramework.HeNuoApp.ChatPanel
+e890e6b200be5a3a659cc1362e286a00 Assembly-CSharp.dll:QFramework.HeNuoApp.ChatPanel
 7d27c2c5c0fbd8703a724aa925921424 Assembly-CSharp.dll:GameDesigner.State
 aff505990b3b2335b9af16f2524559b7 Assembly-CSharp.dll:Unidux.Example.Middlewares.Unidux
 71bb6a6b6c8f052f948db64c7dd3ca4f UnityEngine.Advertisements.dll:UnityEngine.Advertisements.CallbackExecutor
@@ -259,7 +262,7 @@ e95a3c51d0cd60d780b35fa3cce043d6 Assembly-CSharp.dll:QFramework.Example.DVAExamp
 71bb6a6b6c8f052f948db64c7dd3ca4f UniRx.dll:UniRx.Triggers.ObservableCollision2DTrigger
 71bb6a6b6c8f052f948db64c7dd3ca4f UniRx.dll:UniRx.Triggers.ObservablePointerEnterTrigger
 ee0cef6caaac8ae485bfa82f000f0f7b Unity.TextMeshPro.dll:TMPro.TextMeshProUGUI
-71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:Client.RoomManager
+38647719fbc00be63ce54786b5962fd9 Assembly-CSharp.dll:Client.RoomManager
 5fc094978ce3e3591a7500ed380d854a Unity.Analytics.DataPrivacy.dll:UnityEngine.Analytics.DataPrivacyButton
 71bb6a6b6c8f052f948db64c7dd3ca4f UniRx.dll:UniRx.Triggers.ObservableFixedUpdateTrigger
 ed5fcd9bfe4b85800155d95cc1e8c999 Assembly-CSharp.dll:GameDesigner.NodeStart
@@ -304,4 +307,4 @@ abb787fff101b057e38982a1d114fe3c Assembly-CSharp.dll:QFramework.HeNuoApp.ServerP
 cb17b1c858582ef5dfd9fd4047d7a225 Assembly-CSharp.dll:Unidux.Example.List.ListRenderer
 aff505990b3b2335b9af16f2524559b7 Assembly-CSharp.dll:Unidux.Example.SceneTransition.Unidux
 71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:QFramework.Timer
-7072ea4c5158be811d3c2b14584c1357 Assembly-CSharp.dll:Client.ClientPlayer
+f0e247b8364b037a925c087edc526114 Assembly-CSharp.dll:QFramework.HeNuoApp.LoadingPanel

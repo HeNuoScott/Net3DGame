@@ -195,14 +195,6 @@
     <Compile Include="Assets\QFramework\Framework\0.PackageKit\7.PackageManager\Editor\Window\View\HeaderView.cs" />
     <Compile Include="Assets\QFramework\Framework\0.PackageKit\7.PackageManager\Editor\Window\View\PackageManagerView.cs" />
     <Compile Include="Assets\QFramework\Framework\0.PackageKit\7.PackageManager\Editor\Window\View\PackageView.cs" />
-    <Compile Include="Assets\QFramework\Framework\0.PackageKit\Plugins\Unidux\Scripts\Editor\StateJsonEditor.cs" />
-    <Compile Include="Assets\QFramework\Framework\0.PackageKit\Plugins\Unidux\Scripts\Editor\StateJsonFileWrapper.cs" />
-    <Compile Include="Assets\QFramework\Framework\0.PackageKit\Plugins\Unidux\Scripts\Editor\StateJsonFileWrapperInspector.cs" />
-    <Compile Include="Assets\QFramework\Framework\0.PackageKit\Plugins\Unidux\Scripts\Editor\UniduxPanel.cs" />
-    <Compile Include="Assets\QFramework\Framework\0.PackageKit\Plugins\Unidux\Scripts\Editor\UniduxPanelSettingTab.cs" />
-    <Compile Include="Assets\QFramework\Framework\0.PackageKit\Plugins\Unidux\Scripts\Editor\UniduxPanelStateTab.cs" />
-    <Compile Include="Assets\QFramework\Framework\0.PackageKit\Plugins\Unidux\Scripts\Editor\UniduxPanelStateTabClassRender.cs" />
-    <Compile Include="Assets\QFramework\Framework\0.PackageKit\Plugins\Unidux\Scripts\Editor\UniduxPanelStateTabValueRender.cs" />
     <Compile Include="Assets\QFramework\Framework\2.ResKit\1.ResSystem\Editor\AssetBundleExporter.cs" />
     <Compile Include="Assets\QFramework\Framework\2.ResKit\1.ResSystem\Editor\BuildScript.cs" />
     <Compile Include="Assets\QFramework\Framework\2.ResKit\1.ResSystem\Editor\ResKitAssetsMenu.cs" />

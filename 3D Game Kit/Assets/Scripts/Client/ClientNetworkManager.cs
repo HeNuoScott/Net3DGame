@@ -13,6 +13,8 @@ namespace Client
     [MonoSingletonPath("[GameDesigner]/ClientNetworkManager")]
     public class ClientNetworkManager : MonoSingleton<ClientNetworkManager>
     {
+        public string currentSceneName;
+        public string currentRoomName;
         public string playerName;
         public string Acc;
 
@@ -23,11 +25,16 @@ namespace Client
 
         private void Start()
         {
-            client.BindRpc(this);
+
             //添加网络转换类型
+            client.AddNetType<ChatMsg>();
+            client.AddNetType<RoomOperationCode>();
             client.AddNetType<RoomInfo>();
             client.AddNetType<ServerPlayer>();
             client.AddNetType<Dictionary<string, RoomInfo>>();
+
+
+            client.BindRpc(this);
         }
 
         public void Connect()
@@ -90,7 +97,11 @@ namespace Client
         [Net.Share.Rpc]//在大厅时接收所有房间信息
         private void OnLobbayReceiveScenesInfo(Dictionary<string, RoomInfo> scenes)
         {
-            UndataNetScenes?.Invoke(scenes);
+            //UndataNetScenes?.Invoke(scenes);
+            if (UndataNetScenes != null)
+            {
+                UndataNetScenes(scenes);
+            }
         }
 
     }

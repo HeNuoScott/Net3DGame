@@ -1,19 +1,19 @@
 {
-  "Version": "v0.0.29",
+  "Version": "v0.0.31",
   "Type": 0,
   "AccessRight": 0,
   "DownloadUrl": null,
   "InstallPath": "Assets/QFramework/Framework/0.PackageKit/",
   "DocUrl": "http://qf.lianxiegame.com",
   "Readme": {
-    "version": "v0.0.29",
-    "content": "fix state's error",
+    "version": "v0.0.31",
+    "content": "去掉 JsonEditor for unidux",
     "author": "liangxie",
-    "date": "2019 年 09 月 07 日 20:04",
-    "VersionNumber": 29
+    "date": "2019 年 09 月 08 日 20:48",
+    "VersionNumber": 31
   },
   "Id": null,
   "Name": "0.PackageKit",
-  "VersionNumber": 29,
-  "FileName": "0.PackageKit_v0.0.29.unitypackage"
+  "VersionNumber": 31,
+  "FileName": "0.PackageKit_v0.0.31.unitypackage"
 }

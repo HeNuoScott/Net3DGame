@@ -74,12 +74,12 @@ namespace QFramework.HeNuoApp
 
         private void LoginOrRegister_LoginSucceedCallBack()
         {
-
+            //登陆成功之后切换大厅面板
             this.DoTransition<LobbyPanel>(new FadeInOut(), UILevel.Common);
             //登陆成功之后跳转场景
             UnityEngine.SceneManagement.SceneManager.LoadScene(mData.defaultScene);
-            //this.CloseSelf();
-
+            ClientNetworkManager.Instance.currentSceneName = mData.defaultScene;
+            ClientNetworkManager.Instance.currentRoomName = mData.defaultScene;
         }
 
         protected override void OnOpen(QFramework.IUIData uiData)

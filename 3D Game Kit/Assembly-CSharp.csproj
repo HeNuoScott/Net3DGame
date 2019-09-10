@@ -154,6 +154,8 @@
     <Compile Include="Assets\GameDesigner\StateMachine\Transition.cs" />
     <Compile Include="Assets\GameDesigner\StateMachine\TransitionBehaviour.cs" />
     <Compile Include="Assets\GameDesigner\StateMachine\TransitionModel.cs" />
+    <Compile Include="Assets\Prefabs\UI\Scripts\UI\LoadingPanel.cs" />
+    <Compile Include="Assets\Prefabs\UI\Scripts\UI\LoadingPanel.Designer.cs" />
     <Compile Include="Assets\Prefabs\UI\Scripts\UI\LobbyPanel.cs" />
     <Compile Include="Assets\Prefabs\UI\Scripts\UI\LobbyPanel.Designer.cs" />
     <Compile Include="Assets\Prefabs\UI\Scripts\UI\LobbyPanel\ScenePanel.cs" />
@@ -431,7 +433,9 @@
     <Compile Include="Assets\Scripts\Server\DataBase.cs" />
     <Compile Include="Assets\Scripts\Server\NetGameServer.cs" />
     <Compile Include="Assets\Scripts\Server\ServerManager.cs" />
+    <Compile Include="Assets\Scripts\Share\ChatMsg.cs" />
     <Compile Include="Assets\Scripts\Share\RoomInfo.cs" />
+    <Compile Include="Assets\Scripts\Share\RoomOperationCode.cs" />
     <Compile Include="Assets\Scripts\Share\ServerPlayer.cs" />
     <Compile Include="Assets\Scripts\StringColorExtension.cs" />
     <Compile Include="Assets\Scripts\UI\UI_Network\ChatPanel.cs" />

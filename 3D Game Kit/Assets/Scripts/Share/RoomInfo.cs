@@ -15,6 +15,10 @@ namespace Net.Share
         /// 当前人数
         /// </summary>
         public int roomNumber;
+        /// <summary>
+        /// 游戏中场景名称
+        /// </summary>
+        public string gameSceneName;
     }
 }
 

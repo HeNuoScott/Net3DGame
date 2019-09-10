@@ -18,7 +18,7 @@ namespace QFramework.HeNuoApp
         public AppType appType;
         public string IPAdress = "127.0.0.1";
         public int port = 666;
-        public string DefaultScene { get; set; } = "MainScene";
+        public string DefaultScene { get; set; } = "Lobby";
         
         void Start()
         {

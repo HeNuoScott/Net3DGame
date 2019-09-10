@@ -19,6 +19,7 @@ namespace QFramework.HeNuoApp
     using System.Collections.Generic;
     using System.Linq;
     using UnityEngine;
+    using UnityEngine.SceneManagement;
     using UnityEngine.UI;
     
     
@@ -42,11 +43,12 @@ namespace QFramework.HeNuoApp
         {
             mData = uiData as LobbyPanelData ?? new LobbyPanelData();
             // please add init code here
+            RoomManager.Instance.CreateRoomCallback += Instance_RoomOperationCallback;
+            //接收聊天消息
+            Client.ChatManager.ShowMassage += ChatManager_ShowMassage;
 
             //获取用户信息
             StartCoroutine(GetUserInfo());
-            //接收聊天消息
-            Client.ChatManager.ShowMassage += ChatManager_ShowMassage;
             //发送消息
             Button_Send.onClick.AddListener(() =>
             {
@@ -59,6 +61,7 @@ namespace QFramework.HeNuoApp
             });
             //接收场景信息
             Client.ClientNetworkManager.UndataNetScenes += ClientNetworkManager_UndataNetScenes;
+            //创建房间
             Button_CreateRoom.onClick.AddListener(() =>
             {
                 string roomName = InputField_RoomName.text.Trim();
@@ -79,10 +82,8 @@ namespace QFramework.HeNuoApp
                     NetMassageManager.OpenMessage("房间最大人数是8人!");
                     return;
                 }
-
-                RoomManager.Instance.CreateRoom(roomName, capacity);
-
-
+                //创建房间目前只有一种(GameScene)
+                RoomManager.Instance.CreateRoom(roomName, capacity,"GameScene");
             });
         }
 
@@ -102,6 +103,7 @@ namespace QFramework.HeNuoApp
         {
             Client.ChatManager.ShowMassage -= ChatManager_ShowMassage;
             Client.ClientNetworkManager.UndataNetScenes -= ClientNetworkManager_UndataNetScenes;
+            RoomManager.Instance.CreateRoomCallback -= Instance_RoomOperationCallback;
         }
 
         private IEnumerator GetUserInfo()
@@ -192,6 +194,22 @@ namespace QFramework.HeNuoApp
 
             }
 
+        }
+
+        //创建房间成功
+        private void Instance_RoomOperationCallback(RoomOperationCode callbackCode)
+        {
+            Debug.Log("创建房间成功/加入房间成功");
+            UIMgr.CloseAllPanel();
+            UIPanel loading = UIMgr.OpenPanel<LoadingPanel>(UILevel.Forward, new LoadingPanelData()
+            {
+                startLoading = false,
+                targetScene = callbackCode.targetScene,
+                openPanel = "ChatPanel",
+                uiLevel = UILevel.Common,
+                allowSceneActivation = true
+            });
+            SceneManager.LoadSceneAsync("Loading");
         }
 
     }

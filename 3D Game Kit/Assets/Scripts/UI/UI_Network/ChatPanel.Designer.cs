@@ -34,7 +34,10 @@ namespace QFramework.HeNuoApp
         
         [SerializeField()]
         public UnityEngine.UI.Button Button_Send;
-        
+
+        [SerializeField()]
+        public UnityEngine.UI.Button Button_Close;
+
         private ChatPanelData mPrivateData = null;
         
         public ChatPanelData mData
@@ -56,6 +59,7 @@ namespace QFramework.HeNuoApp
             Content = null;
             InputField_Msg = null;
             Button_Send = null;
+            Button_Close = null;
             mData = null;
         }
     }

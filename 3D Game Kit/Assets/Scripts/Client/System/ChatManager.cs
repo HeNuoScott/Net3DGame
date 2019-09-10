@@ -24,7 +24,7 @@ namespace Client
         private int outTime = 5;
         public string loginfo = string.Empty;
 
-        public string receiveTime, receivePlayerName, receiveInfo;
+        public ChatMsg receiveChatMsg = new ChatMsg();
 
         private void Update()
         {
@@ -52,10 +52,16 @@ namespace Client
             int times = 0;
             Task.Run(() =>
             {
+                ChatMsg chatMsg = new ChatMsg()
+                {
+                    msgSender = ClientNetworkManager.Instance.playerName,
+                    msgTime = DateTime.Now.ToString(),
+                    msgInfo = msg
+                };
                 //如果出现UDP丢包现象  线程休眠1秒并反馈服务器
                 while (!isResponse)
                 {
-                    Send(NetCmd.SceneCmd, "ChatMsg", DateTime.Now.ToString(),ClientNetworkManager.Instance.playerName, msg);
+                    Send(NetCmd.SceneCmd, "ChatMsg", chatMsg);
                     Thread.Sleep(1000);
                     times++;
                     if (times > outTime)
@@ -71,24 +77,28 @@ namespace Client
         /// <summary>
         /// 接收消息
         /// </summary>s
-        [Net.Share.Rpc]private void ChatMsg(string time, string playerName,string info)
+        [Net.Share.Rpc]private void ChatMsg(ChatMsg msg)
         {
             isResponse = true;
 
-            if (receiveTime == time && receivePlayerName == playerName && receiveInfo == info) return;
+            if (receiveChatMsg == msg) return;
 
-            receiveTime = time;
-            receiveInfo = info;
-            receivePlayerName = playerName;
-            
-            string information = string.Empty;
-            if (playerName == ClientNetworkManager.Instance.playerName)
+            receiveChatMsg = msg;
+
+            if (receiveChatMsg.msgSender == ClientNetworkManager.Instance.playerName)
             {
-                information = string.Format("[{0}]\n{1}:{2}\n", time, playerName.ToMarkup(Markup.Green, Markup.Blod, Markup.Size(25)), info);
-            }
-            else information = string.Format("[{0}]\n{1}:{2}\n", time, playerName.ToMarkup(Markup.Yellow, Markup.Blod, Markup.Size(25)), info);
+                string infoSelf = string.Format("[{0}]\n{1}:{2}\n", receiveChatMsg.msgTime, 
+                    receiveChatMsg.msgSender.ToMarkup(Markup.Green, Markup.Blod, Markup.Size(25)),receiveChatMsg.msgInfo);
 
-            ShowMassage?.Invoke(information);
+                ShowMassage?.Invoke(infoSelf);
+            }
+            else
+            {
+                string infoOther = string.Format("[{0}]\n{1}:{2}\n", receiveChatMsg.msgTime,
+                    receiveChatMsg.msgSender.ToMarkup(Markup.Green, Markup.Blod, Markup.Size(25)), receiveChatMsg.msgInfo);
+
+                ShowMassage?.Invoke(infoOther);
+            }
         }
     }
 }

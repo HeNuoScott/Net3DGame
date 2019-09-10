@@ -5,10 +5,15 @@
     using System.Collections.Generic;
 
     /// <summary>
-    /// 网络场景
+    /// 网络场景(房间)
     /// </summary>
     public class NetScene
     {
+        /// <summary>
+        /// 游戏中场景的名称
+        /// </summary>
+        public string gameSceneName = "GameScene";
+
         /// <summary>
         /// 场景容纳人数
         /// </summary>

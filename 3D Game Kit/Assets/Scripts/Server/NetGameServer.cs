@@ -26,9 +26,12 @@ namespace Server
             DebugLog("开始启动服务器");
             this.Log += (msg) => { DebugLog(msg); };
             //添加网络转换类型
+            Net.Share.NetConvert.AddNetworkType<ChatMsg>();
+            Net.Share.NetConvert.AddNetworkType<RoomOperationCode>();
             Net.Share.NetConvert.AddNetworkType<RoomInfo>();
             Net.Share.NetConvert.AddNetworkType<ServerPlayer>();
             Net.Share.NetConvert.AddNetworkType<Dictionary<string, RoomInfo>>();
+            
         }
         protected override void OnStartupCompleted()
         {
@@ -185,59 +188,103 @@ namespace Server
         }
 
         [Net.Share.Rpc]
-        public void CreateRoom(string roomName,int sceneCapacity)
+        public void CreateRoom(string roomName, string targetScene, int sceneCapacity)
         {
+            RoomOperationCode callbackCode = new RoomOperationCode();
             if (roomName==string.Empty)
             {
-                Send(RequestPlayer, "CreateRoomResult", false, "房间名不能为空");
+                callbackCode.callBack = false;
+                callbackCode.info = "房间名不能为空";
+                Send(RequestPlayer, "CreateRoomResult", callbackCode);
             }
             else if (Scenes.ContainsKey(roomName))
             {
-                Send(RequestPlayer, "CreateRoomResult", false, "创建的房间已经存在");
+                callbackCode.callBack = false;
+                callbackCode.info = "创建的房间已经存在";
+                Send(RequestPlayer, "CreateRoomResult", callbackCode);
             }
             else
             {
                 //Scenes.TryAdd(roomName, new NetScene(sceneCapacity) { players = new List<NetPlayer>() { RequestPlayer } });
-                Scenes.TryAdd(roomName, new NetScene(RequestPlayer, sceneCapacity));
+                NetScene netScene = new NetScene();
+                netScene.players.Add(RequestPlayer);
+                //从原场景中移除玩家
+                Scenes[RequestPlayer.sceneID].players.Remove(RequestPlayer);
+                netScene.sceneCapacity = sceneCapacity;
+                netScene.gameSceneName = targetScene;
+                Scenes.TryAdd(roomName, netScene);
                 RequestPlayer.sceneID = roomName;              
                 DebugLog($"客户端：{RequestPlayer.acc}创建了:{roomName}:房间");
-                Send(RequestPlayer, "CreateRoomResult", true, "创建房间成功");
+
+
+                callbackCode.callBack = true;
+                callbackCode.info = "创建房间成功";
+                callbackCode.targetScene = targetScene;
+                callbackCode.roomName = roomName;
+
+                Send(RequestPlayer, "CreateRoomResult", callbackCode);
             }
 
-        }
-
-        [Net.Share.Rpc]
-        public void ExitRoom()
-        {
-            var scene = Scenes[RequestPlayer.sceneID];
-            scene.players.Remove(RequestPlayer);
-            Multicast(scene.players, "RemovePlayer", RequestPlayer.acc);
-            if (scene.players.Count<=0)
-            {
-                Scenes.TryRemove(RequestPlayer.sceneID, out NetScene netScene);
-                DebugLog(RequestPlayer.sceneID+":房间解散");
-            }
-            RequestPlayer.sceneID = DefaultScene;
         }
 
         [Net.Share.Rpc]
         public void JoinRoom(string roomName)
         {
+            RoomOperationCode callbackCode = new RoomOperationCode();
             if (!Scenes.ContainsKey(roomName))
             {
-                Send(RequestPlayer, "JoinRoomResult", false, "加入的放假不存在或已经解散!");
+                callbackCode.callBack = false;
+                callbackCode.info = "加入的放假不存在或已经解散!";
+                Send(RequestPlayer, "JoinRoomResult", callbackCode);
             }
             else if (Scenes[roomName].sceneCapacity == Scenes[roomName].SceneNumber)
             {
-                Send(RequestPlayer, "JoinRoomResult", false, "房间已满!");
+                callbackCode.callBack = false;
+                callbackCode.info = "房间已满!";
+                Send(RequestPlayer, "JoinRoomResult", callbackCode);
+            }
+            else if (roomName == RequestPlayer.sceneID)
+            {
+                callbackCode.callBack = false;
+                callbackCode.info = "您已经在房间里!";
+                Send(RequestPlayer, "JoinRoomResult", callbackCode);
             }
             else
             {
+
                 Scenes[roomName].players.Add(RequestPlayer);
+                //从原场景中移除玩家
+                Scenes[RequestPlayer.sceneID].players.Remove(RequestPlayer);
                 RequestPlayer.sceneID = roomName;
-                Send(RequestPlayer, "JoinRoomResult", true, "加入房间成功");
+
+                callbackCode.callBack = true;
+                callbackCode.info = "创建房间成功";
+                callbackCode.targetScene = Scenes[roomName].gameSceneName;
+                callbackCode.roomName = roomName;
+
+                Send(RequestPlayer, "JoinRoomResult", callbackCode);
             }
         }
 
+        [Net.Share.Rpc]
+        public void ExitRoom()
+        {
+            Send(RequestPlayer, "ExitRoomResult");
+            var scene = Scenes[RequestPlayer.sceneID];
+            if (scene.players.Contains(RequestPlayer))
+            {
+                Scenes[DefaultScene].players.Add(RequestPlayer);
+                //从原场景中移除玩家
+                scene.players.Remove(RequestPlayer);
+                Multicast(scene.players, "RemovePlayer", RequestPlayer.acc);
+                if (scene.players.Count <= 0)
+                {
+                    Scenes.TryRemove(RequestPlayer.sceneID, out NetScene netScene);
+                    DebugLog(RequestPlayer.sceneID + ":房间解散");
+                }
+               
+                RequestPlayer.sceneID = DefaultScene;
+            }
+        }
     }
 }
