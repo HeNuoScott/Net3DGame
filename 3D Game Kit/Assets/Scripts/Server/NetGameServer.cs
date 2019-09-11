@@ -208,6 +208,7 @@ namespace Server
                 //Scenes.TryAdd(roomName, new NetScene(sceneCapacity) { players = new List<NetPlayer>() { RequestPlayer } });
                 NetScene netScene = new NetScene();
                 netScene.players.Add(RequestPlayer);
+                RequestPlayer.Scene = netScene;
                 //从原场景中移除玩家
                 Scenes[RequestPlayer.sceneID].players.Remove(RequestPlayer);
                 netScene.sceneCapacity = sceneCapacity;
@@ -253,6 +254,7 @@ namespace Server
             {
 
                 Scenes[roomName].players.Add(RequestPlayer);
+                RequestPlayer.Scene = Scenes[roomName];
                 //从原场景中移除玩家
                 Scenes[RequestPlayer.sceneID].players.Remove(RequestPlayer);
                 RequestPlayer.sceneID = roomName;
@@ -274,6 +276,7 @@ namespace Server
             if (scene.players.Contains(RequestPlayer))
             {
                 Scenes[DefaultScene].players.Add(RequestPlayer);
+                RequestPlayer.Scene = Scenes[DefaultScene];
                 //从原场景中移除玩家
                 scene.players.Remove(RequestPlayer);
                 Multicast(scene.players, "RemovePlayer", RequestPlayer.acc);
