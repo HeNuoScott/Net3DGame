@@ -67,7 +67,7 @@ namespace Client
                     if (times > outTime)
                     {
                         isResponse = true;
-                        loginfo = "∑¢ÀÕ ß∞‹!" + msg;
+                        loginfo = "∑¢ÀÕ ß∞‹!" + msg+"\n";
                     }
                 }
             });

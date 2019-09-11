@@ -2,6 +2,21 @@ unity版本2018.4.8
 QFramework 0.1.11
 GameDesigner 2019.9.8
 
+QFramework 0.1.11框架修改UIKit
+UIManager中的方法替换为
+public void CloseAllUI()
+{
+         foreach (var layer in mAllUI)
+         {
+                if((layer.Value as UIPanel))
+                {
+                    layer.Value.Close();
+                }
+         Destroy(layer.Value.Transform.gameObject);
+         }
+         mAllUI.Clear();
+}
+
 unity自身做服务器,发布出客户端测试
-等待 进入场景测试
-加入进入场景(1.加入场景失败,远程RPC函数调用失败)
+
+问题  所有发送消息  只有大厅的用户能够收到

@@ -21,12 +21,10 @@ namespace QFramework.HeNuoApp
     
     public class LoadingPanelData : QFramework.UIPanelData
     {
-        public bool startLoading;
         public AsyncOperation async;
         public string targetScene;
         public string openPanel;
         public UILevel uiLevel;
-        public bool allowSceneActivation;
     }
     
     public partial class LoadingPanel : QFramework.UIPanel
@@ -40,7 +38,7 @@ namespace QFramework.HeNuoApp
         {
             mData = uiData as LoadingPanelData ?? new LoadingPanelData();
             // please add init code here
-
+            Debug.Log(mData.targetScene);
             StartCoroutine(LoadingScene());
         }
         
@@ -62,31 +60,29 @@ namespace QFramework.HeNuoApp
 
         private IEnumerator LoadingScene()
         {
-            mData.startLoading = true;
-            mData.async = SceneManager.LoadSceneAsync(mData.targetScene);
-            mData.async.allowSceneActivation = mData.allowSceneActivation;
-            mData.async.completed += Async_completed;
+            Slider_Loading.value = 0;
+            mData.async = SceneManager.LoadSceneAsync(mData.targetScene,LoadSceneMode.Single);
+            //mData.async.completed += Async_completed;
             yield return mData.async;
-            mData.startLoading = false;
 
-            if (mData.allowSceneActivation)
-            {
-                UIMgr.OpenPanel(mData.openPanel, mData.uiLevel);
-                this.CloseSelf();
-            }
+            UIMgr.OpenPanel(mData.openPanel, mData.uiLevel);
 
         }
 
-        private void Async_completed(AsyncOperation obj)
-        {
-            Debug.Log("场景加载完毕");
-        }
+        //private void Async_completed(AsyncOperation obj)
+        //{
+        //    Debug.Log("场景加载完毕");
+        //}
 
         private void Update()
         {
-            if (mData.startLoading)
+            if (Slider_Loading.value < mData.async.progress)
             {
-                Slider_Loading.value = mData.async.progress;
+                Slider_Loading.value += Time.deltaTime;
+            }
+            if (Slider_Loading.value == Slider_Loading.maxValue)
+            {
+                this.CloseSelf();
             }
         }
     }

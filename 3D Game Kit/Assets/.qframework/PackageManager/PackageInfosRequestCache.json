@@ -2429,6 +2429,13 @@
       "readme": {
         "items": [
           {
+            "version": "v0.0.5",
+            "content": "基于参数",
+            "author": "liangxie",
+            "date": "2019 年 09 月 11 日 00:00",
+            "VersionNumber": 5
+          },
+          {
             "version": "v0.0.4",
             "content": "change 2 master",
             "author": "liangxie",
@@ -2459,6 +2466,25 @@
         ]
       },
       "PackageVersions": [
+        {
+          "Version": "v0.0.5",
+          "Type": 0,
+          "AccessRight": 0,
+          "DownloadUrl": "http://file.liangxiegame.com/3.TypeEventSystemv0_0_5_efd26ed7_42b2_4962_9acc_9b2277d86f00.unitypackage",
+          "InstallPath": "Assets/QFramework/Pro/FrameworkDesign/3.TypeEventSystem/",
+          "DocUrl": null,
+          "Readme": {
+            "version": "v0.0.5",
+            "content": "基于参数",
+            "author": "liangxie",
+            "date": "2019 年 09 月 11 日 00:00",
+            "VersionNumber": 5
+          },
+          "Id": "be611bf8-1119-45fa-b234-8f6dce4b584f",
+          "Name": "3.TypeEventSystem",
+          "VersionNumber": 5,
+          "FileName": "3.TypeEventSystem_v0.0.5.unitypackage"
+        },
         {
           "Version": "v0.0.4",
           "Type": 0,
@@ -2536,13 +2562,13 @@
           "FileName": "3.TypeEventSystem_v0.0.1.unitypackage"
         }
       ],
-      "Version": "v0.0.4",
-      "DownloadUrl": "http://file.liangxiegame.com/3.TypeEventSystemv0_0_4_068b1683_bb82_4b71_a566_d1d63c88f358.unitypackage",
+      "Version": "v0.0.5",
+      "DownloadUrl": "http://file.liangxiegame.com/3.TypeEventSystemv0_0_5_efd26ed7_42b2_4962_9acc_9b2277d86f00.unitypackage",
       "InstallPath": "Assets/QFramework/Pro/FrameworkDesign/3.TypeEventSystem/",
       "DocUrl": null,
       "Type": 0,
       "AccessRight": 0,
-      "VersionNumber": 4,
+      "VersionNumber": 5,
       "Installed": false
     },
     {
@@ -2930,6 +2956,13 @@
       "readme": {
         "items": [
           {
+            "version": "v0.0.5",
+            "content": "change 2 master",
+            "author": "liangxie",
+            "date": "2019 年 09 月 11 日 00:01",
+            "VersionNumber": 5
+          },
+          {
             "version": "v0.0.4",
             "content": null,
             "author": "liangxie",
@@ -2953,6 +2986,25 @@
         ]
       },
       "PackageVersions": [
+        {
+          "Version": "v0.0.5",
+          "Type": 0,
+          "AccessRight": 0,
+          "DownloadUrl": "http://file.liangxiegame.com/1.EditorPlatformv0_0_5_480f90db_c29d_4f34_9dd8_ce48079c6934.unitypackage",
+          "InstallPath": "Assets/QFramework/Pro/FrameworkDesign/1.EditorPlatform/",
+          "DocUrl": null,
+          "Readme": {
+            "version": "v0.0.5",
+            "content": "change 2 master",
+            "author": "liangxie",
+            "date": "2019 年 09 月 11 日 00:01",
+            "VersionNumber": 5
+          },
+          "Id": "61b74338-7e42-4b85-974c-1099c822f62c",
+          "Name": "1.EditorPlatform",
+          "VersionNumber": 5,
+          "FileName": "1.EditorPlatform_v0.0.5.unitypackage"
+        },
         {
           "Version": "v0.0.4",
           "Type": 0,
@@ -3011,13 +3063,13 @@
           "FileName": "1.EditorPlatform_v0.0.1.unitypackage"
         }
       ],
-      "Version": "v0.0.4",
-      "DownloadUrl": "http://file.liangxiegame.com/1.EditorPlatformv0_0_4_57b3c9c9_415b_425e_a2d5_a5035f17a879.unitypackage",
+      "Version": "v0.0.5",
+      "DownloadUrl": "http://file.liangxiegame.com/1.EditorPlatformv0_0_5_480f90db_c29d_4f34_9dd8_ce48079c6934.unitypackage",
       "InstallPath": "Assets/QFramework/Pro/FrameworkDesign/1.EditorPlatform/",
       "DocUrl": null,
       "Type": 0,
       "AccessRight": 0,
-      "VersionNumber": 4,
+      "VersionNumber": 5,
       "Installed": false
     },
     {
@@ -3862,6 +3914,49 @@
       "Type": 1,
       "AccessRight": 0,
       "VersionNumber": 5,
+      "Installed": false
+    },
+    {
+      "Name": "IceInkOhterPlugins",
+      "readme": {
+        "items": [
+          {
+            "version": "V0.0.11",
+            "content": "一些常用的插件",
+            "author": "MoonIceInk",
+            "date": "2019 年 09 月 11 日 17:05",
+            "VersionNumber": 11
+          }
+        ]
+      },
+      "PackageVersions": [
+        {
+          "Version": "V0.0.11",
+          "Type": 0,
+          "AccessRight": 0,
+          "DownloadUrl": "http://file.liangxiegame.com/IceInkOhterPluginsV0_0_11_66ec84fb_fb0e_4cfc_a385_0a2ccec42c6a.unitypackage",
+          "InstallPath": "Assets/IceInkOhterPlugins/",
+          "DocUrl": null,
+          "Readme": {
+            "version": "V0.0.11",
+            "content": "一些常用的插件",
+            "author": "MoonIceInk",
+            "date": "2019 年 09 月 11 日 17:05",
+            "VersionNumber": 11
+          },
+          "Id": "a9fb130f-e207-43ab-9173-0e370df1fc30",
+          "Name": "IceInkOhterPlugins",
+          "VersionNumber": 11,
+          "FileName": "IceInkOhterPlugins_V0.0.11.unitypackage"
+        }
+      ],
+      "Version": "V0.0.11",
+      "DownloadUrl": "http://file.liangxiegame.com/IceInkOhterPluginsV0_0_11_66ec84fb_fb0e_4cfc_a385_0a2ccec42c6a.unitypackage",
+      "InstallPath": "Assets/IceInkOhterPlugins/",
+      "DocUrl": null,
+      "Type": 0,
+      "AccessRight": 0,
+      "VersionNumber": 11,
       "Installed": false
     },
     {

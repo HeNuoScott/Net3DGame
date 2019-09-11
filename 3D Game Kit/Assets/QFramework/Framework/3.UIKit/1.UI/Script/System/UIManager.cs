@@ -175,7 +175,11 @@ namespace QFramework
 		{
 			foreach (var layer in mAllUI)
 			{
-				Destroy(layer.Value.Transform.gameObject);
+                if((layer.Value as UIPanel))
+                {
+                    layer.Value.Close();
+                }
+                Destroy(layer.Value.Transform.gameObject);
 			}
 
 			mAllUI.Clear();

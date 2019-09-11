@@ -44,6 +44,7 @@ namespace QFramework.HeNuoApp
             mData = uiData as LobbyPanelData ?? new LobbyPanelData();
             // please add init code here
             RoomManager.Instance.CreateRoomCallback += Instance_RoomOperationCallback;
+            RoomManager.Instance.JoinRoomRoomCallback += Instance_JoinRoomRoomCallback;
             //接收聊天消息
             Client.ChatManager.ShowMassage += ChatManager_ShowMassage;
 
@@ -87,6 +88,8 @@ namespace QFramework.HeNuoApp
             });
         }
 
+
+
         protected override void OnOpen(QFramework.IUIData uiData)
         {
         }
@@ -101,6 +104,7 @@ namespace QFramework.HeNuoApp
         
         protected override void OnClose()
         {
+            Debug.Log("卸载注册事件");
             Client.ChatManager.ShowMassage -= ChatManager_ShowMassage;
             Client.ClientNetworkManager.UndataNetScenes -= ClientNetworkManager_UndataNetScenes;
             RoomManager.Instance.CreateRoomCallback -= Instance_RoomOperationCallback;
@@ -199,18 +203,28 @@ namespace QFramework.HeNuoApp
         //创建房间成功
         private void Instance_RoomOperationCallback(RoomOperationCode callbackCode)
         {
-            Debug.Log("创建房间成功/加入房间成功");
+            Debug.Log("创建房间成功");
             UIMgr.CloseAllPanel();
             UIPanel loading = UIMgr.OpenPanel<LoadingPanel>(UILevel.Forward, new LoadingPanelData()
             {
-                startLoading = false,
                 targetScene = callbackCode.targetScene,
                 openPanel = "ChatPanel",
                 uiLevel = UILevel.Common,
-                allowSceneActivation = true
             });
-            SceneManager.LoadSceneAsync("Loading");
+            //SceneManager.LoadSceneAsync("Loading");
         }
-
+        //加入房间成功
+        private void Instance_JoinRoomRoomCallback(RoomOperationCode callbackCode)
+        {
+            Debug.Log("加入房间成功");
+            UIMgr.CloseAllPanel();
+            UIPanel loading = UIMgr.OpenPanel<LoadingPanel>(UILevel.Forward, new LoadingPanelData()
+            {
+                targetScene = callbackCode.targetScene,
+                openPanel = "ChatPanel",
+                uiLevel = UILevel.Common,
+            });
+            //SceneManager.LoadSceneAsync("Loading");
+        }
     }
 }

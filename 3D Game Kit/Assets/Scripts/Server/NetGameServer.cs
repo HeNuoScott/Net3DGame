@@ -46,7 +46,7 @@ namespace Server
             DebugLog($"客户端：{client.playerID.ToString()}断开链接......");
 
             var scene = Scenes[client.sceneID];
-            scene.players.Remove(client as ServerPlayer);
+            scene.players.Remove(client);
             Multicast(scene.players, "RemovePlayer", RequestPlayer.acc);
             if (scene.players.Count <= 0 && client.sceneID != DefaultScene)
             {

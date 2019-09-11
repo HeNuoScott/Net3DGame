@@ -21,6 +21,11 @@ namespace QAssetBundle
         public const string BundleName = "clientpanel_prefab";
         public const string CLIENTPANEL = "clientpanel";
     }
+    public class Loadingpanel_prefab
+    {
+        public const string BundleName = "loadingpanel_prefab";
+        public const string LOADINGPANEL = "loadingpanel";
+    }
     public class Lobbypanel_prefab
     {
         public const string BundleName = "lobbypanel_prefab";
