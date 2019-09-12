@@ -4,7 +4,8 @@ using Net.Share;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Runtime.InteropServices;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Net.Entity
 {
@@ -18,8 +19,17 @@ namespace Net.Entity
         Dictionary<int, byte[]> datas;
         int fileCount;
         MemoryStream stream = new MemoryStream();
-        int index;
+        int index, abnormal;
         event Action<byte[]> filedata;
+        /// <summary>
+        /// 上传或下载状态, 结果为真时下载成功，结果为假时下载失败
+        /// </summary>
+        public Action<bool> state;
+        /// <summary>
+        /// 进度
+        /// </summary>
+        public Action<float> progress;
+        bool complete;
 
         /// <summary>
         /// 创建客户端发送文件
@@ -38,7 +48,7 @@ namespace Net.Entity
         public FileTransfer(NetServerBase server)
         {
             this.server = server;
-            Server.NetBehaviour.AddRPCFuns(server, this);
+            Server.NetBehaviour.AddRpcs(server, this);
         }
 
         /// <summary>
@@ -46,10 +56,10 @@ namespace Net.Entity
         /// </summary>
         ~FileTransfer()
         {
-            if(server!=null)
+            if (server != null)
                 Server.NetBehaviour.RemoveRpc(server, this);
             if (client != null)
-                Client.NetBehaviour.RemoveRpcDelegate(client, this);
+                Client.NetBehaviour.RemoveRpc(client, this);
             stream?.Dispose();
         }
 
@@ -78,7 +88,26 @@ namespace Net.Entity
             }
             fileCount = filedata.Length;
             this.index = 0;
-            client.Send("ReadFile", this.index, fileCount, datas[this.index]);
+            abnormal = 0;
+            index = 0;
+            Task.Run(()=> 
+            {
+                while (this!=null & !complete)
+                {
+                    if (this.index == index)
+                    {
+                        client.Send("ReadFile", this.index, fileCount, datas[this.index]);
+                        abnormal++;
+                    }
+                    if (abnormal > 5)
+                    {
+                        state?.Invoke(false);
+                        break;
+                    }
+                    index = this.index;
+                    Thread.Sleep(1000);
+                }
+            });
         }
 
         /// <summary>
@@ -107,9 +136,29 @@ namespace Net.Entity
             }
             fileCount = filedata.Length;
             this.index = 0;
-            server.Send(client, "ClientReadFile", this.index, fileCount, datas[this.index]);
+            abnormal = 0;
+            index = 0;
+            Task.Run(() =>
+            {
+                while (this != null & !complete)
+                {
+                    if (this.index == index)
+                    {
+                        server.Send(client, "ClientReadFile", this.index, fileCount, datas[this.index]);
+                        abnormal++;
+                    }
+                    if (abnormal > 5)
+                    {
+                        state?.Invoke(false);
+                        break;
+                    }
+                    index = this.index;
+                    Thread.Sleep(1000);
+                }
+            });
         }
 
+        //服务器读文件Rpc
         [Rpc(NetCmd.SafeCall)]
         void ReadFile(NetPlayer player, int index, int fileCount, byte[] filedata)
         {
@@ -121,6 +170,7 @@ namespace Net.Entity
                     server.Send(player, "DownloadIndex", this.index, true);
                     byte[] buff = stream.ToArray();
                     this.filedata?.Invoke(buff);
+                    Dispose();
                 }
                 else
                 {
@@ -130,6 +180,7 @@ namespace Net.Entity
             }
         }
 
+        //客户端读文件Rpc
         [Rpc]
         void ClientReadFile(int index, int fileCount, byte[] filedata)
         {
@@ -141,6 +192,7 @@ namespace Net.Entity
                     client.Send("ClientDownloadIndex", this.index, true);
                     byte[] buff = stream.ToArray();
                     this.filedata?.Invoke(buff);
+                    Dispose();
                 }
                 else
                 {
@@ -150,19 +202,39 @@ namespace Net.Entity
             }
         }
 
+        //客户端上传文件进度
         [Rpc]
         void DownloadIndex(int index, bool done)
         {
             if (done)
+            {
+                complete = true;
+                state?.Invoke(true);
+                Dispose();
                 return;
+            }
+            this.index = index;
+            abnormal = 0;
+            var value = (float)index / datas.Count * 100;
+            progress?.Invoke(value);
             client.Send("ReadFile", index, fileCount, datas[index]);
         }
 
+        //服务器传文件给客户端的进度
         [Rpc(NetCmd.SafeCall)]
         void ClientDownloadIndex(NetPlayer client, int index, bool done)
         {
             if (done)
+            {
+                complete = true;
+                state?.Invoke(true);
+                Dispose();
                 return;
+            }
+            this.index = index;
+            abnormal = 0;
+            var value = (float)index / datas.Count * 100;
+            progress?.Invoke(value);
             server.Send(client, "ClientReadFile", index, fileCount, datas[index]);
         }
 
@@ -183,7 +255,7 @@ namespace Net.Entity
             if (server != null)
                 Server.NetBehaviour.RemoveRpc(server, this);
             if (client != null)
-                Client.NetBehaviour.RemoveRpcDelegate(client, this);
+                Client.NetBehaviour.RemoveRpc(client, this);
             stream?.Dispose();
         }
     }

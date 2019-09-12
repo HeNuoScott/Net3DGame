@@ -4,7 +4,6 @@ using UnityEngine;
 using Net.Client;
 using System.Net;
 using System;
-//using Net.Server;
 using QF;
 using Net.Share;
 

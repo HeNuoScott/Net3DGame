@@ -15,7 +15,7 @@
         /// <param name="target">注册的对象实例</param>
         public void AddRpcHandle(object target)
         {
-            NetBehaviour.AddRPCFuns(this, target);
+            NetBehaviour.AddRpcs(this, target);
         }
 
         /// <summary>
@@ -40,7 +40,7 @@
         /// <param name="target">注册的对象实例</param>
         public void AddRpcHandle(object target)
         {
-            NetBehaviour.AddRPCFuns(this, target);
+            NetBehaviour.AddRpcs(this, target);
         }
 
         /// <summary>

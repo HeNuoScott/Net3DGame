@@ -1,19 +1,14 @@
 ﻿namespace Net.Server
 {
     using Net.Share;
-    using System;
     using System.Collections.Generic;
 
     /// <summary>
-    /// 网络场景(房间)
+    /// 网络场景
     /// </summary>
     public class NetScene
     {
-        /// <summary>
-        /// 游戏中场景的名称
-        /// </summary>
-        public string gameSceneName = "GameScene";
-
+        public string sceneName;
         /// <summary>
         /// 场景容纳人数
         /// </summary>
@@ -26,7 +21,6 @@
         /// 当前网络场景状态
         /// </summary>
         public NetState state = NetState.Idle;
-
         /// <summary>
         /// 获取场景当前人数
         /// </summary>
@@ -68,25 +62,8 @@
         {
             List<T> ts = new List<T>();
             foreach (var v in players)
-            {
                 ts.Add(v as T);
-            }
             return ts;
-        }
-
-        /// <summary>
-        /// 转换对象集合
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        public static T[] Convert<T>(Array objs) where T : class
-        {
-            T[] array = new T[objs.Length];
-            for (int i = 0; i < objs.Length; i++)
-            {
-                array[i] = objs.GetValue(i) as T;
-            }
-            return array;
         }
     }
 }

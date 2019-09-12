@@ -36,7 +36,7 @@ namespace Client
         {
             base.OnDestroy();
             //移除远程调用函数
-            RemoveRpcDelegate(this);
+            RemoveRpc(this);
         }
 
         //发送创建房间的请求

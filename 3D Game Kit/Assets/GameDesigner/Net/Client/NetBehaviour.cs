@@ -13,9 +13,9 @@
         /// 添加远程过程调用函数的委托
         /// </summary>
         /// <param name="target">远程过程调用指定的对象</param>
-        public static void AddRpcDelegate(object target, bool append = false)
+        public static void AddRpc(object target, bool append = false)
         {
-            AddRpcDelegate(NetClientBase.Instance, target, append);
+            AddRpc(NetClientBase.Instance, target, append);
         }
 
         /// <summary>
@@ -23,7 +23,7 @@
         /// </summary>
         /// <param name="client">添加RPC到此客户端</param>
         /// <param name="target">远程过程调用指定的对象</param>
-        public static void AddRpcDelegate(NetClientBase client, object target, bool append = false)
+        public static void AddRpc(NetClientBase client, object target, bool append = false)
         {
             if (!append)
                 foreach (var o in client.Rpcs)
@@ -48,9 +48,9 @@
         /// 移除RPCFun函数
         /// </summary>
         /// <param name="target">将此对象的所有带有RPCFun特性的函数移除</param>
-        public static void RemoveRpcDelegate(object target)
+        public static void RemoveRpc(object target)
         {
-            RemoveRpcDelegate(NetClientBase.Instance, target);
+            RemoveRpc(NetClientBase.Instance, target);
         }
 
         /// <summary>
@@ -58,14 +58,14 @@
         /// </summary>
         /// <param name="client">子客户端对象</param>
         /// <param name="target">将此对象的所有带有RPCFun特性的函数移除</param>
-        public static void RemoveRpcDelegate(NetClientBase client, object target)
+        public static void RemoveRpc(NetClientBase client, object target)
         {
             for (int i = 0; i < client.Rpcs.Count; i++)
             {
                 if (client.Rpcs[i].target.Equals(target) | client.Rpcs[i].method.Equals(null))
                 {
                     client.Rpcs.RemoveAt(i);
-                    i = 0;
+                    i--;
                 }
             }
         }
@@ -79,7 +79,7 @@
             {
                 if (NetClientBase.Instance == null)
                     return false;
-                AddRpcDelegate(this);
+                AddRpc(this);
                 return true;
             });
         }

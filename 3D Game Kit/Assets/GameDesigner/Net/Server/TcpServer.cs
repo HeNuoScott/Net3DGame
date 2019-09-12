@@ -9,7 +9,7 @@
     using System.Threading.Tasks;
 
     /// <summary>
-    /// Tcp网络服务器 2019.8.27  
+    /// Tcp网络服务器 2019.9.9  
     /// 作者:龙兄
     /// QQ：1752062104
     /// </summary>
@@ -35,7 +35,7 @@
             OnRevdBufferHandle += ReceiveBufferHandle;
 
             OnStartingHandle();
-            Log?.Invoke("服务器开始运行...");
+            logList.Add("服务器开始运行...");
 
             if (Instance == null)
             {
@@ -43,33 +43,34 @@
                 NetConvert.AddNetworkBaseType();
             }
 
-            Rpcs.AddRange(NetBehaviour.GetRPCFuns(this));
+            Rpcs.AddRange(NetBehaviour.GetRpcs(this));
             Server = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);//---TCP协议
             IPEndPoint ip = new IPEndPoint(IPAddress.Any, port);//IP端口设置
             Server.Bind(ip);//绑定 IP端口
             Server.Listen(LineUp);
 
-            new Thread(AcceptConnect) { IsBackground = true }.Start();//创建接受连接线程
-            new Thread(UnClientUpdate) { IsBackground = true }.Start();
-            new Thread(TcpUpdate) { IsBackground = true }.Start();
+            new Thread(AcceptConnect) { IsBackground = true, Name = "AcceptConnect" }.Start();//创建接受连接线程
+            new Thread(UnClientUpdate) { IsBackground = true, Name = "UnClientUpdate" }.Start();
+            new Thread(TcpUpdate) { IsBackground = true, Name = "TcpUpdate" }.Start();
 
-            new Thread(HeartUpdate) { IsBackground = true }.Start();//创建心跳包线程
-            new Thread(UnHeartUpdate) { IsBackground = true }.Start();//创建未知客户端心跳包线程
-            new Thread(ReceiveHandle) { IsBackground = true }.Start();//创建处理线程
-            new Thread(DebugThread) { IsBackground = true }.Start();
+            new Thread(HeartUpdate) { IsBackground = true, Name = "HeartUpdate" }.Start();//创建心跳包线程
+            new Thread(UnHeartUpdate) { IsBackground = true, Name = "UnHeartUpdate" }.Start();//创建未知客户端心跳包线程
+            new Thread(ReceiveHandle) { IsBackground = true, Name = "ReceiveHandle" }.Start();//创建处理线程
+            new Thread(DebugThread) { IsBackground = true, Name = "DebugThread" }.Start();
+            new Thread(DebugLogThread) { IsBackground = true, Name = "DebugLogThread" }.Start();
 
             while (workerThreads > 0)
             {
                 workerThreads--;
-                new Thread(TcpUpdate) { IsBackground = true }.Start();
-                new Thread(ReceiveHandle) { IsBackground = true }.Start();
+                new Thread(TcpUpdate) { IsBackground = true, Name = "TcpUpdate " + workerThreads }.Start();
+                new Thread(ReceiveHandle) { IsBackground = true, Name = "ReceiveHandle " + workerThreads }.Start();
             }
 
             var scene = OnAddDefaultScene();
             DefaultScene = scene.Key;
             Scenes.TryAdd(scene.Key, scene.Value);
             OnStartupCompletedHandle();
-            Log?.Invoke("服务器启动成功!");
+            logList.Add("服务器启动成功!");
         }
 
         void AcceptConnect()
@@ -83,7 +84,7 @@
                     var client = Server.Accept();
                     var unClient = new NetPlayer(GUID, client);
                     OnHasConnectHandle?.Invoke(unClient);
-                    Log?.Invoke("有客户端连接:" + client.RemoteEndPoint.ToString());
+                    logList.Add("有客户端连接:" + client.RemoteEndPoint.ToString());
                     UnClients.TryAdd(client.RemoteEndPoint, unClient);
                 } catch {}
             }
@@ -107,12 +108,16 @@
                             return;
                         int count = unClient.Stream.Read(buffer, 0, buffer.Length);
                         if (ResolveUnBuffer(unClient, buffer, count) == -1)
+                        {
                             UnClients.TryRemove(unClient.RemotePoint[GUID], out NetPlayer value);
+                            value?.Dispose();
+                            value = null;
+                        }
                     });
                 }
                 catch (Exception e)
                 {
-                    Log?.Invoke("未知客户端更新线程异常:" + e);
+                    logList.Add("未知客户端更新线程异常:" + e);
                 }
             }
         }
@@ -141,7 +146,7 @@
                 }
                 catch (Exception e)
                 {
-                    Log?.Invoke("TCP主线程异常:" + e);
+                    logList.Add("TCP主线程异常:" + e);
                 }
             }
         }
@@ -158,13 +163,11 @@
                 try
                 {
                     if (revdBufs.TryDequeue(out receive))
-                    {
                         ResolveBuffer(receive.client, receive.buffer, receive.count);//处理缓冲区数据
-                    }
                 }
                 catch (Exception e)
                 {
-                    Log?.Invoke($"处理异常:{e}");
+                    logList.Add($"处理异常:{e.Message}");
                 }
             }
         }
@@ -203,6 +206,7 @@
                     Players.TryAdd(unClient.playerID, unClient);//将网络玩家添加到集合中
                     Scenes[DefaultScene].players.Add(unClient);//将网络玩家添加到主场景集合中
                     unClient.Scene = Scenes[DefaultScene];//赋值玩家所在的场景实体
+                    unClient.AddRpc(unClient);
                     OnAddClientHandle?.Invoke(unClient);
                     return -1;
                 }
@@ -254,9 +258,9 @@
                 catch (Exception ex)
                 {
                     UnClients.TryRemove(client.RemotePoint[GUID], out NetPlayer recClient);
-                    recClient.Client?.Close();
-                    recClient.Stream?.Close();
-                    Log?.Invoke("移除未知客户端:" + ex.Message);
+                    recClient?.Dispose();
+                    logList.Add("移除未知客户端:" + ex.Message);
+                    recClient = null;
                 }
             }
         }
@@ -276,12 +280,12 @@
                 {
                     if (Clients.TryRemove(client.RemotePoint[GUID], out NetPlayer recClient))
                         OnRemoveClientEvent?.Invoke(recClient);
-                    Players.TryRemove(recClient.playerID, out NetPlayer recClient1);
+                    Players.TryRemove(client.playerID, out NetPlayer recClient1);
                     if (Scenes.ContainsKey(client.sceneID))
                         Scenes[client.sceneID].players.Remove(client);
-                    recClient.Client?.Close();
-                    recClient.Stream?.Close();
-                    Log?.Invoke("移除客户端: 玩家ID:" + client.playerID + " 玩家终端: " + client.RemotePoint[GUID].ToString() + " Code: " + ex.Message);
+                    recClient?.Dispose();
+                    logList.Add("移除客户端: 玩家ID:" + client.playerID + " 玩家终端: " + client.RemotePoint[GUID].ToString() + " Code: " + ex.Message);
+                    recClient = null;
                 }
             }
         }
@@ -295,19 +299,15 @@
             NetPlayer player;
             foreach (var unClient in UnClients)
             {
-                unClient.Value.Client?.Dispose();
-                unClient.Value.Client?.Close();
-                unClient.Value.Stream?.Dispose();
-                unClient.Value.Stream?.Close();
                 UnClients.TryRemove(unClient.Key, out player);
+                player.Dispose();
+                player = null;
             }
             foreach (var client in Clients)
             {
-                client.Value.Client?.Dispose();
-                client.Value.Client?.Close();
-                client.Value.Stream?.Dispose();
-                client.Value.Stream?.Close();
                 Clients.TryRemove(client.Key, out player);
+                player.Dispose();
+                player = null;
             }
         }
     }

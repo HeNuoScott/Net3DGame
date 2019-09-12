@@ -6,6 +6,11 @@
     public abstract class NetCmd
     {
         /// <summary>
+        /// 面向实体类型调用远程函数
+        /// 使用此命令即可在NetPlayer的派生类中定义rpc函数进行调用
+        /// </summary>
+        public const byte EntityRpc = 0;
+        /// <summary>
         /// 如果是客户端调用则在服务器执行 如果是服务器调用则在客户端执行.
         /// 在服务器端,如果出现多线程抢夺资源调用Client错误时，可使用SafeCall命令来执行
         /// </summary>

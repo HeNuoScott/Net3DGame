@@ -212,7 +212,7 @@ namespace Server
                 //从原场景中移除玩家
                 Scenes[RequestPlayer.sceneID].players.Remove(RequestPlayer);
                 netScene.sceneCapacity = sceneCapacity;
-                netScene.gameSceneName = targetScene;
+                netScene.sceneName = targetScene;
                 Scenes.TryAdd(roomName, netScene);
                 RequestPlayer.sceneID = roomName;              
                 DebugLog($"客户端：{RequestPlayer.acc}创建了:{roomName}:房间");
@@ -261,7 +261,7 @@ namespace Server
 
                 callbackCode.callBack = true;
                 callbackCode.info = "创建房间成功";
-                callbackCode.targetScene = Scenes[roomName].gameSceneName;
+                callbackCode.targetScene = Scenes[roomName].sceneName;
                 callbackCode.roomName = roomName;
 
                 Send(RequestPlayer, "JoinRoomResult", callbackCode);

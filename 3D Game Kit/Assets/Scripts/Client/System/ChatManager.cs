@@ -39,7 +39,7 @@ namespace Client
         {
             base.OnDestroy();
             //移除远程调用函数
-            RemoveRpcDelegate(this);
+            RemoveRpc(this);
         }
 
         /// <summary>

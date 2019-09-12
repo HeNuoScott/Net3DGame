@@ -165,7 +165,7 @@
         public NetClientBase()
         {
             NetConvert.AddNetworkBaseType();
-            NetBehaviour.AddRpcDelegate(this, this);
+            NetBehaviour.AddRpc(this, this);
             OnRevdBufferHandle += ReceiveData;
         }
 
@@ -180,7 +180,7 @@
         public NetClientBase(bool useUnityThread)
         {
             NetConvert.AddNetworkBaseType();
-            NetBehaviour.AddRpcDelegate(this, this);
+            NetBehaviour.AddRpc(this, this);
             OnRevdBufferHandle += ReceiveData;
             UseUnityThread = useUnityThread;
         }
@@ -191,7 +191,7 @@
         /// <param name="target">注册的对象实例</param>
         public void AddRpcHandle(object target)
         {
-            NetBehaviour.AddRpcDelegate(target);
+            NetBehaviour.AddRpc(target);
         }
         
         /// <summary>
@@ -200,20 +200,20 @@
         /// <param name="target">注册的对象实例</param>
         public void AddRpcHandle(NetClientBase client, object target)
         {
-            NetBehaviour.AddRpcDelegate(client, target);
+            NetBehaviour.AddRpc(client, target);
         }
 
         /// <summary>
         /// 绑定Rpc函数
         /// </summary>
         /// <param name="target">注册的对象实例</param>
-        public void BindRpc(object target) => NetBehaviour.AddRpcDelegate(target);
+        public void BindRpc(object target) => NetBehaviour.AddRpc(target);
 
         /// <summary>
         /// 绑定Rpc函数
         /// </summary>
         /// <param name="target">注册的对象实例</param>
-        public void BindRpc(NetClientBase client, object target) => NetBehaviour.AddRpcDelegate(client, target);
+        public void BindRpc(NetClientBase client, object target) => NetBehaviour.AddRpc(client, target);
 
         /// <summary>
         /// 绑定网络调式信息处理接口
