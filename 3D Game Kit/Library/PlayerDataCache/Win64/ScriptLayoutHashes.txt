@@ -78,6 +78,7 @@ f542c1afca5bb4022f91fdda19b8d622 Unity.Postprocessing.Runtime.dll:UnityEngine.Re
 71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:Unidux.Example.SceneTransition.PageWatcher
 b31ef1c110c5a7ed74ad67be3ae59038 Unity.TextMeshPro.dll:TMPro.TMP_InputField
 1e90d7d6a6263a531c8bfd67056e48ef Assembly-CSharp.dll:QFramework.UIManager
+b2812dd9079ba5a19aceec762918f80b Assembly-CSharp.dll:QF.LSM.LoadSceneManager
 201be9707a4b82c6ddce2b6e543da5cc Assembly-CSharp.dll:GameDesigner.StateMachineSetting
 cf9f5cf2c3145a37ac07f00e50e460f9 UnityEngine.UI.dll:UnityEngine.UI.AspectRatioFitter
 71bb6a6b6c8f052f948db64c7dd3ca4f UnityEngine.UI.dll:UnityEngine.EventSystems.BaseInput
@@ -133,6 +134,7 @@ e1bbf0ab858085e38fae6b12ebbdcd35 UnityEngine.Timeline.dll:UnityEngine.Timeline.G
 e1bbf0ab858085e38fae6b12ebbdcd35 UnityEngine.Timeline.dll:UnityEngine.Timeline.PlayableTrack
 201e3fde670b00545944bb3db215c80a UnityEngine.Timeline.dll:UnityEngine.Timeline.TimelineAsset
 71bb6a6b6c8f052f948db64c7dd3ca4f UniRx.dll:UniRx.Triggers.ObservableJointTrigger
+d043566c573bf0dd2a779ded75fcd886 Assembly-CSharp.dll:QF.LSM.Loading
 00274a21279f5cb831ce20f895049e38 Unity.TextMeshPro.dll:TMPro.TMP_SubMeshUI
 761a50bcac77d3423d8e22dbece8b6c5 Assembly-CSharp.dll:QFramework.RectGuideCtrl
 e71ba12fcdf46ee53ae2b8fdcb7bc52e Assembly-CSharp.dll:QFramework.PostFXBehaviour
@@ -172,7 +174,6 @@ d8180c2853aab927be4b7d5d376450d2 Assembly-CSharp.dll:Unidux.Example.SceneTransit
 71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:QFramework.Framework
 71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:QFramework.DragMe
 e1d341e41e7bc2dd37d417f52849f2f4 Assembly-CSharp.dll:Unidux.Example.Todo.TodoDispatcher
-f0e247b8364b037a925c087edc526114 Assembly-CSharp.dll:QFramework.HeNuoApp.LoadingPanel
 71bb6a6b6c8f052f948db64c7dd3ca4f UniRx.dll:UniRx.Triggers.ObservableDropTrigger
 61b9d9b6f4b6a222dfea8b131b3d3227 Unity.Postprocessing.Runtime.dll:UnityEngine.Rendering.PostProcessing.ChromaticAberration
 71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:QFramework.UIPointerDownEventListener
@@ -207,6 +208,7 @@ a53651ee3996fbba20dfe0fce02f0b23 Unity.Postprocessing.Runtime.dll:UnityEngine.Re
 50c443b12ccc0b475183318b5088bcc5 Unity.Postprocessing.Runtime.dll:UnityEngine.Rendering.PostProcessing.PostProcessDebug
 4fd8bf02e3089425d3502e26c44ba31a Unity.TextMeshPro.dll:TMPro.TextContainer
 71bb6a6b6c8f052f948db64c7dd3ca4f UniRx.dll:UniRx.Triggers.ObservableTriggerTrigger
+ad355ccca662db3ad09f75e88e857994 Assembly-CSharp.dll:QF.UpdateMgr.Launcher
 2a58301dcaceb72a685388251c6e2db2 Assembly-CSharp.dll:GameDesigner.StateManager
 71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:Net.Client.NetEvent
 71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:Client.LoginManager
@@ -276,6 +278,7 @@ cf71540fde7e51d83ea208ce14dc2dcf Assembly-CSharp.dll:QFramework.HeNuoApp.Massage
 964b01199678b5706291bcaf903e0839 Assembly-CSharp.dll:QFramework.HeNuoApp.TitleMassagePanel
 71bb6a6b6c8f052f948db64c7dd3ca4f UniRx.dll:UniRx.Triggers.ObservableDragTrigger
 11bdd61587db747672b66c52442395d8 Assembly-CSharp.dll:Unidux.Example.MultipleState.MultipleStateRenderer
+d075b9ecc0af2f5078381e2f1478358b Assembly-CSharp.dll:QF.UpdateMgr.UpdateVersionManager
 6b2478856d7b9362d944d869e6ad6179 Assembly-CSharp.dll:GameDesigner.BlueprintNode
 aff505990b3b2335b9af16f2524559b7 Assembly-CSharp.dll:Unidux.Example.SimpleHttp.Unidux
 d1b26d80698bddddb0244c9c9484dc6b Assembly-CSharp.dll:GameDesigner.Blueprint
@@ -283,6 +286,7 @@ d791aa6007fa3640be1164ea75bb087d Unity.TextMeshPro.dll:TMPro.TMP_StyleSheet
 98643c3dbc51de049f9e72715f36fccf Assembly-CSharp.dll:QFramework.UITransitionPanel
 aff505990b3b2335b9af16f2524559b7 Assembly-CSharp.dll:Unidux.Example.Todo.Unidux
 71bb6a6b6c8f052f948db64c7dd3ca4f UniRx.dll:UniRx.Triggers.ObservableRectTransformTrigger
+71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:QF.UpdateMgr.UpdateAssetManager
 06ee7a093486c8f6281c35dba9f983ab Assembly-CSharp.dll:GameDesigner.BlueprintManager
 71bb6a6b6c8f052f948db64c7dd3ca4f QF.Action.dll:QF.Action.ActionQueue
 c0176761ddd2c0e85cab0f5fae95c053 Assembly-CSharp.dll:Unidux.Example.Todo.TodoFilterButtonRenderer

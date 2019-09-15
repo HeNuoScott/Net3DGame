@@ -175,7 +175,7 @@ namespace QFramework
 		{
 			foreach (var layer in mAllUI)
 			{
-                if((layer.Value as UIPanel))
+                if ((layer.Value as UIPanel))
                 {
                     layer.Value.Close();
                 }
@@ -445,7 +445,8 @@ namespace QFramework
 		{
 			return UIManager.Instance.OpenUI(panelName, level, null, assetBundleName) as UIPanel;
 		}
-        public static UIPanel OpenPanel(string panelName)
+
+		public static UIPanel OpenPanel(string panelName)
 		{
 			return UIManager.Instance.OpenUI(panelName, UILevel.Common, null, null) as UIPanel;
 		}

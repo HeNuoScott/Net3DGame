@@ -55,14 +55,7 @@ namespace QFramework.HeNuoApp
         private void Instance_ExitRoomCallback()
         {
             Debug.Log("·µ»Ø´óÌü");
-            UIMgr.CloseAllPanel();
-            UIPanel loading = UIMgr.OpenPanel<LoadingPanel>(UILevel.Forward, new LoadingPanelData()
-            {
-                targetScene = "Lobby",
-                openPanel = "LobbyPanel",
-                uiLevel = UILevel.Common,
-            });
-            //UnityEngine.SceneManagement.SceneManager.LoadSceneAsync("Loading");
+            QF.LSM.LoadSceneManager.Instance.LoadSceneAsync("Lobby", "LobbyPanel", UILevel.Common);
         }
 
         private void ChatManager_ShowMassage(string msg)

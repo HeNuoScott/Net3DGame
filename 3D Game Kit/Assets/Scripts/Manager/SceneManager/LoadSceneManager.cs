@@ -27,6 +27,7 @@ namespace QF.LSM
         {
             async = SceneManager.LoadSceneAsync(loadingScene);
             yield return async;
+            UIMgr.CloseAllPanel();
         }
 
         /// <summary>

@@ -1,0 +1,2 @@
+翻书效果插件
+可更改原来的Tween类的名称为BookTween，防止与DoTween冲突

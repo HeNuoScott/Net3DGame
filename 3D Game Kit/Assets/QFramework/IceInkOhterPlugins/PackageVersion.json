@@ -1,0 +1,19 @@
+{
+  "Version": "V0.0.11",
+  "Type": 0,
+  "AccessRight": 0,
+  "DownloadUrl": "http://file.liangxiegame.com/IceInkOhterPluginsV0_0_10_e5e66a18_0574_43cd_a3aa_124fee5e17d7.unitypackage",
+  "InstallPath": "Assets/IceInkOhterPlugins/",
+  "DocUrl": "www.baidu.com",
+  "Readme": {
+    "version": "V0.0.11",
+    "content": "一些常用的插件",
+    "author": "MoonIceInk",
+    "date": "2019 年 09 月 11 日 17:04",
+    "VersionNumber": 11
+  },
+  "Id": "e8e6ad6f-3d8f-45cb-ab13-b025b28b070c",
+  "Name": "IceInkOhterPlugins",
+  "VersionNumber": 11,
+  "FileName": "IceInkOhterPlugins_V0.0.11.unitypackage"
+}
