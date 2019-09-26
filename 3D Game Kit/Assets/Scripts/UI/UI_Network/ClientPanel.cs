@@ -75,7 +75,7 @@ namespace QFramework.HeNuoApp
         private void LoginOrRegister_LoginSucceedCallBack()
         {
             //登陆成功之后切换大厅面板
-            QF.LSM.LoadSceneManager.Instance.LoadSceneAsync(mData.defaultScene, "LobbyPanel", UILevel.Common);
+            QF.LSM.LoadSceneManager.Instance.LoadSceneAsync(false,mData.defaultScene, "LobbyPanel", UILevel.Common);
         }
 
         protected override void OnOpen(QFramework.IUIData uiData)

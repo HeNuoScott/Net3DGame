@@ -10,6 +10,7 @@
 
 namespace QFramework.HeNuoApp
 {
+    using Net.Server;
     using System;
     using System.Collections;
     using System.Collections.Generic;
@@ -39,7 +40,7 @@ namespace QFramework.HeNuoApp
             // please add init code here
             OnlineCount.text = "0";
             MsgCount.text = "0";
-            Server.NetGameServer.ServerLog += Server_ServerLog;
+            NetGameServer.ServerLog += Server_ServerLog;
             ServerStartOrStop.onClick.AddListener(() =>
             {
                 Server.ServerManager.Instance.OnClick();

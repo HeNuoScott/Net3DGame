@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 826505702
+CRC: 423594862
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 842a35d8ba692566d095b917383326df
+    Hash: 8fd24ba700819a33c731f9a37e8ccb2a
   TypeTreeHash:
     serializedVersion: 2
     Hash: 7e002a90d6dba9c6cabbdaeeb2ca121e
@@ -40,5 +40,5 @@ ClassTypes:
 - Class: 224
   Script: {instanceID: 0}
 Assets:
-- Assets/Prefabs/UI/UI_Network/ClientPanel.prefab
+- Assets/Art/Prefabs/UI/UI_Network/ClientPanel.prefab
 Dependencies: []

@@ -38,10 +38,19 @@ namespace QFramework.HeNuoApp
                         port = this.port
                     });
                     UIMgr.OpenPanel<NetStatePanel>(UILevel.Forward);
+                    ClientInit();
                     break;
                 default:
                     break;
             }
+        }
+        public void ClientInit()
+        {
+            Client.ChatManager.Instance.OnSingletonInit();
+            Client.ClientNetworkManager.Instance.OnSingletonInit();
+            Client.LoginManager.Instance.OnSingletonInit();
+            Client.RoomManager.Instance.OnSingletonInit();
+            Client.SpwanerManager.Instance.OnSingletonInit();
         }
     }
 }

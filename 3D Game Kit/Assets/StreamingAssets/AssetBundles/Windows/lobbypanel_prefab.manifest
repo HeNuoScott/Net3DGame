@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 516770177
+CRC: 683477487
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: fdf4a71debbe89fed296473690ed479c
+    Hash: af01b7ef213454513e3c5bbea6ece303
   TypeTreeHash:
     serializedVersion: 2
     Hash: 7727070e403ccb3b19e6457491124c16
@@ -52,5 +52,5 @@ ClassTypes:
 - Class: 224
   Script: {instanceID: 0}
 Assets:
-- Assets/Prefabs/UI/UI_Network/LobbyPanel.prefab
+- Assets/Art/Prefabs/UI/UI_Network/LobbyPanel.prefab
 Dependencies: []

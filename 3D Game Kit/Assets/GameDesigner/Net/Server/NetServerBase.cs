@@ -119,11 +119,6 @@
         /// </summary>
         public Action<NetPlayer> OnAddClientHandle;
         /// <summary>
-        /// 当开始调用rpc函数事件, 多线程时5%不安全
-        /// </summary>
-        [Obsolete("不推荐使用！")]
-        public Action<NetPlayer> OnInvokeRpcHandle;
-        /// <summary>
         /// 当接收到网络数据处理事件
         /// </summary>
         public RevdBufferHandle OnRevdBufferHandle;
@@ -146,7 +141,7 @@
         /// <summary>
         /// 调式输出日志
         /// </summary>
-        internal List<string> logList = new List<string>();
+        public List<string> logList = new List<string>();
 
         /// <summary>
         /// 构造网络服务器函数
@@ -163,22 +158,9 @@
         /// <returns></returns>
         public List<T> GetClients<T>() where T : class
         {
-            List<T> clients = new List<T>();
-            foreach (var v in Clients.Values)
-                clients.Add(v as T);
-            return clients;
+            return GetClients<T>(this);
         }
-
-        /// <summary>
-        /// 获得在线的客户端对象
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        public T GetPlayer<T>(string playerID) where T : NetPlayer
-        {
-            return Players[playerID] as T;
-        }
-
+        
         /// <summary>
         /// 获得所有在线的客户端对象
         /// </summary>
@@ -290,7 +272,6 @@
             OnStartingHandle += OnStarting;
             OnStartupCompletedHandle += OnStartupCompleted;
             OnHasConnectHandle += OnHasConnect;
-            //OnInvokeRpcHandle += OnInvokeRpc;
             OnRevdCustomBufferHandle += OnReceiveBuffer;
             OnRemoveClientEvent += OnRemoveClient;
             OnRevdBufferHandle += ReceiveBufferHandle;
@@ -329,6 +310,7 @@
             }
 
             var scene = OnAddDefaultScene();
+
             DefaultScene = scene.Key;
             Scenes.TryAdd(scene.Key, scene.Value);
             OnStartupCompletedHandle();
@@ -395,7 +377,7 @@
                 }
                 catch (Exception e)
                 {
-                    logList.Add($"主线程异常:{e.Message}");
+                    logList.Add($"接收异常:{e.Message}");
                 }
             }
         }
@@ -461,7 +443,7 @@
             }
             exceededNumber = 0;
             blockConnection = 0;
-            NetPlayer unClient = new NetPlayer(GUID, remotePoint);
+            NetPlayer unClient = new NetPlayer(GUID, remotePoint) { LastTime = DateTime.Now.AddMinutes(5) };
             OnHasConnectHandle?.Invoke(unClient);
             logList.Add("有客户端连接:" + remotePoint.ToString());
             int addUnClient = ResolveUnBuffer(unClient, remotePoint, buffer, count);//解析未知客户端数据
@@ -476,7 +458,11 @@
             int size = BitConverter.ToUInt16(buffer, 1);// {[1],[2]} 网络数据长度大小
             if (size + 3 != count)//如果数据协议不正确退出
                 return 2;
-            NetPlayer unClient = OnUnClientRequest(unPlayer, cmd, buffer, 3, count);
+            NetPlayer unClient;
+            if (cmd == NetCmd.EntityRpc)
+                unClient = unPlayer.OnUnClientRequest(cmd, buffer, 3, count);
+            else
+                unClient = OnUnClientRequest(unPlayer, cmd, buffer, 3, count);
             if (unClient != null)//当有客户端连接时,如果允许用户添加此客户端
             {
                 if (!unClient.RemotePoint.ContainsKey(GUID))
@@ -529,9 +515,12 @@
             {
                 case NetCmd.EntityRpc:
                     NetConvert.Deserialize(buffer, index, index + count, (func, pars) => {
-                        NetDelegate rpc = client.Rpcs[func];
-                        client.Server = this;
-                        rpc.method.Invoke(rpc.target, pars);
+                        if (client.Rpcs.ContainsKey(func))
+                        {
+                            NetDelegate rpc = client.Rpcs[func];
+                            client.Server = this;
+                            rpc.method.Invoke(rpc.target, pars);
+                        }
                     });
                     break;
                 case NetCmd.CallRpc:
@@ -579,6 +568,7 @@
                     });
                     break;
                 default:
+                    client.OnReceiveBuffer(cmd, buffer, index, count);
                     OnRevdCustomBufferHandle?.Invoke(client, cmd, buffer, index, count);
                     break;
             }
@@ -646,7 +636,7 @@
         {
             foreach (var client in UnClients.Values)
             {
-                if (client.heart < 5)//有5次确认心跳包
+                if (client.heart < 5 & DateTime.Now < client.LastTime)//有5次确认心跳包
                 {
                     client.heart++;
                     Send(client, NetCmd.SendHeartbeat, new byte[1]);
@@ -688,6 +678,7 @@
                 }
                 if (Clients.TryRemove(client.RemotePoint[GUID], out NetPlayer recClient))
                     OnRemoveClientEvent?.Invoke(recClient);
+                recClient?.OnRemoveClient();
                 Players.TryRemove(recClient.playerID, out NetPlayer recClient1);
                 if (Scenes.ContainsKey(client.sceneID))
                     Scenes[client.sceneID].players.Remove(client);

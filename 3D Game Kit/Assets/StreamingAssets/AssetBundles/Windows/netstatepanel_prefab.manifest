@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 1016925096
+CRC: 3686367020
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 1682e3df6bfad38bcda4143abac5c8f0
+    Hash: 8542e25d3f4d9ee73541999d42b49a6b
   TypeTreeHash:
     serializedVersion: 2
     Hash: 49d06f80e2adff08adb898c861612287
@@ -32,5 +32,5 @@ ClassTypes:
 - Class: 224
   Script: {instanceID: 0}
 Assets:
-- Assets/Prefabs/UI/UI_Network/NetStatePanel.prefab
+- Assets/Art/Prefabs/UI/UI_Network/NetStatePanel.prefab
 Dependencies: []

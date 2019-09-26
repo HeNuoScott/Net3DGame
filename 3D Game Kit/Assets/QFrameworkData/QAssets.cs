@@ -36,6 +36,11 @@ namespace QAssetBundle
         public const string BundleName = "netstatepanel_prefab";
         public const string NETSTATEPANEL = "netstatepanel";
     }
+    public class Player_prefab
+    {
+        public const string BundleName = "player_prefab";
+        public const string PLAYER = "player";
+    }
     public class Serverpanel_prefab
     {
         public const string BundleName = "serverpanel_prefab";

@@ -8,7 +8,6 @@
     /// </summary>
     public class NetScene
     {
-        public string sceneName;
         /// <summary>
         /// 场景容纳人数
         /// </summary>
@@ -21,6 +20,7 @@
         /// 当前网络场景状态
         /// </summary>
         public NetState state = NetState.Idle;
+
         /// <summary>
         /// 获取场景当前人数
         /// </summary>

@@ -6,16 +6,22 @@ namespace Client
     public class ClientPlayer : Net.Client.NetBehaviour
     {
         public string playerName;
-        public string acc, pass;
         public float speed = 10;
         public Vector3 pos;
         public Quaternion roto;
-
+        public Material myMat;
+        public Material otherMat;
         private void Start()
         {
+            MeshRenderer meshRenderer = GetComponent<MeshRenderer>();
             if (ClientNetworkManager.Instance.playerName != playerName)
             {
                 enabled = false;
+                meshRenderer.material = otherMat;
+            }
+            else
+            {
+                meshRenderer.material = myMat;
             }
         }
 

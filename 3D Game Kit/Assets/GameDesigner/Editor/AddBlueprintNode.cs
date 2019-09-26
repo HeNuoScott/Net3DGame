@@ -1,15 +1,13 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
-using System.Reflection;
 using System;
-using System.Linq;
 using Object = UnityEngine.Object;
 using System.Threading;
 
 namespace GameDesigner
 {
-	public class AddBlueprintNode : EditorWindow
+    public class AddBlueprintNode : EditorWindow
 	{
         public static Blueprint designer = null;
         private static TypeInfo typeInfo;

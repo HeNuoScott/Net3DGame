@@ -1,17 +1,14 @@
-namespace Server
+namespace Net.Server
 {
-    using Net.Server;
     using System;
     using System.Collections.Generic;
     using System.Threading;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
-    using System.Net;
+    using UnityEngine;
     using Net.Share;
 
     public class NetGameServer : UdpServer
     {
+
         /// <summary>
         /// 请求操作的玩家
         /// 服务器所有方法即是在多线程中完成   多线程不能直接访问unity组件的属性和方法
@@ -45,14 +42,8 @@ namespace Server
         {
             DebugLog($"客户端：{client.playerID.ToString()}断开链接......");
 
-            var scene = Scenes[client.sceneID];
-            scene.players.Remove(client);
-            Multicast(scene.players, "RemovePlayer", RequestPlayer.acc);
-            if (scene.players.Count <= 0 && client.sceneID != DefaultScene)
-            {
-                Scenes.TryRemove(client.sceneID, out NetScene netScene);
-                DebugLog(client.sceneID + ":房间解散");
-            }
+            ServerNetRoom serverNetScene = Scenes[client.sceneID] as ServerNetRoom;
+            serverNetScene.ExitRoom(client as ServerPlayer);
         }
         protected override void OnReceiveBuffer(NetPlayer client, byte cmd, byte[] buffer, int index, int count)
         {
@@ -84,7 +75,7 @@ namespace Server
         {
             DebugLog("添加网络默认场景");
             new Thread(SendSceneInfoToLobbay) { IsBackground = true, Name = "SendSceneInfoToLobbay" }.Start();
-            return base.OnAddDefaultScene();
+            return new KeyValuePair<string, NetScene>(DefaultScene, new ServerNetRoom(1000, DefaultScene, "Lobby"));
         }
 
         public void SendSceneInfoToLobbay()
@@ -95,7 +86,6 @@ namespace Server
                 try
                 {
                     List<NetPlayer> players = Scenes[DefaultScene].players;
-
                     Dictionary<string, RoomInfo> netSceneInfo = new Dictionary<string, RoomInfo>();
                     foreach (var item in Scenes)
                     {
@@ -158,6 +148,7 @@ namespace Server
                     DebugLog($"客户端：{player.acc}账号登陆成功！......");
                     //玩家未登录的状态
                     Send(unClient, "LoginResult", true, "登陆成功");
+                    player.sceneID = "MainScene";
                     return player;
                 }
             }
@@ -168,23 +159,25 @@ namespace Server
         [Net.Share.Rpc]
         public void CreatePlayer()
         {
+            ServerNetRoom netRoom =Scenes[RequestPlayer.sceneID]as ServerNetRoom;
+            Vector3 spwanerPoint = netRoom.spwanerPos[RequestPlayer.playerID];
             //创建客户端自身玩家
-            Send(RequestPlayer, "CreateLocalPlayer", RequestPlayer.acc);
-            //通过玩家的ID找到所属房间,里面的所有玩家
-            List<NetPlayer> players = Scenes[RequestPlayer.sceneID].players;
+            Send(RequestPlayer, "CreateLocalPlayer", RequestPlayer.acc, spwanerPoint);
             //(广播)发送给其他客户端有人进入了 同一个场景 ,让客户端创建相应的 玩家对象
-            Multicast(players, "CreateOtherPlayer", RequestPlayer.acc);
+            Multicast(netRoom.players, "CreateOtherPlayer", RequestPlayer.acc, spwanerPoint);
             //获取场景中所有的玩家,在自己的客户端也创建他们的玩家对象
-            foreach (var player in Scenes[RequestPlayer.sceneID].players)
+            foreach (var player in netRoom.players)
             {
-                Send(RequestPlayer, "CreateOtherPlayer", player.playerID);
+                Vector3 spwanerPot = netRoom.spwanerPos[player.playerID];
+                Send(RequestPlayer, "CreateOtherPlayer", player.playerID, spwanerPot);
             }
         }
 
         [Net.Share.Rpc]
         public void CetUserSelfInfo()
         {
-            Send(RequestPlayer, "CetUserSelfInfoResult", RequestPlayer.acc, RequestPlayer.acc);
+            ServerNetRoom netRoom = RequestPlayer.Scene as ServerNetRoom;
+            Send(RequestPlayer, "CetUserSelfInfoResult", RequestPlayer.acc, RequestPlayer.acc, netRoom.roomName, netRoom.sceneName);
         }
 
         [Net.Share.Rpc]
@@ -205,16 +198,9 @@ namespace Server
             }
             else
             {
-                //Scenes.TryAdd(roomName, new NetScene(sceneCapacity) { players = new List<NetPlayer>() { RequestPlayer } });
-                NetScene netScene = new NetScene();
-                netScene.players.Add(RequestPlayer);
-                RequestPlayer.Scene = netScene;
-                //从原场景中移除玩家
-                Scenes[RequestPlayer.sceneID].players.Remove(RequestPlayer);
-                netScene.sceneCapacity = sceneCapacity;
-                netScene.sceneName = targetScene;
+                ServerNetRoom netScene = new ServerNetRoom(RequestPlayer, sceneCapacity, roomName, targetScene);
                 Scenes.TryAdd(roomName, netScene);
-                RequestPlayer.sceneID = roomName;              
+
                 DebugLog($"客户端：{RequestPlayer.acc}创建了:{roomName}:房间");
 
 
@@ -252,16 +238,12 @@ namespace Server
             }
             else
             {
-
-                Scenes[roomName].players.Add(RequestPlayer);
-                RequestPlayer.Scene = Scenes[roomName];
-                //从原场景中移除玩家
-                Scenes[RequestPlayer.sceneID].players.Remove(RequestPlayer);
-                RequestPlayer.sceneID = roomName;
+                ServerNetRoom serverNetScene = Scenes[roomName] as ServerNetRoom;
+                serverNetScene.JoinRoom(RequestPlayer);
 
                 callbackCode.callBack = true;
                 callbackCode.info = "创建房间成功";
-                callbackCode.targetScene = Scenes[roomName].sceneName;
+                callbackCode.targetScene = serverNetScene.sceneName;
                 callbackCode.roomName = roomName;
 
                 Send(RequestPlayer, "JoinRoomResult", callbackCode);
@@ -272,22 +254,8 @@ namespace Server
         public void ExitRoom()
         {
             Send(RequestPlayer, "ExitRoomResult");
-            var scene = Scenes[RequestPlayer.sceneID];
-            if (scene.players.Contains(RequestPlayer))
-            {
-                Scenes[DefaultScene].players.Add(RequestPlayer);
-                RequestPlayer.Scene = Scenes[DefaultScene];
-                //从原场景中移除玩家
-                scene.players.Remove(RequestPlayer);
-                Multicast(scene.players, "RemovePlayer", RequestPlayer.acc);
-                if (scene.players.Count <= 0)
-                {
-                    Scenes.TryRemove(RequestPlayer.sceneID, out NetScene netScene);
-                    DebugLog(RequestPlayer.sceneID + ":房间解散");
-                }
-               
-                RequestPlayer.sceneID = DefaultScene;
-            }
+            ServerNetRoom serverNetScene = RequestPlayer.Scene as ServerNetRoom;
+            serverNetScene.ExitRoom(RequestPlayer);
         }
     }
 }

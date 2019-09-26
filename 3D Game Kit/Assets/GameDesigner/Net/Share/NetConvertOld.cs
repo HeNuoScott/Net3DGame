@@ -13,282 +13,51 @@
     /// </summary>
     public class NetConvertOld : NetConvertBase
     {
-        /// <summary> 
-        /// 函数名 和 参数 与 命令之间的拆分行
-        /// </summary>
-        public static string Row { get; set; } = "</R>";
         /// <summary>
-        /// 参数类型 和 参数值 之间的拆分修饰符
+        /// 函数数据
         /// </summary>
-        public static string Space { get; set; } = "</S>";
-        /// <summary>
-        /// 数组类型 与 数组值 之间的拆分修饰符
-        /// </summary>
-        public static string ArraySpace { get; set; } = "</AS>";
-        /// <summary>
-        /// 数组元素的拆分行修饰符
-        /// </summary>
-        public static string ArrayRow { get; set; } = "</AR>";
-
-        /// <summary>
-        /// 参数为复杂类时 拆分对象字段间隔或类名间隔
-        /// </summary>
-        public static string SplitFidle { get; set; } = "</SF>";
-        /// <summary>
-        /// 分离类明和字段
-        /// </summary>
-        public static string SplitType { get; set; } = "</ST>";
-        /// <summary>
-        /// 分离全部字段
-        /// </summary>
-        public static string SplitFidles { get; set; } = "</SFs>";
-
-        protected static ConcurrentDictionary<string, Type> Types = new ConcurrentDictionary<string, Type>();
-
-        /// <summary>
-        /// 系列化
-        /// </summary>
-        /// <param name="funName">函数名</param>
-        /// <param name="pars">参数</param>
-        /// <returns></returns>
-        public static byte[] Serialize(string funName, params object[] pars)
+        public struct FuncData
         {
-            return GetFunToBytes(funName, pars);
-        }
+            /// <summary>
+            /// 函数名称
+            /// </summary>
+            public string func;
+            /// <summary>
+            /// 参数数组
+            /// </summary>
+            public object[] pars;
 
-        /// <summary>
-        /// 反序列化
-        /// </summary>
-        /// <param name="buffer">二进制数据</param>
-        /// <returns></returns>
-        public static object[] Deserialize(byte[] buffer)
-        {
-            string data = Encoding.Unicode.GetString(buffer, 0, buffer.Length);
-            return GetFunParams(data);
-        }
-
-        /// <summary>
-        /// 反序列化
-        /// </summary>
-        /// <param name="buffer">二进制数据</param>
-        /// <param name="index">开始位置</param>
-        /// <param name="count">解析长度</param>
-        /// <returns></returns>
-        public static object[] Deserialize(byte[] buffer, int index, int count)
-        {
-            string data = Encoding.Unicode.GetString(buffer, index, count);
-            return GetFunParams(data);
-        }
-
-        /// <summary>
-        /// 反序列化
-        /// </summary>
-        /// <param name="value">字符串数据</param>
-        /// <returns></returns>
-        public static object[] Deserialize(string value)
-        {
-            return GetFunParams(value);
-        }
-
-        /// <summary>
-        /// 序列化函数到字节数组
-        /// </summary>
-        /// <param name="funName">RPCFun函数名称</param>
-        /// <param name="pars">RPCFun函数参数</param>
-        /// <returns></returns>
-        public static byte[] SerializeFuncBytes(string funName, params object[] pars)
-        {
-            return GetFunToBytes(funName, pars);
-        }
-
-        /// <summary>
-        /// 序列化函数数据到字节数组
-        /// </summary>
-        /// <param name="funName">RPCFun函数名</param>
-        /// <param name="pars">RPCFun参数</param>
-        /// <returns></returns>
-        public static byte[] GetFunToBytes(string funName, params object[] pars)
-        {
-            return Encoding.UTF8.GetBytes(SerializeFunc(funName, pars));
-        }
-
-        /// <summary>
-        /// 反序列化调用RPCFun函数
-        /// </summary>
-        /// <param name="target">要调用的对象</param>
-        /// <param name="funData">RPCFun函数数据</param>
-        public static void CallFun(object target, string[] funData)
-        {
-            CallFun(target, funData, 0, funData.Length);
-        }
-
-        /// <summary>
-        /// 反序列化调用RPCFun函数
-        /// </summary>
-        /// <param name="target">要调用的对象</param>
-        /// <param name="funData">RPCFun函数数据</param>
-        public static void CallFun(object target, string funData)
-        {
-            string[] fun = funData.Split(new string[] { Row }, StringSplitOptions.RemoveEmptyEntries);
-            CallFun(target, fun, 0, fun.Length);
-        }
-
-        /// <summary>
-        /// 反序列化调用RPCFun函数
-        /// </summary>
-        /// <param name="target">要调用的对象</param>
-        /// <param name="funData">RPCFun函数数据</param>
-        /// <param name="offset">RPCFun函数名的位置</param>
-        public static void CallFun(object target, byte[] funData, int offset)
-        {
-            string buffer = Encoding.Unicode.GetString(funData);
-            string[] fun = buffer.Split(new string[] { Row }, StringSplitOptions.RemoveEmptyEntries);
-            CallFun(target, fun, offset, fun.Length);
-        }
-
-        /// <summary>
-        /// 反序列化调用RPCFun函数
-        /// </summary>
-        /// <param name="target">要调用的对象</param>
-        /// <param name="funData">RPCFun函数数据</param>
-        /// <param name="offset">RPCFun函数名的位置</param>
-        public static void CallFun(object target, string[] funData, int offset)
-        {
-            CallFun(target, funData, offset, funData.Length);
-        }
-
-        /// <summary>
-        /// 反序列化调用RPCFun函数
-        /// </summary>
-        /// <param name="target">要调用的对象</param>
-        /// <param name="funData">RPCFun函数数据</param>
-        /// <param name="offset">RPCFun函数名的位置</param> 
-        public static void CallFun(object target, string funData, int offset)
-        {
-            string[] fun = funData.Split(new string[] { Row }, StringSplitOptions.RemoveEmptyEntries);
-            CallFun(target, fun, offset, fun.Length);
-        }
-
-        /// <summary>
-        /// 反序列化调用RPCFun函数
-        /// </summary>
-        /// <param name="target">要调用的对象</param>
-        /// <param name="funData">RPCFun函数数据</param>
-        /// <param name="offset">RPCFun函数名的位置</param>
-        /// <param name="count">RPCFun函数与参数的数据长度</param>
-        public static void CallFun(object target, byte[] funData, int offset, int count)
-        {
-            string buffer = Encoding.Unicode.GetString(funData);
-            string[] fun = buffer.Split(new string[] { Row }, StringSplitOptions.RemoveEmptyEntries);
-            CallFun(target, fun, offset, count);
-        }
-
-        /// <summary>
-        /// 反序列化调用RPCFun函数
-        /// </summary>
-        /// <param name="target">要调用的对象</param>
-        /// <param name="funData">RPCFun函数数据</param>
-        /// <param name="offset">RPCFun函数名的位置</param>
-        /// <param name="count">RPCFun函数与参数的数据长度</param>
-        public static void CallFun(object target, string funData, int offset, int count)
-        {
-            string[] fun = funData.Split(new string[] { Row }, StringSplitOptions.RemoveEmptyEntries);
-            CallFun(target, fun, offset, count);
-        }
-
-        /// <summary>
-        /// 反序列化调用RPCFun函数
-        /// </summary>
-        /// <param name="target">要调用的对象</param>
-        /// <param name="funData">RPCFun函数数据</param>
-        /// <param name="offset">RPCFun函数名的位置</param>
-        /// <param name="count">RPCFun函数与参数的数据长度</param>
-        public static void CallFun(object target, string[] funData, int offset, int count)
-        {
-            try
+            /// <summary>
+            /// 构造函数
+            /// </summary>
+            /// <param name="func"></param>
+            /// <param name="pars"></param>
+            public FuncData(string func, object[] pars)
             {
-                var method = target.GetType().GetMethod(funData[offset], BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Default);
-                var pars = GetFunParams(funData, offset, count);
-                method.Invoke(target, pars);
-            }
-            catch
-            {
+                this.func = func;
+                this.pars = pars;
             }
         }
+        
+        private static Dictionary<string, Type> Types = new Dictionary<string, Type>();
 
         /// <summary>
-        /// 反序列化调用RPCFun函数
+        /// 添加系列化类型,  当复杂类型时,如果不进行添加则系列化失败: 主要类型 Dictionary
         /// </summary>
-        /// <param name="Delegate">RPCFun委托方法</param>
-        /// <param name="funData">RPCFun函数数据</param>
-        public static void CallMethod(NetDelegate Delegate, string funData)
+        public static void AddSerializeType<T>()
         {
-            Delegate.method.Invoke(Delegate.target, GetFunParams(funData));
+            AddSerializeType(typeof(T));
         }
 
         /// <summary>
-        /// 反序列化调用RPCFun函数
+        /// 添加系列化类型,  当复杂类型时,如果不进行添加则系列化失败: 主要类型 Dictionary
         /// </summary>
-        /// <param name="Delegate">RPCFun委托方法</param>
-        /// <param name="funData">RPCFun函数数据</param>
-        public static void CallMethod(NetDelegate Delegate, string[] funData)
+        /// <param name="type"></param>
+        public static void AddSerializeType(Type type)
         {
-            Delegate.method.Invoke(Delegate.target, GetFunParams(funData, 0, funData.Length));
-        }
-
-        /// <summary>
-        /// 反序列化调用RPCFun函数
-        /// </summary>
-        /// <param name="Delegate">RPCFun委托方法</param>
-        /// <param name="funData">RPCFun函数数据</param>
-        /// <param name="offset">RPCFun函数名的位置</param>
-        public static void CallMethod(NetDelegate Delegate, string[] funData, int offset)
-        {
-            Delegate.method.Invoke(Delegate.target, GetFunParams(funData, offset, funData.Length));
-        }
-
-        /// <summary>
-        /// 反序列化调用RPCFun函数
-        /// </summary>
-        /// <param name="Delegate">RPCFun委托方法</param>
-        /// <param name="funData">RPCFun函数数据</param>
-        /// <param name="offset">RPCFun函数名的位置</param>
-        /// <param name="count">RPCFun函数与参数的数据长度</param>
-        public static void CallMethod(NetDelegate Delegate, string[] funData, int offset, int count)
-        {
-            Delegate.method.Invoke(Delegate.target, GetFunParams(funData, offset, count));
-        }
-
-        /// <summary>
-        /// 反序列化获取函数参数
-        /// </summary>
-        /// <param name="funData">函数数据</param>
-        /// <returns></returns>
-        public static object[] GetFunParams(string funData) => GetFunParams(funData, 0);
-
-        /// <summary>
-        /// 反序列化获取函数参数
-        /// </summary>
-        /// <param name="funData">函数数据</param>
-        /// <param name="offset">RPCFun函数名的位置</param>
-        /// <returns></returns>
-        public static object[] GetFunParams(string funData, int offset)
-        {
-            string[] fun = funData.Split(new string[] { Row }, StringSplitOptions.RemoveEmptyEntries);
-            return GetFunParams(fun, offset, fun.Length);
-        }
-
-        /// <summary>
-        /// 反序列化获取函数参数
-        /// </summary>
-        /// <param name="funData">函数数据</param>
-        /// <param name="offset">RPCFun函数名的位置</param>
-        /// <param name="count">RPCFun函数与参数的数据长度</param>
-        /// <returns></returns>
-        public static object[] GetFunParams(string funData, int offset, int count)
-        {
-            string[] fun = funData.Split(new string[] { Row }, StringSplitOptions.RemoveEmptyEntries);
-            return GetFunParams(fun, offset, count);
+            string typeString = type.ToString();
+            if (!Types.ContainsKey(typeString))
+                Types.Add(typeString, type);
         }
 
         /// <summary>
@@ -297,202 +66,562 @@
         public static Type GetType(string typeName)
         {
             //代码优化
-            try
-            {
+            if (Types.ContainsKey(typeName))
                 return Types[typeName];
-            }
-            catch
-            {
-                typeName = typeName.Replace("&", ""); // 反射参数的 out 标示
-                typeName = typeName.Replace("*", ""); // 反射参数的 int*(指针) 标示
-                typeName = typeName.Replace("[]", ""); // 反射参数的 object[](数组) 标示
-
-                if (Types.ContainsKey(typeName))
-                    return Types[typeName];
-            }
+            
+            typeName = typeName.Replace("&", ""); // 反射参数的 out 标示
+            typeName = typeName.Replace("*", ""); // 反射参数的 int*(指针) 标示
+            typeName = typeName.Replace("[]", ""); // 反射参数的 object[](数组) 标示
 
             foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
             {
                 Type type = assembly.GetType(typeName);
                 if (type != null)
                 {
-                    Types.TryAdd(typeName, type);
+                    Types.Add(typeName, type);
                     return type;
                 }
             }
-            return null;
+            throw new Exception($"找不到类型:{typeName}, 类型太复杂时需要使用 NetConvertOld.AddSerializeType(type) 添加类型后再进行系列化!");
+        }
+        
+
+        /// <summary>
+        /// 反序列化基本类型
+        /// </summary>
+        /// <returns></returns>
+        private static object ToBaseValue(Type type, string[] buffer, ref int index)
+        {
+            object obj = null;
+            switch (type.ToString())
+            {
+                case "System.Int32":
+                    obj = Convert.ToInt32(buffer[index]);
+                    index++;
+                    break;
+                case "System.Single":
+                    obj = Convert.ToSingle(buffer[index]);
+                    index++;
+                    break;
+                case "System.Boolean":
+                    obj = Convert.ToBoolean(buffer[index]);
+                    index++;
+                    break;
+                case "System.Char":
+                    obj = Convert.ToChar(buffer[index]);
+                    index++;
+                    break;
+                case "System.Int16":
+                    obj = Convert.ToInt16(buffer[index]);
+                    index++;
+                    break;
+                case "System.Int64":
+                    obj = Convert.ToInt64(buffer[index]);
+                    index++;
+                    break;
+                case "System.UInt16":
+                    obj = Convert.ToUInt16(buffer[index]);
+                    index++;
+                    break;
+                case "System.UInt32":
+                    obj = Convert.ToUInt32(buffer[index]);
+                    index++;
+                    break;
+                case "System.UInt64":
+                    obj = Convert.ToUInt64(buffer[index]);
+                    index++;
+                    break;
+                case "System.Double":
+                    obj = Convert.ToDouble(buffer[index]);
+                    index++;
+                    break;
+                case "System.Byte":
+                    obj = Convert.ToByte(buffer[index]);
+                    index++;
+                    break;
+                case "System.SByte":
+                    obj = Convert.ToSByte(buffer[index]);
+                    index++;
+                    break;
+            }
+            return obj;
         }
 
         /// <summary>
-        /// 序列化函数到字符串
+        /// 序列化数组实体
         /// </summary>
-        /// <param name="funName">RPCFun函数名</param>
-        /// <param name="pars">RPCFun参数</param>
-        /// <returns></returns>
-        public static string SerializeFunc(string funName, params object[] pars)
+        private static void WriteArray(ref StringBuilder stream, Array array)
         {
-            StringBuilder builder = new StringBuilder(funName + Row);
-            if (pars == null)
-                return builder.ToString();
-            foreach (object par in pars)
+            AppendLine(ref stream, array.Length.ToString());//写入数组长度
+            foreach (object arr in array)
             {
-                if (par == null)
+                if (arr == null)//如果数组值为空
                 {
-                    builder.Append("System.Decimal" + Space + "Null" + Row);
+                    AppendLine(ref stream, "空值");//写入0代表空值
                     continue;
                 }
-                Type type = par.GetType();
-                if (type.IsPrimitive | par is string | type.IsEnum | type.ToString().Contains("UnityEngine.Vector") | par is Color | par is Rect | par is Quaternion)
+                AppendLine(ref stream, "有值");//写入1代表有值
+
+                Type type = arr.GetType();
+                if (type.IsPrimitive)//基本类型
                 {
-                    builder.Append(type.ToString() + Space + par + Row);
+                    AppendLine(ref stream, type.ToString());//写入类型索引
+                    AppendLine(ref stream, arr.ToString());//写入值
                 }
-                else if (type.IsArray)
+                else if (type.IsEnum)//枚举类型
                 {
-                    builder.Append(type.ToString() + Space);
-                    foreach (object elemValue in (Array)par)
-                    {
-                        if (elemValue == null)
-                        {
-                            builder.Append("System.Decimal" + ArraySpace + "Null" + ArrayRow);
-                            continue;
-                        }
-                        Type elemType = elemValue.GetType();
-                        if (elemType.IsPrimitive | elemValue is string | elemType.IsEnum | elemType.ToString().Contains("UnityEngine.Vector") | elemValue is Color | elemValue is Rect | elemValue is Quaternion)
-                            builder.Append(elemType.ToString() + ArraySpace + elemValue + ArrayRow);
-                        else
-                            builder.Append(SerializeField(elemValue) + ArrayRow);
-                    }
-                    builder.Append(Row);
+                    AppendLine(ref stream, type.ToString());//写入类型索引
+                    AppendLine(ref stream, arr.ToString());//写入值
                 }
-                else if (type.IsGenericType)
+                else if (type == typeof(string))//字符串类型
                 {
-                    throw new Exception("不支持泛型集合类型序列化，请使用数组代替");
+                    AppendLine(ref stream, type.ToString());//写入类型索引
+                    AppendLine(ref stream, arr.ToString());//写入字符串
                 }
+                else if (type.IsArray)//数组类型
+                {
+                    Array array1 = (Array)arr;
+                    AppendLine(ref stream, type.ToString());//写入类型索引
+                    AppendLine(ref stream, array1.Length.ToString());//写入数组长度
+                    WriteArray(ref stream, array1);//写入值
+                }
+                //else if (serializeTypes.Contains(type))//如果是序列化类型才进行序列化
                 else
                 {
-                    builder.Append(SerializeField(par) + Row);
+                    AppendLine(ref stream, type.ToString());//写入参数类型索引
+                    WriteObject(ref stream, type, arr);
                 }
             }
-            return builder.ToString();
         }
 
         /// <summary>
-        /// 反序列化获取函数参数
+        /// 反序列化数组
         /// </summary>
-        /// <param name="funData">函数数据</param>
-        /// <param name="offset">RPCFun函数名的位置</param>
-        /// <param name="count">RPCFun函数与参数的数据长度</param>
-        /// <returns></returns>
-        public static object[] GetFunParams(string[] funData, int offset, int count)
+        private static Array ToArray(string[] buffer, ref int index, Type type)
         {
-            List<object> pars = new List<object>();
-            for (int i = offset + 1; i < count; i++)
+            var arrCount = Convert.ToInt16(buffer[index]);
+            index++;
+            Array array = Array.CreateInstance(type, arrCount);
+            ToArray(buffer, ref index, ref array);
+            return array;
+        }
+
+        /// <summary>
+        /// 反序列化数组
+        /// </summary>
+        private static void ToArray(string[] buffer, ref int index, ref Array array)
+        {
+            for (int i = 0; i < array.Length; i++)
             {
-                try
+                index++;
+                if (buffer[index - 1] == "空值")
+                    continue;
+
+                var type = GetType(buffer[index]);
+                index++;
+                if (type.IsPrimitive)
                 {
-                    string[] parDatas = funData[i].Split(new string[] { Space }, StringSplitOptions.RemoveEmptyEntries);
-                    object value = null;
-                    if (parDatas.Length == 2)
+                    array.SetValue(ToBaseValue(type, buffer, ref index), i);
+                }
+                else if (type.IsEnum)
+                {
+                    array.SetValue(Enum.Parse(type, buffer[index]), i);
+                    index++;
+                }
+                else if (type == typeof(string))
+                {
+                    array.SetValue(buffer[index], i);
+                    index++;
+                }
+                //else if (serializeTypes.Contains(type))
+                else
+                {
+                    array.SetValue(ToObject(buffer, ref index, type), i);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 反序列化枚举类型
+        /// </summary>
+        private static object ToEnum(string[] buffer, ref int index)
+        {
+            var type = GetType(buffer[index]);
+            object obj = Enum.Parse(type, buffer[index]);
+            index++;
+            return obj;
+        }
+
+        static void AppendLine(ref StringBuilder stream, string str)
+        {
+            stream.Append(str + "\n");
+        }
+
+        /// <summary>
+        /// 新版网络序列化
+        /// </summary>
+        /// <param name="pars"></param>
+        /// <returns></returns>
+        public static string Serialize(params object[] pars)
+        {
+            return Serialize(string.Empty, pars);
+        }
+
+        /// <summary>
+        /// 新版网络序列化
+        /// </summary>
+        /// <param name="funcName">函数名</param>
+        /// <param name="pars">参数</param>
+        /// <returns></returns>
+        public static string Serialize(string funcName, params object[] pars)
+        {
+            StringBuilder stream = new StringBuilder();
+            try
+            {
+                AppendLine(ref stream, funcName);//写入函数名
+                if (pars == null)
+                    return stream.ToString();
+                foreach (object par in pars)
+                {
+                    Type type = par.GetType();
+                    if (type.IsPrimitive)//基本类型
                     {
-                        string typeName = parDatas[0].TrimEnd(']', '[');
-                        Type type = GetType(typeName);
-                        if (parDatas[0].EndsWith("]"))
+                        AppendLine(ref stream, "基本类型");//记录类型为基类
+                        AppendLine(ref stream, type.ToString());//写入类型索引
+                        AppendLine(ref stream, par.ToString());//写入值
+                    }
+                    else if (type.IsEnum)//枚举类型
+                    {
+                        AppendLine(ref stream, "枚举类型");//记录类型为枚举类
+                        AppendLine(ref stream, type.ToString());//写入类型索引
+                        AppendLine(ref stream, par.ToString());//写入值
+                    }
+                    else if (type.IsArray)//数组类型
+                    {
+                        AppendLine(ref stream, "数组类型");//记录类型为数组
+                        AppendLine(ref stream, type.ToString());//写入类型索引
+                        WriteArray(ref stream, (Array)par);//写入值
+                    }
+                    else if (par is string)//字符串类型
+                    {
+                        AppendLine(ref stream, "字符串类型");//记录类型为字符串
+                        AppendLine(ref stream, type.ToString());//写入类型索引
+                        AppendLine(ref stream, par.ToString());//写入字符串
+                    }
+                    //else if (serializeTypes.Contains(type))//序列化的类型
+                    else
+                    {
+                        if (type.IsGenericType)//泛型类型 只支持List
                         {
-                            string[] arrayDatas = parDatas[1].Split(new string[] { ArrayRow }, StringSplitOptions.RemoveEmptyEntries);
-                            Array array = Array.CreateInstance(type, arrayDatas.Length);
-                            for (int j = 0; j < arrayDatas.Length; j++)
+                            AppendLine(ref stream, "泛型");//记录类型为泛型
+                            AppendLine(ref stream, type.ToString());//写入类型索引
+                            if (type.ToString().Contains("Dictionary"))
                             {
-                                string[] arrayValues = arrayDatas[j].Split(new string[] { ArraySpace }, StringSplitOptions.RemoveEmptyEntries);
-                                object arrayValue = null;
-                                if (arrayValues.Length >= 2)
-                                    arrayValue = StringToValue(arrayValues[0], arrayValues[1]);
-                                else
-                                    arrayValue = DeserializeField(arrayValues[0]);
-                                array.SetValue(arrayValue, j);
+                                object dicKeys = type.GetProperty("Keys").GetValue(par);
+                                Type keyType = dicKeys.GetType();
+                                int count = (int)keyType.GetProperty("Count").GetValue(dicKeys);
+                                Array keys = Array.CreateInstance(type.GenericTypeArguments[0], count);
+                                keyType.GetMethod("CopyTo").Invoke(dicKeys, new object[] { keys, 0 });
+                                object dicValues = type.GetProperty("Values").GetValue(par);
+                                Type valuesType = dicValues.GetType();
+                                Array values = Array.CreateInstance(type.GenericTypeArguments[1], count);
+                                valuesType.GetMethod("CopyTo").Invoke(dicValues, new object[] { values, 0 });
+                                WriteArray(ref stream, keys);
+                                WriteArray(ref stream, values);
+                                continue;
                             }
-                            value = array;
-                        }
-                        else if (type.IsValueType | type == typeof(string))//基元结构体
-                        {
-                            value = StringToValue(parDatas[0], parDatas[1]);
-                        }
-
-                    }
-                    else if (parDatas.Length == 1)//自定义结构或类
-                    {
-                        value = DeserializeField(parDatas[0]);
-                    }
-                    pars.Add(value);
-                }
-                catch
-                {
-                    pars.Add(null);
-                }
-            }
-            return pars.ToArray();
-        }
-
-        /// <summary>
-        /// 系列化对象字段转字符串
-        /// </summary>
-        /// <param name="obj">要序列化的对象</param>
-        /// <returns></returns>
-        public static string SerializeField(object obj)
-        {
-            if (obj == null)
-                return "System.Decimal" + SplitType + ArraySpace + "Null";
-            Type type = obj.GetType();
-            StringBuilder builder = new StringBuilder(type.ToString() + SplitType);
-            foreach (FieldInfo field in type.GetFields())
-            {
-                try
-                {
-                    if (field.FieldType.IsValueType | field.FieldType == typeof(string))
-                    {
-                        object value = field.GetValue(obj);
-                        if (value == null)
+                            Array array = (Array)type.GetMethod("ToArray").Invoke(par, null);
+                            WriteArray(ref stream, array);
                             continue;
-                        builder.Append(field.Name + SplitFidle + field.FieldType.ToString() + SplitFidle + value + SplitFidles);
+                        }
+                        AppendLine(ref stream, "自定义类型");//记录类型为自定义类
+                        AppendLine(ref stream, type.ToString());//写入类型索引
+                        WriteObject(ref stream, type, par);//写入实体类型
                     }
                 }
-                catch
+            }
+            finally { }
+            return stream.ToString();
+        }
+
+        /// <summary>
+        /// 序列化实体类型
+        /// </summary>
+        private static void WriteObject(ref StringBuilder stream, Type type, object target)
+        {
+            var cons = type.GetConstructors();
+            if (cons.Length == 0)
+                return;
+            if (cons[0].GetParameters().Length > 0 & !type.IsValueType)
+                return;
+            var fields = type.GetFields(BindingFlags.Public | BindingFlags.Instance);
+            for (int i = 0; i < fields.Length; i++)
+            {
+                var value = fields[i].GetValue(target);
+                if (value == null)//如果实体字段为空，不记录
+                    continue;
+
+                if (fields[i].FieldType.IsPrimitive)//如果是基础类型
                 {
+                    AppendLine(ref stream, i.ToString());//写入字段索引
+                    AppendLine(ref stream, value.ToString());//写入字段值
+                }
+                else if (fields[i].FieldType.IsEnum)//枚举类型
+                {
+                    AppendLine(ref stream, i.ToString());//写入字段索引
+                    AppendLine(ref stream, value.ToString());//写入字段值
+                }
+                else if (fields[i].FieldType == typeof(string))//字符串类型
+                {
+                    AppendLine(ref stream, i.ToString());//写入字段索引
+                    AppendLine(ref stream, value.ToString());//写入字段值
+                }
+                else if (fields[i].FieldType.IsArray)//如果是数组
+                {
+                    Array array = value as Array;
+                    AppendLine(ref stream, i.ToString());//写入字段索引
+                    AppendLine(ref stream, fields[i].FieldType.ToString());//写入数组类型
+                    WriteArray(ref stream, array);
+                }
+                //else if (serializeTypes.Contains(fields[i].FieldType))//如果是序列化类型才进行序列化
+                else
+                {
+                    AppendLine(ref stream, i.ToString());//写入字段索引
+                    if (fields[i].FieldType.IsGenericType)//泛型类型 只支持List泛型类型
+                    {
+                        if (fields[i].FieldType.ToString().Contains("Dictionary"))
+                        {
+                            object dicKeys = fields[i].FieldType.GetProperty("Keys").GetValue(value);
+                            Type keyType = dicKeys.GetType();
+                            int count = (int)keyType.GetProperty("Count").GetValue(dicKeys);
+                            Array keys = Array.CreateInstance(fields[i].FieldType.GenericTypeArguments[0], count);
+                            keyType.GetMethod("CopyTo").Invoke(dicKeys, new object[] { keys, 0 });
+                            object dicValues = fields[i].FieldType.GetProperty("Values").GetValue(value);
+                            Type valuesType = dicValues.GetType();
+                            Array values = Array.CreateInstance(fields[i].FieldType.GenericTypeArguments[1], count);
+                            valuesType.GetMethod("CopyTo").Invoke(dicValues, new object[] { values, 0 });
+                            WriteArray(ref stream, keys);
+                            WriteArray(ref stream, values);
+                            continue;
+                        }
+                        Array array = (Array)fields[i].FieldType.GetMethod("ToArray").Invoke(value, null);
+                        WriteArray(ref stream, array);
+                        continue;
+                    }
+                    WriteObject(ref stream, fields[i].FieldType, value);
                 }
             }
-            return builder.ToString();
+            AppendLine(ref stream, "字段结束");//写入字段结束值
         }
 
         /// <summary>
-        /// 反序列化字段到新的对象
+        /// 新版反序列化
         /// </summary>
-        /// <param name="data">函数数据</param>
-        /// <returns></returns>
-        public static T DeserializeField<T>(string data) where T : class
+        public static FuncData Deserialize(string buffer)
         {
-            return DeserializeField(data) as T;
+            FuncData value = new FuncData();
+            Deserialize(buffer, (func, pars) => {
+                value = new FuncData(func, pars);
+            });
+            return value;
         }
 
         /// <summary>
-        /// 反序列化字段到新的对象
+        /// 新版反序列化
         /// </summary>
-        /// <param name="data">函数数据</param>
-        /// <returns></returns>
-        public static object DeserializeField(string data)
+        public static void Deserialize(string buffer, Action<string, object[]> func)
         {
-            string[] strArray = data.Split(new string[] { SplitType }, StringSplitOptions.RemoveEmptyEntries);
-            Type type = GetType(strArray[0]);
-            object target = Activator.CreateInstance(type);
-            string[] fidles = strArray[1].Split(new string[] { SplitFidles }, StringSplitOptions.RemoveEmptyEntries);
-            foreach (string str in fidles)
+            string[] buffer1 = buffer.Split(new string[0], StringSplitOptions.None);
+            Deserialize(buffer1, 0, buffer1.Length, func);
+        }
+
+        /// <summary>
+        /// 新版反序列化
+        /// </summary>
+        public static FuncData Deserialize(string[] buffer, int index, int count)
+        {
+            FuncData value = new FuncData();
+            Deserialize(buffer, index, count, (func, pars) =>
             {
-                try
+                value = new FuncData(func, pars);
+            });
+            return value;
+        }
+
+        /// <summary>
+        /// 新版反序列化
+        /// </summary>
+        public static void Deserialize(string[] buffer, int index, int count, Action<string, object[]> func)
+        {
+            List<object> objs = new List<object>();
+            var funcName = buffer[index];
+            index++;
+            while (index < count - 1)
+            {
+                var pro = buffer[index];
+                index++;
+                var type = GetType(buffer[index]);
+                if (type == null)
+                    break;
+                index++;
+                switch (pro)
                 {
-                    string[] fidleValue = str.Split(new string[] { SplitFidle }, StringSplitOptions.None);
-                    FieldInfo field = type.GetField(fidleValue[0]);
-                    field.SetValue(target, StringToValue(fidleValue[1], fidleValue[2]));
-                } catch { }
+                    case "基本类型":
+                        objs.Add(ToBaseValue(type, buffer, ref index));
+                        break;
+                    case "枚举类型":
+                        objs.Add(Enum.Parse(type, buffer[index]));
+                        index++;
+                        break;
+                    case "数组类型":
+                        var arrCount = Convert.ToInt32(buffer[index]);
+                        index++;
+                        Array array = Array.CreateInstance(type, arrCount);
+                        ToArray(buffer, ref index, ref array);
+                        objs.Add(array);
+                        break;
+                    case "字符串类型":
+                        objs.Add(buffer[index]);
+                        index++;
+                        break;
+                    case "泛型":
+                        var arrCount1 = Convert.ToInt32(buffer[index]);
+                        index++;
+                        object list = Activator.CreateInstance(type);
+                        if (type.ToString().Contains("Dictionary"))
+                        {
+                            Type dicType = list.GetType();
+                            Type keysT = type.GenericTypeArguments[0];
+                            Type valuesT = type.GenericTypeArguments[1];
+                            Array keys = Array.CreateInstance(keysT, arrCount1);
+                            Array values = Array.CreateInstance(valuesT, arrCount1);
+                            ToArray(buffer, ref index, ref keys);
+                            index++;
+                            ToArray(buffer, ref index, ref values);
+                            for (int i = 0; i < keys.Length; i++)
+                            {
+                                dicType.GetMethod("Add").Invoke(list, new object[] { keys.GetValue(i), values.GetValue(i) });
+                            }
+                        }
+                        else
+                        {
+                            Type itemType = type.GenericTypeArguments[0];
+                            Array array1 = Array.CreateInstance(itemType, arrCount1);
+                            ToArray(buffer, ref index, ref array1);
+                            var met = type.GetMethod("AddRange");
+                            met.Invoke(list, new object[] { array1 });
+                        }
+                        objs.Add(list);
+                        break;
+                    case "自定义类型":
+                        var obj1 = ToObject(buffer, ref index, type);
+                        objs.Add(obj1);
+                        break;
+                }
             }
-            return target;
+            func(funcName, objs.ToArray());
+        }
+
+        /// <summary>
+        /// 反序列化实体对象
+        /// </summary>
+        private static object ToObject(string[] buffer, ref int index, Type type)
+        {
+            var cons = type.GetConstructors();
+            if (cons.Length == 0)
+                return null;
+            if (cons[0].GetParameters().Length > 0 & !type.IsValueType)
+                return null;
+            object obj = obj = Activator.CreateInstance(type);
+            var fields = type.GetFields(BindingFlags.Public | BindingFlags.Instance);
+            for (int i = 0; i < fields.Length; i++)
+            {
+                if (buffer[index] == "字段结束")//字段结束符
+                    break;
+
+                if (i.ToString() != buffer[index])//如果字段匹配不对，跳过
+                    continue;
+
+                index++;
+
+                if (fields[i].FieldType.IsPrimitive)//如果是基础类型
+                {
+                    fields[i].SetValue(obj, ToBaseValue(fields[i].FieldType, buffer, ref index));
+                }
+                else if (fields[i].FieldType.IsEnum)//如果是枚举类型
+                {
+                    fields[i].SetValue(obj, Enum.Parse(fields[i].FieldType, buffer[index]));
+                    index++;
+                }
+                else if (fields[i].FieldType == typeof(string))//如果是字符串
+                {
+                    fields[i].SetValue(obj, buffer[index]);
+                    index++;
+                }
+                else if (fields[i].FieldType.IsArray)//如果是数组类型
+                {
+                    var arrType = GetType(buffer[index]);
+                    index++;
+                    var arrCount = Convert.ToInt32(buffer[index]);
+                    index++;
+                    Array array = Array.CreateInstance(arrType, arrCount);
+                    ToArray(buffer, ref index, ref array);
+                    fields[i].SetValue(obj, array);
+                }
+                //else if (serializeTypes.Contains(fields[i].FieldType))//如果是序列化类型
+                else
+                {
+                    if (fields[i].FieldType.IsGenericType)
+                    {
+                        if (fields[i].FieldType.GenericTypeArguments.Length == 2)
+                            fields[i].SetValue(obj, ToDictionary(buffer, ref index, fields[i].FieldType));
+                        else
+                            fields[i].SetValue(obj, ToList(buffer, ref index, fields[i].FieldType));
+                        continue;
+                    }
+                    fields[i].SetValue(obj, ToObject(buffer, ref index, fields[i].FieldType));
+                }
+            }
+            index++;
+            return obj;
+        }
+
+        /// <summary>
+        /// 反序列化泛型
+        /// </summary>
+        private static object ToList(string[] buffer, ref int index, Type type)
+        {
+            var arrCount1 = Convert.ToInt16(buffer[index]);
+            index++;
+            object list = Activator.CreateInstance(type);
+            Type itemType = type.GenericTypeArguments[0];
+            Array array1 = Array.CreateInstance(itemType, arrCount1);
+            ToArray(buffer, ref index, ref array1);
+            var met = type.GetMethod("AddRange");
+            met.Invoke(list, new object[] { array1 });
+            return list;
+        }
+
+        /// <summary>
+        /// 反序列化字典类型
+        /// </summary>
+        private static object ToDictionary(string[] buffer, ref int index, Type type)
+        {
+            var arrCount1 = Convert.ToInt16(buffer[index]);
+            index++;
+            object dic = Activator.CreateInstance(type);
+            Type keysT = type.GenericTypeArguments[0];
+            Type valuesT = type.GenericTypeArguments[1];
+            Array keys = Array.CreateInstance(keysT, arrCount1);
+            Array values = Array.CreateInstance(valuesT, arrCount1);
+            ToArray(buffer, ref index, ref keys);
+            index++;
+            ToArray(buffer, ref index, ref values);
+            for (int i = 0; i < keys.Length; i++)
+            {
+                type.GetMethod("Add").Invoke(dic, new object[] { keys.GetValue(i), values.GetValue(i) });
+            }
+            return dic;
         }
     }
 }

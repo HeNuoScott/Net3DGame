@@ -13,6 +13,20 @@
     public class TcpClient : NetClientBase
     {
         /// <summary>
+        /// 构造可靠传输协议客户端
+        /// </summary>
+        public TcpClient() { }
+
+        /// <summary>
+        /// 构造可靠传输协议客户端
+        /// </summary>
+        /// <param name="useUnityThread">unity主线程进行更新</param>
+        public TcpClient(bool useUnityThread)
+        {
+            UseUnityThread = useUnityThread;
+        }
+
+        /// <summary>
         /// 连接服务器
         /// </summary>
         /// <param name="host">IP地址</param>

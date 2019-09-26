@@ -1,18 +1,63 @@
-using Net.Client;
-using Net.Server;
-using Net.Share;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace Net.Entity
+﻿namespace Net.Entity
 {
+    using Net.Client;
+    using Net.Server;
+    using Net.Share;
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Threading;
+    using System.Threading.Tasks;
+
+    //文件传输组件使用方法: 可直接拷贝到控制台项目进行测试, 注意: 你的C盘必须要有这个文件 @"C:/test.mp4"
+    /*
+        Net.Server.UdpServer server = new Net.Server.UdpServer();//创建服务器对象
+        server.Log += (log) => { Console.WriteLine(log); };
+        server.Start();//启动服务器
+        server.OnRevdBufferHandle += (a, b, c, d, e) => {//监听客户端发送的数据请求
+            var func = Net.Share.NetConvert.Deserialize(c, d, e);//解析客户端数据
+            if (func.func == "Download")//如果是下载rpc函数
+            {
+                server.Send(a, "Start");//告诉客户端可以上传文件流了
+                FileTransfer file = new FileTransfer(server);//创建下载文件实例
+                Stopwatch stopwatch = new Stopwatch();
+                stopwatch.Start();
+                file.ReadFile(buffer => {//监听下载完成后的所有字节
+                    File.WriteAllBytes(@"C:/demo.mp4", buffer);//保存文件到磁盘
+                    stopwatch.Stop();
+                    Console.WriteLine("上传完成,用时:" + stopwatch.Elapsed.ToString() + " 文件大小:" + buffer.Length + "/byte");
+                });
+            }
+        };
+
+        Thread.Sleep(1000);
+
+        Net.Client.UdpClient client = new Net.Client.UdpClient();//创建客户端对象
+        client.Log += (log) => { Console.WriteLine(log); };
+        client.Connect(result=> {//连接服务器
+            if (result) {//当连接成功
+                client.Send("进站");//发送一次请求进入服务器
+                Thread.Sleep(50);
+                client.Send("Download");//发送下载请求,让服务器创建下载组件
+                client.OnRevdBufferHandle += (a, b, c, d) => {//监听服务器发送的数据请求
+                    var func = Net.Share.NetConvert.Deserialize(b, c, d);//解析服务器数据
+                    if (func.func == "Start")//如果是开始上传文件rpc函数
+                    {
+                        FileTransfer file = new FileTransfer(client);//创建文件上传组件
+                        file.WriteFile(@"C:/test.mp4");//发送文件到服务器
+                        file.progress += (value) => {
+                            Console.WriteLine("上传进度:" + value);
+                        };
+                    }
+                };
+            }
+        });
+    */
+
     /// <summary>
     /// 网络文件传输实体组建
     /// </summary>
-    public class FileTransfer : IDisposable
+    public sealed class FileTransfer : IDisposable
     {
         NetClientBase client;
         NetServerBase server;
@@ -20,7 +65,7 @@ namespace Net.Entity
         int fileCount;
         MemoryStream stream = new MemoryStream();
         int index, abnormal;
-        event Action<byte[]> filedata;
+        event Action<byte[]> Filedata;
         /// <summary>
         /// 上传或下载状态, 结果为真时下载成功，结果为假时下载失败
         /// </summary>
@@ -40,7 +85,7 @@ namespace Net.Entity
             this.client = client;
             client.AddRpcHandle(this);
         }
-
+        
         /// <summary>
         /// 创建服务器文件接收
         /// </summary>
@@ -66,7 +111,6 @@ namespace Net.Entity
         /// <summary>
         /// 写文件-  将文件从本地发送给服务器
         /// </summary>
-        /// <param name="file"></param>
         public void WriteFile(string file)
         {
             byte[] filedata = File.ReadAllBytes(file);
@@ -75,7 +119,7 @@ namespace Net.Entity
             datas = new Dictionary<int, byte[]>();
             while (index < filedata.Length)
             {
-                int count = 5000;
+                int count = 15000;
                 if (index + count >= filedata.Length)
                     count = filedata.Length - index;
                 using (MemoryStream stream = new MemoryStream(filedata, index, count))
@@ -84,7 +128,7 @@ namespace Net.Entity
                     datas.Add(key, buf1);
                     key++;
                 }
-                index += 5000;
+                index += 15000;
             }
             fileCount = filedata.Length;
             this.index = 0;
@@ -123,7 +167,7 @@ namespace Net.Entity
             datas = new Dictionary<int, byte[]>();
             while (index < filedata.Length)
             {
-                int count = 5000;
+                int count = 15000;
                 if (index + count >= filedata.Length)
                     count = filedata.Length - index;
                 using (MemoryStream stream = new MemoryStream(filedata, index, count))
@@ -132,7 +176,7 @@ namespace Net.Entity
                     datas.Add(key, buf1);
                     key++;
                 }
-                index += 5000;
+                index += 15000;
             }
             fileCount = filedata.Length;
             this.index = 0;
@@ -169,7 +213,7 @@ namespace Net.Entity
                 {
                     server.Send(player, "DownloadIndex", this.index, true);
                     byte[] buff = stream.ToArray();
-                    this.filedata?.Invoke(buff);
+                    this.Filedata?.Invoke(buff);
                     Dispose();
                 }
                 else
@@ -191,7 +235,7 @@ namespace Net.Entity
                 {
                     client.Send("ClientDownloadIndex", this.index, true);
                     byte[] buff = stream.ToArray();
-                    this.filedata?.Invoke(buff);
+                    Filedata?.Invoke(buff);
                     Dispose();
                 }
                 else
@@ -244,7 +288,7 @@ namespace Net.Entity
         /// <param name="filedata"></param>
         public void ReadFile(Action<byte[]> filedata)
         {
-            this.filedata = filedata;
+            Filedata = filedata;
         }
 
         /// <summary>

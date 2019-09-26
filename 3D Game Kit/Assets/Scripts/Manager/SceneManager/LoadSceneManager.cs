@@ -17,6 +17,7 @@ namespace QF.LSM
         public IUIData uiData;
         public string defaultScene = "Lobby";
         public string loadingSceneName = "Loading";
+        public bool isStartBattle = false;
 
         /// <summary>
         /// 加载场景(场景切换,自带场景过度)
@@ -36,13 +37,14 @@ namespace QF.LSM
         /// </summary>
         /// <param name="uiPanel">场景UI</param>
         /// <param name="uiLevel">UI层级</param>
-        public void LoadSceneAsync(string uiPanel, UILevel uiLevel, IUIData uiData = null)
+        public void LoadSceneAsync(bool isBattle,string uiPanel, UILevel uiLevel, IUIData uiData = null)
         {
             loadSceneName = defaultScene;
             loadingSceneName = "Loading";
             loadUIPanel = uiPanel;
             uiTargetLevel = uiLevel;
             this.uiData = uiData;
+            isStartBattle = isBattle;
             StartCoroutine(Load(loadingSceneName));
         }
         /// <summary>
@@ -52,13 +54,14 @@ namespace QF.LSM
         /// <param name="scene">目标场景</param>
         /// <param name="uiPanel">场景UI</param>
         /// <param name="uiLevel">UI层级</param>
-        public void LoadSceneAsync(string scene, string uiPanel, UILevel uiLevel, IUIData uiData = null)
+        public void LoadSceneAsync(bool isBattle, string scene, string uiPanel, UILevel uiLevel, IUIData uiData = null)
         {
             loadSceneName = scene;
             loadingSceneName = "Loading";
             loadUIPanel = uiPanel;
             uiTargetLevel = uiLevel;
             this.uiData = uiData;
+            isStartBattle = isBattle;
             StartCoroutine(Load(loadingSceneName));
         }
         /// <summary>
@@ -68,13 +71,14 @@ namespace QF.LSM
         /// <param name="loadingScene">过度场景</param>
         /// <param name="uiPanel">场景UI</param>
         /// <param name="uiLevel">UI层级</param>
-        public void CustomLoadSceneAsync(string loadingScene,string uiPanel, UILevel uiLevel, IUIData uiData = null)
+        public void CustomLoadSceneAsync(bool isBattle, string loadingScene,string uiPanel, UILevel uiLevel, IUIData uiData = null)
         {
             loadSceneName = defaultScene;
             loadingSceneName = loadingScene;
             loadUIPanel = uiPanel;
             uiTargetLevel = uiLevel;
             this.uiData = uiData;
+            isStartBattle = isBattle;
             StartCoroutine(Load(loadingSceneName));
         }
         /// <summary>
@@ -85,13 +89,14 @@ namespace QF.LSM
         /// <param name="scene">目标场景</param>
         /// <param name="uiPanel">场景UI</param>
         /// <param name="uiLevel">UI层级</param>
-        public void CustomLoadSceneAsync(string loadingScene, string scene, string uiPanel, UILevel uiLevel, IUIData uiData = null)
+        public void CustomLoadSceneAsync(bool isBattle, string loadingScene, string scene, string uiPanel, UILevel uiLevel, IUIData uiData = null)
         {
             loadSceneName = scene;
             loadingSceneName = loadingScene;
             loadUIPanel = uiPanel;
             uiTargetLevel = uiLevel;
             this.uiData = uiData;
+            isStartBattle = isBattle;
             StartCoroutine(Load(loadingSceneName));
         }
     }

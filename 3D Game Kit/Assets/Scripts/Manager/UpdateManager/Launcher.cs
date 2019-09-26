@@ -32,7 +32,7 @@ namespace QF.UpdateMgr
                     UpdateAssetManager.Instance.CheckAsset(() => 
                     {
                         Debug.Log("开始游戏");
-                        LSM.LoadSceneManager.Instance.LoadSceneAsync("LobbyPanel", UILevel.Common);
+                        LSM.LoadSceneManager.Instance.LoadSceneAsync(false, "LobbyPanel", UILevel.Common);
                     });
                 }
             });

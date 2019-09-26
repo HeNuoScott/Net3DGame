@@ -55,7 +55,7 @@ namespace QFramework.HeNuoApp
         private void Instance_ExitRoomCallback()
         {
             Debug.Log("·µ»Ø´óÌü");
-            QF.LSM.LoadSceneManager.Instance.LoadSceneAsync("Lobby", "LobbyPanel", UILevel.Common);
+            QF.LSM.LoadSceneManager.Instance.LoadSceneAsync(false,"Lobby", "LobbyPanel", UILevel.Common);
         }
 
         private void ChatManager_ShowMassage(string msg)

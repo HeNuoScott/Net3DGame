@@ -19,7 +19,7 @@ namespace QF.LSM
             Slider_Loding.maxValue = 0.9f;
             Slider_Loding.value = 0;
             //异步加载加载3D场景
-            async = SceneManager.LoadSceneAsync(LoadSceneManager.Instance.loadSceneName,LoadSceneMode.Additive);
+            async = SceneManager.LoadSceneAsync(LoadSceneManager.Instance.loadSceneName, LoadSceneMode.Additive);
             UIManager.Instance.OpenUI(LoadSceneManager.Instance.loadUIPanel, LoadSceneManager.Instance.uiTargetLevel, LoadSceneManager.Instance.uiData);
             yield return async;
         }
@@ -32,7 +32,16 @@ namespace QF.LSM
             }
             if (Slider_Loding.value == Slider_Loding.maxValue)
             {
-                SceneManager.UnloadSceneAsync(LoadSceneManager.Instance.loadingSceneName);
+                AsyncOperation unloadSceneAsync = SceneManager.UnloadSceneAsync(LoadSceneManager.Instance.loadingSceneName);
+                unloadSceneAsync.completed += UnloadSceneAsync_completed;
+            }
+        }
+
+        private void UnloadSceneAsync_completed(AsyncOperation unloadAsync)
+        {
+            if (LoadSceneManager.Instance.isStartBattle)
+            {
+                Client.SpwanerManager.Instance.SendCreatePlayerRequest();
             }
         }
     }

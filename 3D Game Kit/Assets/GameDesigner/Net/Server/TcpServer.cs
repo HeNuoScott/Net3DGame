@@ -2,7 +2,6 @@
 {
     using Net.Share;
     using System;
-    using System.Collections.Generic;
     using System.Net;
     using System.Net.Sockets;
     using System.Threading;
@@ -29,7 +28,6 @@
             OnStartingHandle += OnStarting;
             OnStartupCompletedHandle += OnStartupCompleted;
             OnHasConnectHandle += OnHasConnect;
-            OnInvokeRpcHandle += OnInvokeRpc;
             OnRevdCustomBufferHandle += OnReceiveBuffer;
             OnRemoveClientEvent += OnRemoveClient;
             OnRevdBufferHandle += ReceiveBufferHandle;
@@ -55,7 +53,7 @@
 
             new Thread(HeartUpdate) { IsBackground = true, Name = "HeartUpdate" }.Start();//创建心跳包线程
             new Thread(UnHeartUpdate) { IsBackground = true, Name = "UnHeartUpdate" }.Start();//创建未知客户端心跳包线程
-            new Thread(ReceiveHandle) { IsBackground = true, Name = "ReceiveHandle" }.Start();//创建处理线程
+            //new Thread(ReceiveHandle) { IsBackground = true, Name = "ReceiveHandle" }.Start();//创建处理线程
             new Thread(DebugThread) { IsBackground = true, Name = "DebugThread" }.Start();
             new Thread(DebugLogThread) { IsBackground = true, Name = "DebugLogThread" }.Start();
 
@@ -63,7 +61,7 @@
             {
                 workerThreads--;
                 new Thread(TcpUpdate) { IsBackground = true, Name = "TcpUpdate " + workerThreads }.Start();
-                new Thread(ReceiveHandle) { IsBackground = true, Name = "ReceiveHandle " + workerThreads }.Start();
+                //new Thread(ReceiveHandle) { IsBackground = true, Name = "ReceiveHandle " + workerThreads }.Start();
             }
 
             var scene = OnAddDefaultScene();
@@ -75,14 +73,13 @@
 
         void AcceptConnect()
         {
-            byte[] tcpBuffer = new byte[50000];
             while (IsRunServer)
             {
                 Thread.Sleep(1);
                 try
                 {
                     var client = Server.Accept();
-                    var unClient = new NetPlayer(GUID, client);
+                    var unClient = new NetPlayer(GUID, client) { LastTime = DateTime.Now.AddMinutes(5) };
                     OnHasConnectHandle?.Invoke(unClient);
                     logList.Add("有客户端连接:" + client.RemoteEndPoint.ToString());
                     UnClients.TryAdd(client.RemoteEndPoint, unClient);
@@ -108,16 +105,12 @@
                             return;
                         int count = unClient.Stream.Read(buffer, 0, buffer.Length);
                         if (ResolveUnBuffer(unClient, buffer, count) == -1)
-                        {
                             UnClients.TryRemove(unClient.RemotePoint[GUID], out NetPlayer value);
-                            value?.Dispose();
-                            value = null;
-                        }
                     });
                 }
                 catch (Exception e)
                 {
-                    logList.Add("未知客户端更新线程异常:" + e);
+                    logList.Add("未知客户端更新线程异常:" + e.Message);
                 }
             }
         }
@@ -141,33 +134,13 @@
                         int count = client.Stream.Read(buffer, 0, buffer.Length);
                         receiveAmount++;
                         receiveCount += count;
-                        revdBufs.Enqueue(new ReceiveBuffer(buffer, count, client));
+                        //revdBufs.Enqueue(new ReceiveBuffer(buffer, count, client));
+                        ResolveBuffer(client, buffer, count);//处理缓冲区数据
                     });
                 }
                 catch (Exception e)
                 {
-                    logList.Add("TCP主线程异常:" + e);
-                }
-            }
-        }
-
-        /// <summary>
-        /// 接收数据处理线程
-        /// </summary>
-        protected override void ReceiveHandle()
-        {
-            ReceiveBuffer receive = new ReceiveBuffer();
-            while (IsRunServer)
-            {
-                Thread.Sleep(1);
-                try
-                {
-                    if (revdBufs.TryDequeue(out receive))
-                        ResolveBuffer(receive.client, receive.buffer, receive.count);//处理缓冲区数据
-                }
-                catch (Exception e)
-                {
-                    logList.Add($"处理异常:{e.Message}");
+                    logList.Add("TCP主线程异常:" + e.Message);
                 }
             }
         }
@@ -191,7 +164,11 @@
                     case NetCmd.QuitGame://退出程序指令
                         return -1;
                 }
-                NetPlayer unClient = OnUnClientRequest(unPlayer, cmd, buffer, index + 3, size);
+                NetPlayer unClient;
+                if(cmd == NetCmd.EntityRpc)
+                    unClient = unPlayer.OnUnClientRequest(cmd, buffer, index + 3, size);
+                else
+                    unClient = OnUnClientRequest(unPlayer, cmd, buffer, index + 3, size);
                 if (unClient != null)//当有客户端连接时,如果允许用户添加此客户端
                 {
                     if (!unClient.RemotePoint.ContainsKey(GUID))
@@ -253,6 +230,8 @@
             {
                 try
                 {
+                    if (DateTime.Now > client.LastTime)
+                        throw new Exception("未知客户端占用连接通道!");
                     Send(client, new byte[] { 5, 0, 0 }, 0, 3);
                 }
                 catch (Exception ex)
@@ -280,6 +259,7 @@
                 {
                     if (Clients.TryRemove(client.RemotePoint[GUID], out NetPlayer recClient))
                         OnRemoveClientEvent?.Invoke(recClient);
+                    recClient?.OnRemoveClient();
                     Players.TryRemove(client.playerID, out NetPlayer recClient1);
                     if (Scenes.ContainsKey(client.sceneID))
                         Scenes[client.sceneID].players.Remove(client);

@@ -1,7 +1,9 @@
 
 namespace Server
 {
+    using Net.Server;
     using QF;
+
     [MonoSingletonPath("[GameDesigner]/ServerManager")]
     public class ServerManager : MonoSingleton<ServerManager>
     {

@@ -13,32 +13,6 @@
     /// </summary>
     public class NetConvert : NetConvertOld
     {
-        /// <summary>
-        /// 函数数据
-        /// </summary>
-        public struct FuncData
-        {
-            /// <summary>
-            /// 函数名称
-            /// </summary>
-            public string func;
-            /// <summary>
-            /// 参数数组
-            /// </summary>
-            public object[] pars;
-
-            /// <summary>
-            /// 构造函数
-            /// </summary>
-            /// <param name="func"></param>
-            /// <param name="pars"></param>
-            public FuncData(string func, object[] pars)
-            {
-                this.func = func;
-                this.pars = pars;
-            }
-        }
-
         private static ConcurrentDictionary<short, Type> networkTypes = new ConcurrentDictionary<short, Type>();
         private static ConcurrentDictionary<Type, short> networkType1s = new ConcurrentDictionary<Type, short>();
 
@@ -498,7 +472,7 @@
         /// </summary>
         /// <param name="pars"></param>
         /// <returns></returns>
-        public static byte[] Serialize(params object[] pars)
+        public new static byte[] Serialize(params object[] pars)
         {
             return Serialize("", pars);
         }
@@ -676,7 +650,7 @@
         /// </summary>
         /// <param name="buffer"></param>
         /// <returns></returns>
-        public new static FuncData Deserialize(byte[] buffer) => DeserializeFunc(buffer);
+        public static FuncData Deserialize(byte[] buffer) => DeserializeFunc(buffer);
 
         /// <summary>
         /// 新版反序列化
@@ -692,7 +666,7 @@
         /// <param name="index">字节从哪个位置开始</param>
         /// <param name="count">字节大小</param>
         /// <returns></returns>
-        public static new FuncData Deserialize(byte[] buffer, int index, int count)
+        public static FuncData Deserialize(byte[] buffer, int index, int count)
         {
             return DeserializeFunc(buffer, index, count);
         }

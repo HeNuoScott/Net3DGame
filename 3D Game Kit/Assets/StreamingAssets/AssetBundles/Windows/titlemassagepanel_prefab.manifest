@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 3839739685
+CRC: 4144448686
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 98170a3843d19d625a2593fdfa8a61ed
+    Hash: 75b6d2146c57c0f69208f6ae1f998dcf
   TypeTreeHash:
     serializedVersion: 2
     Hash: 8e95b581048ed01be25ffa89f1211634
@@ -32,5 +32,5 @@ ClassTypes:
 - Class: 224
   Script: {instanceID: 0}
 Assets:
-- Assets/Prefabs/UI/UI_Network/TitleMassagePanel.prefab
+- Assets/Art/Prefabs/UI/UI_Network/TitleMassagePanel.prefab
 Dependencies: []

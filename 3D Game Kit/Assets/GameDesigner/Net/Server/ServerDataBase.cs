@@ -9,6 +9,7 @@
     /// <summary>
     /// 服务器数据库
     /// </summary>
+    [Obsolete("不推荐使用")]
     public class ServerDataBase
     {
         /// <summary>

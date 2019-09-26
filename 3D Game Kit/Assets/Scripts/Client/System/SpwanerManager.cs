@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 using System.Threading;
 using System.Threading.Tasks;
 using QF;
+using QF.Res;
 
 namespace Client
 {
@@ -18,10 +19,17 @@ namespace Client
     {
         public GameObject player;
         Dictionary<string, GameObject> players = new Dictionary<string, GameObject>();
-
         private bool isResponse = false;
         private int outTime = 10;
         public string loginfo = string.Empty;
+
+        private ResLoader mResLoader;
+
+        private void Start()
+        {
+            mResLoader = ResLoader.Allocate();
+            player = mResLoader.LoadSync<GameObject>("player");
+        }
 
         private void Update()
         {
@@ -37,10 +45,14 @@ namespace Client
             base.OnDestroy();
             //移除远程调用函数
             RemoveRpc(this);
+
+            mResLoader.Recycle2Cache();
+            mResLoader = null;
         }
 
         public void SendCreatePlayerRequest()
         {
+            players.Clear();
             isResponse = false;
             int times = 0;
             Task.Run(() =>
@@ -62,23 +74,26 @@ namespace Client
         }
 
         [Net.Share.Rpc]
-        public void CreateLocalPlayer(string playerName)
+        public void CreateLocalPlayer(string playerName,Vector3 spwanerPosition)
         {
             isResponse = true;
-            GameObject palyer = Instantiate(this.player, transform.position, transform.rotation);
-            player.GetComponent<ClientPlayer>().playerName = playerName;
+            GameObject localPalyer = Instantiate(this.player, spwanerPosition, transform.rotation);
+            localPalyer.GetComponent<ClientPlayer>().playerName = playerName;
             ClientNetworkManager.Instance.playerName = playerName;
+
+            players.Add(playerName, localPalyer);
         }
 
         [Net.Share.Rpc]
-        public void CreateOtherPlayer(string playerName)
+        public void CreateOtherPlayer(string playerName,Vector3 spwanerPosition)
         {
-            if (playerName == ClientNetworkManager.Instance.playerName) return;
-            if (players.ContainsKey(playerName)) return;
-            GameObject palyer = Instantiate(this.player, transform.position, transform.rotation);
-            player.GetComponent<ClientPlayer>().playerName = playerName;
+            if (playerName == ClientNetworkManager.Instance.playerName || players.ContainsKey(playerName)) return;
 
-            players.Add(playerName, palyer);
+            GameObject palyerIns = Instantiate(this.player, spwanerPosition, transform.rotation);
+            palyerIns.GetComponent<ClientPlayer>().playerName = playerName;
+
+            players.Add(playerName, palyerIns);
+
         }
 
         [Net.Share.Rpc]
@@ -92,4 +107,5 @@ namespace Client
         }
 
     }
+
 }

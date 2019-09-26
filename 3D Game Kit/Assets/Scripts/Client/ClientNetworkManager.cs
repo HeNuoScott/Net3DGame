@@ -83,11 +83,14 @@ namespace Client
         }
 
         [Net.Share.Rpc]//获取用户信息结果
-        private void CetUserSelfInfoResult(string playerName, string acc)
+        private void CetUserSelfInfoResult(string playerName, string acc, string roomName, string sceneName)
         {
+            this.currentRoomName = roomName;
+            this.currentSceneName = sceneName;
             this.playerName = playerName;
             this.Acc = acc;
         }
+
         [Net.Share.Rpc]//其他地方登陆通知
         private void OtherLogin()
         {

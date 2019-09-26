@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 2762548903
+CRC: 3984933500
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 3a3b81c692f1543954c3c5ef38ad21d9
+    Hash: f3ffec570c26f7583eb006580246b19c
   TypeTreeHash:
     serializedVersion: 2
     Hash: 7a302bc872e7e06919309b73466570a4
@@ -52,5 +52,5 @@ ClassTypes:
 - Class: 225
   Script: {instanceID: 0}
 Assets:
-- Assets/Prefabs/UI/UI_Network/ChatPanel.prefab
+- Assets/Art/Prefabs/UI/UI_Network/ChatPanel.prefab
 Dependencies: []

@@ -20,7 +20,7 @@
          }
          mAllUI.Clear();
 	}
-#GameDesigner 2019.9.9
+#GameDesigner 2019.9.18
 	NetScene 类中添加字段
 	public string sceneName;
 	

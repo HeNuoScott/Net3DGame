@@ -76,7 +76,10 @@ namespace Client
         {
             if (callbackCode.callBack)
             {
+                if (ClientNetworkManager.Instance.currentRoomName == callbackCode.roomName) return;
+
                 ClientNetworkManager.Instance.currentRoomName = callbackCode.roomName;
+                ClientNetworkManager.Instance.currentSceneName = callbackCode.targetScene;
                 //创建房间反馈
                 CreateRoomCallback?.Invoke(callbackCode);
             }
@@ -92,7 +95,10 @@ namespace Client
         {
             if (callbackCode.callBack)
             {
+                if (ClientNetworkManager.Instance.currentRoomName == callbackCode.roomName) return;
+
                 ClientNetworkManager.Instance.currentRoomName = callbackCode.roomName;
+                ClientNetworkManager.Instance.currentSceneName = callbackCode.targetScene;
                 //加入房间成功
                 JoinRoomRoomCallback?.Invoke(callbackCode);
             }
@@ -107,7 +113,8 @@ namespace Client
         private void ExitRoomResult()
         {
             isResponse = true;
-            ClientNetworkManager.Instance.currentRoomName = "Lobby";
+            ClientNetworkManager.Instance.currentRoomName = "MainScene";
+            ClientNetworkManager.Instance.currentSceneName = "Lobby";
             ExitRoomCallback?.Invoke();
             //退出房间成功
         }

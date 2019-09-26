@@ -3,10 +3,10 @@ using UnityEngine;
 using Net.Server;
 using Net.Share;
 
-namespace Server
+namespace Net.Server
 {
     //数据库  储存用户信息
-    public class DataBase : Net.Server.ServerDataBase
+    public class DataBase : ServerDataBase
     {
         /// <summary>
         /// 运行时使用这个  不用父类里面的ConcurrentDictionary<string, NetPlayer> PlayerInfos
