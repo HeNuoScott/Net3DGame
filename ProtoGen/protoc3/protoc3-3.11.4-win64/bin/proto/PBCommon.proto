@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+option optimize_for = LITE_RUNTIME;
+
+package PBCommon;
+
+enum ClientToServerID{
+	TCP_Up_UnKnown = 0;
+	TCP_REGISTER = 1;					//注册
+	TCP_LOGIN = 2;						//登录
+
+	TCP_REQUEST_MATCH = 10;				//请求匹配
+	TCP_CANCEL_MATCH = 11;				//取消匹配
+
+	UDP_BATTLE_READY = 51;				//战斗准备
+	UDP_UP_PLAYER_OPERATIONS = 53;		//上传玩家操作
+	UDP_UP_DELTA_FRAMES = 55;			//请求发送丢失帧数据
+	UDP_UP_GAME_OVER = 57;				//游戏结束
+}
+
+enum ServerToClientID{
+	TCP_Down_UnKnown = 0;
+	TCP_RESPONSE_REGISTER = 1;			//注册
+	TCP_RESPONSE_LOGIN = 2;				//登录反馈
+
+	TCP_RESPONSE_REQUEST_MATCH = 10;	//请求匹配反馈
+	TCP_RESPONSE_CANCEL_MATCH = 11;		//取消匹配反馈
+
+	TCP_ENTER_BATTLE = 50;				//进入战斗
+	UDP_BATTLE_START = 51;				//开始战斗
+	UDP_DOWN_FRAME_OPERATIONS = 53;		//操作帧同步
+	UDP_DOWN_DELTA_FRAMES = 55;			//丢失帧同步
+	UDP_DOWN_GAME_OVER = 57;			//游戏结束
+}
+
+enum GameType{
+	GAME_UNKONW = 0;
+	GAME_Type1 = 1;
+	GAME_Type2 = 2;
+}

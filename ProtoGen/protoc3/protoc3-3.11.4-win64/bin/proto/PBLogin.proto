@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+option optimize_for = LITE_RUNTIME;
+
+package PBLogin;
+
+//***********************请求*******************************
+message TcpRegister{
+	string account = 1;
+	string password = 2;
+}
+
+message TcpLogin{
+	string token = 1;
+	string account = 2;
+	string password = 3;
+}
+
+//***********************响应*******************************
+message TcpResponseRegister{
+	bool result = 1;
+	string token = 2;
+}
+
+message TcpResponseLogin{
+	int32 uid = 1;
+	bool result = 2;
+	string token = 3;
+	string reason = 4;
+}

@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{960D55FB-AA3A-4D9A-8EB1-C4D74C3AF9F8}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Server</RootNamespace>
+    <AssemblyName>Server</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Google.Protobuf">
+      <HintPath>..\PluginDLL\Google.Protobuf.dll</HintPath>
+    </Reference>
+    <Reference Include="protobuf-net">
+      <HintPath>..\PluginDLL\protobuf-net.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Manager\MatchManager.cs" />
+    <Compile Include="Manager\RoomManager.cs" />
+    <Compile Include="Manager\RoomManager\BattleController.cs" />
+    <Compile Include="Manager\RoomManager\LobbyController.cs" />
+    <Compile Include="Manager\UserManager.cs" />
+    <Compile Include="Message\MessageBuffer.cs" />
+    <Compile Include="Message\ProtoMessage\PBBattle.cs" />
+    <Compile Include="Message\ProtoMessage\PBCommon.cs" />
+    <Compile Include="Message\ProtoMessage\PBLogin.cs" />
+    <Compile Include="Message\ProtoMessage\PBMatch.cs" />
+    <Compile Include="Message\ProtoTransfer.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Service\Config\ServerConfig.cs" />
+    <Compile Include="Service\KcpService.cs" />
+    <Compile Include="Service\Kcp\KCP.cs" />
+    <Compile Include="Service\MainService.cs" />
+    <Compile Include="Message\MessageInfo.cs" />
+    <Compile Include="Unitl\Session.cs" />
+    <Compile Include="Service\TcpService.cs" />
+    <Compile Include="Service\UdpService.cs" />
+    <Compile Include="Unitl\Debug.cs" />
+    <Compile Include="User\TokenHelper.cs" />
+    <Compile Include="User\User.cs" />
+    <Compile Include="User\UserAccountData.cs" />
+    <Compile Include="User\UserBattleData.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

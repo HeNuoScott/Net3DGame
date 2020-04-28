@@ -1,0 +1,1 @@
+proto文件转换为cs脚本插件，使用时运行run.bat，将要转化的proto文件放入proto文件夹下
