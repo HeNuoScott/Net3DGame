@@ -5,6 +5,7 @@ using System.Net;
 using System;
 using PBCommon;
 using PBLogin;
+using PBMatch;
 
 namespace Server
 {
@@ -77,8 +78,9 @@ namespace Server
                 {
                     for (int i = 0; i < mClientSessions.Count; i++)
                     {
-                        if (mClientSessions[i].IsConnected==false)
+                        if (mClientSessions[i].IsConnected == false)
                         {
+                            Debug.Log("断开连接：" + mClientSessions[i].Id);
                             mClientSessions[i].Disconnect();
                         }
                     }
@@ -215,17 +217,47 @@ namespace Server
                     UserLogin(messageInfo);
                     break;
                 case ClientToServerID.TcpRequestMatch://匹配
+                    RequestMatch(messageInfo);
                     break;
                 case ClientToServerID.TcpCancelMatch://取消匹配
+                    CancelMatch(messageInfo);
                     break;
                 default:
                     break;
             }
         }
 
-        /// <summary>
-        /// 注册账号
-        /// </summary>
+
+        // 取消匹配
+        private void CancelMatch(MessageInfo messageInfo)
+        {
+            TcpCancelMatch _info = ProtoTransfer.DeserializeProtoBuf3<TcpCancelMatch>(messageInfo.Buffer);
+            User user = UserManager.Instance.GetUserByToken(_info.Token);
+            bool _result = MatchManager.Instance.CancleMatch(user);
+            if (_result)
+            {
+                byte[] bytes = ProtoTransfer.SerializeProtoBuf3<TcpResponseCancelMatch>(new TcpResponseCancelMatch());
+                MessageBuffer _message = new MessageBuffer((int)ServerToClientID.TcpResponseCancelMatch, bytes, 0);
+                MessageInfo _messageInfo = new MessageInfo(_message, messageInfo.Session);
+                Debug.Log("用户取消匹配");
+                Send(_messageInfo);
+            }
+        }
+
+        // 请求匹配
+        private void RequestMatch(MessageInfo messageInfo)
+        {
+            TcpRequestMatch _info = ProtoTransfer.DeserializeProtoBuf3<TcpRequestMatch>(messageInfo.Buffer);
+            User user = UserManager.Instance.GetUserByToken(_info.Token);
+            MatchManager.Instance.AddMatchUser(user);
+            byte[] bytes = ProtoTransfer.SerializeProtoBuf3<TcpResponseRequestMatch>(new TcpResponseRequestMatch());
+            MessageBuffer _message = new MessageBuffer((int)ServerToClientID.TcpResponseRequestMatch, bytes, 0);
+            MessageInfo _messageInfo = new MessageInfo(_message, messageInfo.Session);
+            Debug.Log("用户请求匹配");
+            Send(_messageInfo);
+        }
+
+        // 注册账号
         private void UserRegister(MessageInfo messageInfo)
         {
             Debug.Log("注册账号");
@@ -251,9 +283,7 @@ namespace Server
             Send(_messageInfo);
         }
 
-        /// <summary>
-        /// 用户登录
-        /// </summary>
+        // 用户登录
         private void UserLogin(MessageInfo messageInfo)
         {
             Debug.Log("账号登录");

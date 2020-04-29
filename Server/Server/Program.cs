@@ -22,7 +22,10 @@ namespace Server
             Debug.Log("2. use kcp.");
             Protocol mProtocol = Console.ReadLine() == "1" ? Protocol.UDP : Protocol.KCP;
 
-            MainService mService = new MainService(ServerConfig.TCP_PORT, ServerConfig.UDP_PORT, mMode, mProtocol);
+            Debug.Log("服务器启动，请输入对战一局的人数，按Enter确定");
+            ServerConfig.PVP_Number = int.Parse(Console.ReadLine());
+
+            MainService mService = new MainService(mMode, mProtocol);
 
             mService.Start();
         }

@@ -1,4 +1,0 @@
-message ReqLogin {
-	optional string account = 1; // 账号
-	optional string password = 2; // 密码
-}

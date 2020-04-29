@@ -49,10 +49,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Manager\BattleManager.cs" />
     <Compile Include="Manager\MatchManager.cs" />
-    <Compile Include="Manager\RoomManager.cs" />
-    <Compile Include="Manager\RoomManager\BattleController.cs" />
-    <Compile Include="Manager\RoomManager\LobbyController.cs" />
+    <Compile Include="Manager\BattleController.cs" />
     <Compile Include="Manager\UserManager.cs" />
     <Compile Include="Message\MessageBuffer.cs" />
     <Compile Include="Message\ProtoMessage\PBBattle.cs" />
@@ -67,11 +66,10 @@
     <Compile Include="Service\Kcp\KCP.cs" />
     <Compile Include="Service\MainService.cs" />
     <Compile Include="Message\MessageInfo.cs" />
-    <Compile Include="Unitl\Session.cs" />
+    <Compile Include="Service\Session.cs" />
     <Compile Include="Service\TcpService.cs" />
     <Compile Include="Service\UdpService.cs" />
     <Compile Include="Unitl\Debug.cs" />
-    <Compile Include="User\TokenHelper.cs" />
     <Compile Include="User\User.cs" />
     <Compile Include="User\UserAccountData.cs" />
     <Compile Include="User\UserBattleData.cs" />

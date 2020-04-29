@@ -24,15 +24,16 @@ namespace PBMatch {
     static PBMatchReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "Cg1QQk1hdGNoLnByb3RvEgdQQk1hdGNoIi4KD1RjcFJlcXVlc3RNYXRjaBIL",
-            "CgN1aWQYASABKAUSDgoGcm9sZUlEGAIgASgFIh0KDlRjcENhbmNlbE1hdGNo",
-            "EgsKA3VpZBgBIAEoBSIZChdUY3BSZXNwb25zZVJlcXVlc3RNYXRjaCIYChZU",
-            "Y3BSZXNwb25zZUNhbmNlbE1hdGNoQgJIA2IGcHJvdG8z"));
+            "Cg1QQk1hdGNoLnByb3RvEgdQQk1hdGNoIj0KD1RjcFJlcXVlc3RNYXRjaBIL",
+            "CgN1aWQYASABKAUSDgoGcm9sZUlEGAIgASgFEg0KBXRva2VuGAMgASgJIiwK",
+            "DlRjcENhbmNlbE1hdGNoEgsKA3VpZBgBIAEoBRINCgV0b2tlbhgCIAEoCSIZ",
+            "ChdUY3BSZXNwb25zZVJlcXVlc3RNYXRjaCIYChZUY3BSZXNwb25zZUNhbmNl",
+            "bE1hdGNoQgJIA2IGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::PBMatch.TcpRequestMatch), global::PBMatch.TcpRequestMatch.Parser, new[]{ "Uid", "RoleID" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::PBMatch.TcpCancelMatch), global::PBMatch.TcpCancelMatch.Parser, new[]{ "Uid" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::PBMatch.TcpRequestMatch), global::PBMatch.TcpRequestMatch.Parser, new[]{ "Uid", "RoleID", "Token" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::PBMatch.TcpCancelMatch), global::PBMatch.TcpCancelMatch.Parser, new[]{ "Uid", "Token" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::PBMatch.TcpResponseRequestMatch), global::PBMatch.TcpResponseRequestMatch.Parser, null, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::PBMatch.TcpResponseCancelMatch), global::PBMatch.TcpResponseCancelMatch.Parser, null, null, null, null, null)
           }));
@@ -68,6 +69,7 @@ namespace PBMatch {
     public TcpRequestMatch(TcpRequestMatch other) : this() {
       uid_ = other.uid_;
       roleID_ = other.roleID_;
+      token_ = other.token_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -98,6 +100,17 @@ namespace PBMatch {
       }
     }
 
+    /// <summary>Field number for the "token" field.</summary>
+    public const int TokenFieldNumber = 3;
+    private string token_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string Token {
+      get { return token_; }
+      set {
+        token_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
       return Equals(other as TcpRequestMatch);
@@ -113,6 +126,7 @@ namespace PBMatch {
       }
       if (Uid != other.Uid) return false;
       if (RoleID != other.RoleID) return false;
+      if (Token != other.Token) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -121,6 +135,7 @@ namespace PBMatch {
       int hash = 1;
       if (Uid != 0) hash ^= Uid.GetHashCode();
       if (RoleID != 0) hash ^= RoleID.GetHashCode();
+      if (Token.Length != 0) hash ^= Token.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -142,6 +157,10 @@ namespace PBMatch {
         output.WriteRawTag(16);
         output.WriteInt32(RoleID);
       }
+      if (Token.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(Token);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -155,6 +174,9 @@ namespace PBMatch {
       }
       if (RoleID != 0) {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(RoleID);
+      }
+      if (Token.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Token);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -173,6 +195,9 @@ namespace PBMatch {
       if (other.RoleID != 0) {
         RoleID = other.RoleID;
       }
+      if (other.Token.Length != 0) {
+        Token = other.Token;
+      }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -190,6 +215,10 @@ namespace PBMatch {
           }
           case 16: {
             RoleID = input.ReadInt32();
+            break;
+          }
+          case 26: {
+            Token = input.ReadString();
             break;
           }
         }
@@ -224,6 +253,7 @@ namespace PBMatch {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public TcpCancelMatch(TcpCancelMatch other) : this() {
       uid_ = other.uid_;
+      token_ = other.token_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -243,6 +273,17 @@ namespace PBMatch {
       }
     }
 
+    /// <summary>Field number for the "token" field.</summary>
+    public const int TokenFieldNumber = 2;
+    private string token_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string Token {
+      get { return token_; }
+      set {
+        token_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
       return Equals(other as TcpCancelMatch);
@@ -257,6 +298,7 @@ namespace PBMatch {
         return true;
       }
       if (Uid != other.Uid) return false;
+      if (Token != other.Token) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -264,6 +306,7 @@ namespace PBMatch {
     public override int GetHashCode() {
       int hash = 1;
       if (Uid != 0) hash ^= Uid.GetHashCode();
+      if (Token.Length != 0) hash ^= Token.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -281,6 +324,10 @@ namespace PBMatch {
         output.WriteRawTag(8);
         output.WriteInt32(Uid);
       }
+      if (Token.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(Token);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -291,6 +338,9 @@ namespace PBMatch {
       int size = 0;
       if (Uid != 0) {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(Uid);
+      }
+      if (Token.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Token);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -306,6 +356,9 @@ namespace PBMatch {
       if (other.Uid != 0) {
         Uid = other.Uid;
       }
+      if (other.Token.Length != 0) {
+        Token = other.Token;
+      }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -319,6 +372,10 @@ namespace PBMatch {
             break;
           case 8: {
             Uid = input.ReadInt32();
+            break;
+          }
+          case 18: {
+            Token = input.ReadString();
             break;
           }
         }

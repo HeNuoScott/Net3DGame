@@ -74,25 +74,26 @@
     <Compile Include="Assets\Scripts\NetScripts\Service\TcpService.cs" />
     <Compile Include="Assets\Scripts\NetScripts\Service\UdpService.cs" />
     <Compile Include="Assets\Scripts\UIScripts\ClearSceneData.cs" />
-    <Compile Include="Assets\Scripts\UIScripts\Panel_Connect.cs" />
-    <Compile Include="Assets\Scripts\UIScripts\Panel_Login.cs" />
-    <Compile Include="Assets\Scripts\UIScripts\Panel_Register.cs" />
+    <Compile Include="Assets\Scripts\UIScripts\LoginScene\Panel_Connect.cs" />
+    <Compile Include="Assets\Scripts\UIScripts\LoginScene\Panel_Login.cs" />
+    <Compile Include="Assets\Scripts\UIScripts\LoginScene\Panel_Register.cs" />
+    <Compile Include="Assets\Scripts\UIScripts\MainScene\MatchOrCancel.cs" />
     <Compile Include="Assets\Scripts\Utility\Singleton.cs" />
     <Compile Include="Assets\Scripts\Utility\SingletonMono.cs" />
     <Reference Include="Unity.TextMeshPro.Editor">
-      <HintPath>F:/UnityDevelopProject/MYGAME/ClientProject/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
+      <HintPath>F:/UnityDevelopProject/Net3DGame/ClientProject/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.PackageManagerUI.Editor">
-      <HintPath>F:/UnityDevelopProject/MYGAME/ClientProject/Library/ScriptAssemblies/Unity.PackageManagerUI.Editor.dll</HintPath>
+      <HintPath>F:/UnityDevelopProject/Net3DGame/ClientProject/Library/ScriptAssemblies/Unity.PackageManagerUI.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.CollabProxy.Editor">
-      <HintPath>F:/UnityDevelopProject/MYGAME/ClientProject/Library/ScriptAssemblies/Unity.CollabProxy.Editor.dll</HintPath>
+      <HintPath>F:/UnityDevelopProject/Net3DGame/ClientProject/Library/ScriptAssemblies/Unity.CollabProxy.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TextMeshPro">
-      <HintPath>F:/UnityDevelopProject/MYGAME/ClientProject/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
+      <HintPath>F:/UnityDevelopProject/Net3DGame/ClientProject/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Analytics.DataPrivacy">
-      <HintPath>F:/UnityDevelopProject/MYGAME/ClientProject/Library/ScriptAssemblies/Unity.Analytics.DataPrivacy.dll</HintPath>
+      <HintPath>F:/UnityDevelopProject/Net3DGame/ClientProject/Library/ScriptAssemblies/Unity.Analytics.DataPrivacy.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.AIModule">
       <HintPath>D:/Application/UnityEditor/2018.4.13c1/Editor/Data/Managed/UnityEngine/UnityEngine.AIModule.dll</HintPath>
@@ -296,19 +297,19 @@
       <HintPath>D:/Application/UnityEditor/2018.4.13c1/Editor/Data/UnityExtensions/Unity/UnitySpatialTracking/RuntimeEditor/UnityEngine.SpatialTracking.dll</HintPath>
     </Reference>
     <Reference Include="Google.Protobuf">
-      <HintPath>F:/UnityDevelopProject/MYGAME/ClientProject/Assets/Plugins/Google.Protobuf.dll</HintPath>
+      <HintPath>F:/UnityDevelopProject/Net3DGame/ClientProject/Assets/Plugins/Google.Protobuf.dll</HintPath>
     </Reference>
     <Reference Include="protobuf-net">
-      <HintPath>F:/UnityDevelopProject/MYGAME/ClientProject/Assets/Plugins/protobuf-net.dll</HintPath>
+      <HintPath>F:/UnityDevelopProject/Net3DGame/ClientProject/Assets/Plugins/protobuf-net.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Analytics.Editor">
-      <HintPath>F:/UnityDevelopProject/MYGAME/ClientProject/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.Editor.dll</HintPath>
+      <HintPath>F:/UnityDevelopProject/Net3DGame/ClientProject/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Analytics.StandardEvents">
-      <HintPath>F:/UnityDevelopProject/MYGAME/ClientProject/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.StandardEvents.dll</HintPath>
+      <HintPath>F:/UnityDevelopProject/Net3DGame/ClientProject/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.StandardEvents.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Analytics.Tracker">
-      <HintPath>F:/UnityDevelopProject/MYGAME/ClientProject/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.Tracker.dll</HintPath>
+      <HintPath>F:/UnityDevelopProject/Net3DGame/ClientProject/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.Tracker.dll</HintPath>
     </Reference>
     <Reference Include="netstandard">
       <HintPath>D:/Application/UnityEditor/2018.4.13c1/Editor/Data/NetStandard/ref/2.0.0/netstandard.dll</HintPath>

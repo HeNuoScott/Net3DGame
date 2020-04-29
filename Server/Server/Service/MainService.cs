@@ -26,32 +26,35 @@ namespace Server
         private KcpService mKcp;
 
         private UserManager mUserManager;
+        private MatchManager mMatchManager;
+        private BattleManager mBattleManager;
 
         public Mode mMode = Mode.LockStep;
         public Protocol mProtocol = Protocol.UDP;
         public TcpService Tcp { get { return mTcp; } }
         public UdpService Udp { get { return mUdp; } }
         public KcpService Kcp { get { return mKcp; } }
-        public UserManager UserMgr { get { return mUserManager; } }
 
         private static MainService instance = null;
         public static MainService Instance { get { return instance; } }
         
 
-        public MainService(int tcp, int udp, Mode mode,Protocol protocol)
+        public MainService(Mode mode,Protocol protocol)
         {
             instance = this;
-            mTcp = new TcpService(tcp);
+            mTcp = new TcpService(ServerConfig.TCP_PORT);
             mMode = mode;
             mProtocol = protocol;
 
-            if (mProtocol==Protocol.KCP) mKcp = new KcpService(udp);
-            else  mUdp = new UdpService(udp);
+            if (mProtocol==Protocol.KCP) mKcp = new KcpService(ServerConfig.UDP_PORT);
+            else  mUdp = new UdpService(ServerConfig.UDP_PORT);
 
             mUserManager = new UserManager();
+            mMatchManager = new MatchManager();
+            mBattleManager = new BattleManager();
 
             Debug.Log(string.Format("Server start success,mode={0} ip={1} tcp port={2} udp port={3}",
-                mMode.ToString(), GetLocalIP(), tcp, udp), ConsoleColor.Green);
+                mMode.ToString(), GetLocalIP(), ServerConfig.TCP_PORT, ServerConfig.UDP_PORT), ConsoleColor.Green);
         }
 
         public bool IsActive
@@ -80,12 +83,6 @@ namespace Server
             mTcp.Close();
             mUdp.Close();
             mKcp.Close();
-
-            //List<Session> list = new List<Session>(mSessionList);
-
-            //foreach (Session c in list) c.Disconnect();
-            //mSessionList.Clear();
-            //list.Clear();
         }
 
         /// <summary>

@@ -4,6 +4,7 @@ using System;
 
 public static class ServerConfig
 {
+    public static int PVP_Number = 2;
     public const int TCP_PORT = 1255;
     public const int UDP_PORT = 1337;
 

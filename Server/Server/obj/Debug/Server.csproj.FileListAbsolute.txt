@@ -8,3 +8,13 @@ F:\UnityDevelopProject\MYGAME\Server\Server\obj\Debug\Server.pdb
 F:\UnityDevelopProject\MYGAME\Server\Server\bin\Debug\Google.Protobuf.dll
 F:\UnityDevelopProject\MYGAME\Server\Server\bin\Debug\protobuf-net.dll
 F:\UnityDevelopProject\MYGAME\Server\Server\obj\Debug\Server.csproj.CopyComplete
+F:\UnityDevelopProject\Net3DGame\Server\Server\bin\Debug\Server.exe.config
+F:\UnityDevelopProject\Net3DGame\Server\Server\bin\Debug\Server.exe
+F:\UnityDevelopProject\Net3DGame\Server\Server\bin\Debug\Server.pdb
+F:\UnityDevelopProject\Net3DGame\Server\Server\bin\Debug\Google.Protobuf.dll
+F:\UnityDevelopProject\Net3DGame\Server\Server\bin\Debug\protobuf-net.dll
+F:\UnityDevelopProject\Net3DGame\Server\Server\obj\Debug\Server.csprojAssemblyReference.cache
+F:\UnityDevelopProject\Net3DGame\Server\Server\obj\Debug\Server.csproj.CoreCompileInputs.cache
+F:\UnityDevelopProject\Net3DGame\Server\Server\obj\Debug\Server.csproj.CopyComplete
+F:\UnityDevelopProject\Net3DGame\Server\Server\obj\Debug\Server.exe
+F:\UnityDevelopProject\Net3DGame\Server\Server\obj\Debug\Server.pdb
