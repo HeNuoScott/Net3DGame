@@ -19,77 +19,71 @@ namespace Server
         }
 
         private int numberOfUser = 0;
-        // toekn-->User
+        // account-->User
         private Dictionary<string, User> AllUser = new Dictionary<string, User>();
+        // token-->account
+        private Dictionary<string, string> LoginUser = new Dictionary<string, string>();
 
-        /// <summary>
-        /// Token是否有效
-        /// </summary>
-        public bool TokenIsValid(string token)
+        public bool IsValidAccount(string account)
         {
-            return AllUser.ContainsKey(token);
+            return AllUser.ContainsKey(account);
         }
-        /// <summary>
-        /// 根据token查找用户
-        /// </summary>
+        public bool IsValidToken(string token)
+        {
+            return LoginUser.ContainsKey(token);
+        }
+
+        public User GetUserByAccount(string account)
+        {
+            if (IsValidAccount(account)) return AllUser[account];
+            else return null; 
+        }
         public User GetUserByToken(string token)
         {
-            if (TokenIsValid(token) == false) return null;
-            return AllUser[token];
-        }
-        /// <summary>
-        /// 根据id查找用户
-        /// </summary>
-        public User GetUserByUid(int id)
-        {
-            User user = null;
-            bool isRT = false;
-            foreach (var item in AllUser)
-            {
-                if (!isRT&&item.Value.Id==id)
-                {
-                    user = item.Value;
-                    isRT = true;
-                }
-            }
-            return user;
+            if (IsValidToken(token)) return GetUserByAccount(LoginUser[token]);
+            else return null;
         }
 
         /// <summary>
         /// 添加用户
         /// </summary>
-        public void AddUser(string token, Session session,UserAccountData accountData)
+        public void AddUser(string account, Session session,UserAccountData accountData)
         {
             numberOfUser++;
-            if (TokenIsValid(token) == false)
+            if (IsValidAccount(account) == false)
             {
-                AllUser.Add(token, new User(numberOfUser, token, session, accountData));
+                string token = Guid.NewGuid().ToString();
+                AllUser.Add(account, new User(numberOfUser, token, session, accountData));
             }
         }
         /// <summary>
         /// 删除用户
         /// </summary>
-        public void RemoveUser(string token)
+        public void RemoveUser(string account)
         {
-            if (TokenIsValid(token) == true)
+            if (IsValidAccount(account) == true)
             {
-                AllUser.Remove(token);
+                AllUser.Remove(account);
             }
         }
 
         /// <summary>
         /// 用户登录
         /// </summary>
-        public void UserLogin(string token)
+        public void UserLogin(string account)
         {
-            AllUser[token].UserState = UserState.Lobbying;
+            User user = AllUser[account];
+            user.UserState = UserState.Lobbying;
+            LoginUser.Add(user.Token, account);
         }
         /// <summary>
         /// 用户退出
         /// </summary>
-        public void UserLogOff(string token)
+        public void UserLogOff(string account)
         {
-            AllUser[token].UserState = UserState.OffLine;
+            User user = AllUser[account];
+            user.UserState = UserState.OffLine;
+            LoginUser.Remove(user.Token);
         }
     }
 }

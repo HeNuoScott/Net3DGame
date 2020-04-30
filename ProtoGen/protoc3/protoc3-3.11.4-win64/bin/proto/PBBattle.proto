@@ -16,30 +16,30 @@ enum RightOpType
 	rop7 = 7;//操作7
 
 }
-
+// 战场玩家信息
 message BattleUserInfo{
 	int32 uid = 1;
 	int32 battleID = 2;
 	int32 roleID = 3;
 }
-
+// 进入战场
 message TcpEnterBattle
 {
 	int32 randSeed = 1;
 	repeated BattleUserInfo battleUsersInfo = 2;
 }
-
+// 战斗准备
 message UdpBattleReady
 {	
 	int32 uid = 1;
 	int32 battleID = 2;
 }
-
+// 战斗开始
 message UdpBattleStart
 {	
 
 }
-
+// 玩家操作
 message PlayerOperation
 {
 	int32 battleID = 1;
@@ -49,42 +49,178 @@ message PlayerOperation
 	int32 operationValue1 = 5;
 	int32 operationValue2 = 6;
 }
-
+// UDP 上传服务器的玩家操作
 message UdpUpPlayerOperations
 {
 	int32 mesID = 1;
 	PlayerOperation operation = 2;
 }
-
+// 所有玩家操作
 message AllPlayerOperation
 {
 	repeated PlayerOperation operations = 1;
 }
-
+// UDP发送给客户端的玩家操作
 message UdpDownFrameOperations
 {
 	int32 frameID = 1;
 	AllPlayerOperation operations = 2;
 }
-
+// UDP 发送丢失帧
 message UdpUpDeltaFrames
 {
 	int32 battleID = 1;
 	repeated int32 frames = 2;
 }
-
+// UDP 发送客户端 丢失帧数据
 message UdpDownDeltaFrames
 {
 	repeated UdpDownFrameOperations framesData =1;
 }
-
+// 游戏结束
 message UdpUpGameOver
 {
 	int32 battleID = 1;
 }
-
+// 游戏结束
 message UdpDownGameOver
 {
 
 }
 
+message GMPoint2D
+{
+	int32 x = 1;
+	int32 y = 2;
+}
+
+message GMPoint3D
+{
+	int32 x = 1;
+	int32 y = 2;
+	int32 z = 3;
+}
+
+
+message GMPlayerInfo
+{
+	int32 roleId = 1;
+	string name = 2;
+	int32 moveSpeed = 3;		  //基础速度
+	int32 moveSpeedAddition = 4; //固定加成
+	int32 moveSpeedPercent = 5;  //百分比加成
+	int32 attackSpeed = 6;		  	//基础攻速
+	int32 attackSpeedAddition = 7;	//固定加成
+	int32 attackSpeedPercent = 8; //百分比
+	int32 maxBlood = 9;
+	int32 nowBlood = 10;
+	int32 type = 11; 				//0人物 1怪物
+}
+
+message GM_Request
+{
+	int32 id = 1;
+}
+
+message GM_Return
+{
+	int32 id = 1;
+}
+
+message GM_Accept
+{
+	int32 conv = 1;
+	int32 protocol = 2; //0.use udp 1.use kcp
+}
+
+message GM_Connect
+{
+	int32 roleId = 1;
+	GMPlayerInfo player = 2;
+	int32 frameinterval = 3; //帧时间 毫秒
+	int32 mode = 4; //0.lockstep 1.Optimistic 
+}
+
+message GM_Disconnect
+{
+	int32 roleId = 1;
+}
+
+message GM_Ready
+{
+	int32 roleId  = 1;
+	GMPoint3D position = 2;
+	GMPoint3D direction = 3;
+}
+
+message GMCommand
+{
+	int64 id = 1;
+	int32 type = 2;
+	bytes data = 3; //帧数据
+	int64 frame = 4; //所在帧
+	int64 frametime = 5; //所在帧的时间
+}
+
+message GM_Frame
+{
+	int32 roleId =1;
+	int64 frame = 2;//客户端当前帧
+	int64 frametime = 3;//发送时间
+	repeated GMCommand command = 4;
+}
+
+message GM_Frame_BC
+{
+	int64 frame = 1; //服务器当前帧
+	int64 frametime = 2;//发送时间
+	repeated GMCommand command = 3;
+}
+
+
+message GM_Begin
+{
+	int32 result = 1;
+}
+
+
+
+
+
+
+
+
+
+
+//服务器也可以发送命令
+//roleId ==0时说明该命令是服务器发的
+enum CommandID
+{
+	UNKNOW_CMD = 0;
+	RELEASE_SKILL = 1;
+	MOVE_TO_POINT = 2;
+	CREATE_MONSTER = 3;
+}
+	
+message CMD_ReleaseSkill
+{
+	int32 roleId= 1;
+	int32 skillId = 2;
+	GMPoint3D mouseposition = 3;
+}
+	
+message CMD_MoveToPoint
+{
+	int32 roleId = 1;
+	GMPoint3D position = 2;
+	GMPoint3D direction = 3;
+	GMPoint3D destination = 4;
+}
+
+message CMD_CreateMonster
+{
+	int32 roleId = 1;
+	GMPlayerInfo player = 2;
+	GMPoint3D position = 3;
+	GMPoint3D direction = 4;
+}

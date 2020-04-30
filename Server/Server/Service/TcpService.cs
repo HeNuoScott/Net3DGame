@@ -3,9 +3,7 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Net;
 using System;
-using PBCommon;
-using PBLogin;
-using PBMatch;
+using PBMessage;
 
 namespace Server
 {
@@ -44,6 +42,7 @@ namespace Server
             mAcceptThread.Start();
             mReceiveThread.Start();
             mSendThread.Start();
+            mActiveThread.Start();
 
             return true;
         }
@@ -57,7 +56,6 @@ namespace Server
                 mAcceptThread.Abort();
                 mAcceptThread = null;
             }
-
             if (mReceiveThread != null)
             {
                 mReceiveThread.Abort();
@@ -67,6 +65,11 @@ namespace Server
             {
                 mSendThread.Abort();
                 mSendThread = null;
+            }
+            if (mActiveThread != null)
+            {
+                mActiveThread.Abort();
+                mActiveThread = null;
             }
         }
 
@@ -140,12 +143,12 @@ namespace Server
 
                     if (tcp_Socket != null)
                     {
-                        Session c = new Session(numberOfClient++, tcp_Socket);
+                        Session client = new Session(numberOfClient++, tcp_Socket);
                         Debug.Log("有客户端连接："+ tcp_Socket.RemoteEndPoint);
-                        c.OnReceiveMessage_TCP += AnalyzeMessage;
+                        client.OnReceiveMessage_TCP += AnalyzeMessage;
                         lock (mClientSessions)
                         {
-                            mClientSessions.Add(c);
+                            mClientSessions.Add(client);
                         }
                     }
                     Thread.Sleep(1);
@@ -184,7 +187,7 @@ namespace Server
 
                             if (receiveBodySize != bodySize) continue;
                         }
-                        clientSession.OnReceiveMessageTCP(new MessageInfo(message, clientSession));
+                        clientSession.OnReceiveMessageTCP(message);
                     }
                     catch (SocketException e)
                     {
@@ -207,102 +210,66 @@ namespace Server
         /// <param name="messageInfo"></param>
         public void AnalyzeMessage(MessageInfo messageInfo)
         {
-            ClientToServerID id = (ClientToServerID)messageInfo.Buffer.Id();
+            MessageID id = (MessageID)messageInfo.Buffer.Id();
             switch (id)
             {
-                case ClientToServerID.TcpRegister://注册
-                    UserRegister(messageInfo);
+                case MessageID.CsReguestRegister:
+                    MessageUserRegister(messageInfo);
                     break;
-                case ClientToServerID.TcpLogin://登录
-                    UserLogin(messageInfo);
+                case MessageID.CsReguestLogin:
+                    MessageUserLogin(messageInfo);
                     break;
-                case ClientToServerID.TcpRequestMatch://匹配
-                    RequestMatch(messageInfo);
+                case MessageID.CsReguestMatch:
+                    MessageRequestMatch(messageInfo);
                     break;
-                case ClientToServerID.TcpCancelMatch://取消匹配
-                    CancelMatch(messageInfo);
+                case MessageID.CsReguestCancalMatch:
+                    MessageCancelMatch(messageInfo);
                     break;
-                default:
+                case MessageID.CsReguestPing:
+                    MessagePing(messageInfo);
                     break;
             }
-        }
-
-
-        // 取消匹配
-        private void CancelMatch(MessageInfo messageInfo)
-        {
-            TcpCancelMatch _info = ProtoTransfer.DeserializeProtoBuf3<TcpCancelMatch>(messageInfo.Buffer);
-            User user = UserManager.Instance.GetUserByToken(_info.Token);
-            bool _result = MatchManager.Instance.CancleMatch(user);
-            if (_result)
-            {
-                byte[] bytes = ProtoTransfer.SerializeProtoBuf3<TcpResponseCancelMatch>(new TcpResponseCancelMatch());
-                MessageBuffer _message = new MessageBuffer((int)ServerToClientID.TcpResponseCancelMatch, bytes, 0);
-                MessageInfo _messageInfo = new MessageInfo(_message, messageInfo.Session);
-                Debug.Log("用户取消匹配");
-                Send(_messageInfo);
-            }
-        }
-
-        // 请求匹配
-        private void RequestMatch(MessageInfo messageInfo)
-        {
-            TcpRequestMatch _info = ProtoTransfer.DeserializeProtoBuf3<TcpRequestMatch>(messageInfo.Buffer);
-            User user = UserManager.Instance.GetUserByToken(_info.Token);
-            MatchManager.Instance.AddMatchUser(user);
-            byte[] bytes = ProtoTransfer.SerializeProtoBuf3<TcpResponseRequestMatch>(new TcpResponseRequestMatch());
-            MessageBuffer _message = new MessageBuffer((int)ServerToClientID.TcpResponseRequestMatch, bytes, 0);
-            MessageInfo _messageInfo = new MessageInfo(_message, messageInfo.Session);
-            Debug.Log("用户请求匹配");
-            Send(_messageInfo);
         }
 
         // 注册账号
-        private void UserRegister(MessageInfo messageInfo)
+        private void MessageUserRegister(MessageInfo messageInfo)
         {
             Debug.Log("注册账号");
-            TcpRegister _info = ProtoTransfer.DeserializeProtoBuf3<TcpRegister>(messageInfo.Buffer);
-            //string token = TokenHelper.GenToken(_info.Account);
-            string token = _info.Account;
-            bool isUsing = UserManager.Instance.TokenIsValid(token);
-            TcpResponseRegister _result = new TcpResponseRegister();
+            RequestRegigter _info = ProtoTransfer.DeserializeProtoBuf3<RequestRegigter>(messageInfo.Buffer);
+            bool isUsing = UserManager.Instance.IsValidAccount(_info.Account);
+            ResponseRegister _result = new ResponseRegister();
             if (isUsing)
             {
                 _result.Result = false;
+                _result.Reason = "账号已存在！";
             }
             else
             {
                 _result.Result = true;
-                _result.Token = token;
-                UserManager.Instance.AddUser(token, messageInfo.Session,new UserAccountData(_info.Account,_info.Password));
+                UserManager.Instance.AddUser(_info.Account, messageInfo.Session, new UserAccountData(_info.Account, _info.Password));
             }
-            byte[] bytes = ProtoTransfer.SerializeProtoBuf3<TcpResponseRegister>(_result);
-            MessageBuffer _message = new MessageBuffer((int)ServerToClientID.TcpResponseRegister, bytes, 0);
-            MessageInfo _messageInfo = new MessageInfo(_message, messageInfo.Session);
-            Debug.Log("注册账号：" + _result.Result.ToString());
-            Send(_messageInfo);
-        }
+            MessageBuffer _message = new MessageBuffer((int)MessageID.ScResponseRegister, ProtoTransfer.SerializeProtoBuf3(_result), 0);
 
+            Send(new MessageInfo(_message, messageInfo.Session));
+
+            Debug.Log("注册账号：" + _result.Result.ToString());
+        }
         // 用户登录
-        private void UserLogin(MessageInfo messageInfo)
+        private void MessageUserLogin(MessageInfo messageInfo)
         {
             Debug.Log("账号登录");
-            TcpLogin _info = ProtoTransfer.DeserializeProtoBuf3<TcpLogin>(messageInfo.Buffer);
-            //string token = TokenHelper.GenToken(_info.Account);
-            string token = _info.Account;
-            bool IsValid = UserManager.Instance.TokenIsValid(token);
-            TcpResponseLogin _result = new TcpResponseLogin();
-            if (IsValid)
+            RequestLogin _info = ProtoTransfer.DeserializeProtoBuf3<RequestLogin>(messageInfo.Buffer);
+            User user = UserManager.Instance.GetUserByAccount(_info.Account);
+            ResponseLogin _result = new ResponseLogin();
+            if (user != null)
             {
-                User user = UserManager.Instance.GetUserByToken(token);
-                if (user.AccountData.Password==_info.Password)
+                if (user.AccountData.Password == _info.Password)
                 {
                     if (user.UserState == UserState.OffLine)
                     {
-                        user.UserState = UserState.OnLine;
+                        UserManager.Instance.UserLogin(_info.Account);
                         _result.Result = true;
-                        _result.Uid = user.Id;
-                        _result.Token = token;
+                        _result.Token = user.Token;
                     }
                     else
                     {
@@ -321,11 +288,49 @@ namespace Server
                 _result.Result = false;
                 _result.Reason = "账号不存在";
             }
-            byte[] bytes = ProtoTransfer.SerializeProtoBuf3<TcpResponseLogin>(_result);
-            MessageBuffer _message = new MessageBuffer((int)ServerToClientID.TcpResponseLogin, bytes, 0);
-            MessageInfo _messageInfo = new MessageInfo(_message, messageInfo.Session);
+
+            MessageBuffer _message = new MessageBuffer((int)MessageID.ScResponseLogin, ProtoTransfer.SerializeProtoBuf3(_result), user == null ? 0 : user.Id);
             Debug.Log("账号登录：" + _result.Result.ToString());
-            Send(_messageInfo);
+            Send(new MessageInfo(_message, messageInfo.Session));
+        }
+        // 请求匹配
+        private void MessageRequestMatch(MessageInfo messageInfo)
+        {
+            RequestMatch _info = ProtoTransfer.DeserializeProtoBuf3<RequestMatch>(messageInfo.Buffer);
+            User user = UserManager.Instance.GetUserByToken(_info.Token);
+            MatchManager.Instance.AddMatchUser(user);
+            MessageBuffer _message = new MessageBuffer((int)MessageID.ScResponseMatch, ProtoTransfer.SerializeProtoBuf3(new ResponseRequestMatch()), user.Id);
+            Debug.Log("用户请求匹配");
+            Send(new MessageInfo(_message, messageInfo.Session));
+        }
+        // 取消匹配
+        private void MessageCancelMatch(MessageInfo messageInfo)
+        {
+            RequestCancelMatch _info = ProtoTransfer.DeserializeProtoBuf3<RequestCancelMatch>(messageInfo.Buffer);
+            User user = UserManager.Instance.GetUserByToken(_info.Token);
+            bool _result = MatchManager.Instance.CancleMatch(user);
+            if (_result && user!=null)
+            {
+                MessageBuffer _message = new MessageBuffer((int)MessageID.ScResponseCancelMatch, ProtoTransfer.SerializeProtoBuf3(new ResponseCancelMatch()), user.Id);
+                Debug.Log("用户取消匹配");
+                Send(new MessageInfo(_message, messageInfo.Session));
+            }
+        }
+        // Ping
+        private void MessagePing(MessageInfo messageInfo)
+        {
+            RequestPing requestPing = ProtoTransfer.DeserializeProtoBuf3<RequestPing>(messageInfo.Buffer);
+            User user = UserManager.Instance.GetUserByToken(requestPing.Token);
+            if (user != null)
+            {
+                ResponsePing responsePing = new ResponsePing()
+                {
+                    Uid = user.Id,
+                    Token = user.Token
+                };
+                MessageBuffer _message = new MessageBuffer((int)MessageID.ScResponsePing, ProtoTransfer.SerializeProtoBuf3(responsePing), user.Id);
+                Send(new MessageInfo(_message, messageInfo.Session));
+            }
         }
 
         public Session GetSession(int id)

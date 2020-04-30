@@ -37,10 +37,16 @@ namespace PBCommon {
             "RFBfRE9XTl9GUkFNRV9PUEVSQVRJT05TEDUSGQoVVURQX0RPV05fREVMVEFf",
             "RlJBTUVTEDcSFgoSVURQX0RPV05fR0FNRV9PVkVSEDkqOwoIR2FtZVR5cGUS",
             "DwoLR0FNRV9VTktPTlcQABIOCgpHQU1FX1R5cGUxEAESDgoKR0FNRV9UeXBl",
-            "MhACQgJIA2IGcHJvdG8z"));
+            "MhACKv0BCglNZXNzYWdlSUQSDAoITWluVmFsdWUQABIQCgxHTV9BQ0NFUFRf",
+            "U0MQYhIQCgxHTV9BQ0NFUFRfQ1MQYxIRCg1HTV9DT05ORUNUX1NDEGQSEQoN",
+            "R01fQ09OTkVDVF9CQxBlEhQKEEdNX0RJU0NPTk5FQ1RfQkMQZhIPCgtHTV9S",
+            "RUFEWV9DUxBnEg8KC0dNX1JFQURZX0JDEGgSDwoLR01fQkVHSU5fQkMQaRIP",
+            "CgtHTV9GUkFNRV9DUxBqEg8KC0dNX0ZSQU1FX0JDEGsSDgoKR01fUElOR19D",
+            "UxBsEg4KCkdNX1BJTkdfU0MQbRINCghNYXhWYWx1ZRDoB0ICSANiBnByb3Rv",
+            "Mw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
-          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::PBCommon.ClientToServerID), typeof(global::PBCommon.ServerToClientID), typeof(global::PBCommon.GameType), }, null, null));
+          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::PBCommon.ClientToServerID), typeof(global::PBCommon.ServerToClientID), typeof(global::PBCommon.GameType), typeof(global::PBCommon.MessageID), }, null, null));
     }
     #endregion
 
@@ -126,6 +132,23 @@ namespace PBCommon {
     [pbr::OriginalName("GAME_UNKONW")] GameUnkonw = 0,
     [pbr::OriginalName("GAME_Type1")] _1 = 1,
     [pbr::OriginalName("GAME_Type2")] _2 = 2,
+  }
+
+  public enum MessageID {
+    [pbr::OriginalName("MinValue")] MinValue = 0,
+    [pbr::OriginalName("GM_ACCEPT_SC")] GmAcceptSc = 98,
+    [pbr::OriginalName("GM_ACCEPT_CS")] GmAcceptCs = 99,
+    [pbr::OriginalName("GM_CONNECT_SC")] GmConnectSc = 100,
+    [pbr::OriginalName("GM_CONNECT_BC")] GmConnectBc = 101,
+    [pbr::OriginalName("GM_DISCONNECT_BC")] GmDisconnectBc = 102,
+    [pbr::OriginalName("GM_READY_CS")] GmReadyCs = 103,
+    [pbr::OriginalName("GM_READY_BC")] GmReadyBc = 104,
+    [pbr::OriginalName("GM_BEGIN_BC")] GmBeginBc = 105,
+    [pbr::OriginalName("GM_FRAME_CS")] GmFrameCs = 106,
+    [pbr::OriginalName("GM_FRAME_BC")] GmFrameBc = 107,
+    [pbr::OriginalName("GM_PING_CS")] GmPingCs = 108,
+    [pbr::OriginalName("GM_PING_SC")] GmPingSc = 109,
+    [pbr::OriginalName("MaxValue")] MaxValue = 1000,
   }
 
   #endregion

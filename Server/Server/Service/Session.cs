@@ -113,17 +113,17 @@ namespace Server
             }
         }
 
-        public void OnReceiveMessageTCP(MessageInfo messageInfo)
+        public void OnReceiveMessageTCP(MessageBuffer messageBuffer)
         {
-            OnReceiveMessage_TCP?.Invoke(messageInfo);
+            OnReceiveMessage_TCP?.Invoke(new MessageInfo(messageBuffer, this));
         }
-        public void OnReceiveMessageUDP(MessageInfo messageInfo)
+        public void OnReceiveMessageUDP(MessageBuffer messageBuffer)
         {
-            OnReceiveMessage_UDP?.Invoke(messageInfo);
+            OnReceiveMessage_UDP?.Invoke(new MessageInfo(messageBuffer, this));
         }
-        public void OnReceiveMessageKCP(MessageInfo messageInfo)
+        public void OnReceiveMessageKCP(MessageBuffer messageBuffer)
         {
-            OnReceiveMessage_KCP?.Invoke(messageInfo);
+            OnReceiveMessage_KCP?.Invoke(new MessageInfo(messageBuffer, this));
         }
         public void OnReceiveMessageKCP(byte[] data, IPEndPoint ip)
         {
@@ -147,7 +147,7 @@ namespace Server
                             {
                                 udpAdress = ip;
                             }
-                            OnReceiveMessageKCP(new MessageInfo(message, this));
+                            OnReceiveMessageKCP(message);
                         }
                     }
                 }

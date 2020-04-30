@@ -11,7 +11,6 @@ namespace Server
     /// </summary>
     public class MatchManager
     {
-
         private static MatchManager instance = null;
         public static MatchManager Instance { get { return instance; } }
         /// <summary>

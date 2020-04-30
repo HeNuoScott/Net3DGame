@@ -1,0 +1,256 @@
+syntax = "proto3";
+
+option optimize_for = LITE_RUNTIME;
+
+package PBMessage;
+
+//--------------------------------------------消息枚举-------------------------------------------------------
+
+// 消息枚举
+enum MessageID
+{
+	MinValue = 0;
+
+	CS_Reguest_Register = 101;			// 注册
+	SC_Response_Register = 102;			// 注册反馈
+
+	CS_Reguest_Login = 103;				// 登录 
+	SC_Response_Login = 104;			// 登录反馈
+
+	CS_Reguest_Match = 105;				// 匹配
+	SC_Response_Match = 106;			// 匹配反馈
+
+	CS_Reguest_CancalMatch = 107;		// 取消匹配
+	SC_Response_CancelMatch = 108;		// 取消匹配反馈
+
+	Broad_EnterReadyRoom = 201;			// 进入匹配房间---广播
+	CS_CMD_RoomOperation = 202;			// 房间之内的操作请求
+	Broad_RoomOperation = 203;			// 房间之内的操作请求---广播
+	Broad_BattleStart = 204;			// 战斗开始----广播
+
+	CS_CMD_Frame = 301;					// 关键帧操作命令
+	Broad_CMD_Frame = 302;				// 关键帧命令--广播
+
+	CS_Reguest_DeltaFrame = 303;		// 请求发送丢失帧数据
+	SC_Response_DeltaFrame = 304;		// 丢失帧数据反馈
+
+	Broad_PlayerReConnect = 305;		// 玩家重连广播
+	Broad_PlayerDisConnect = 306;		// 玩家掉线广播
+
+	CS_Reguest_GameOver = 307;			// 游戏结束
+	Broad_GameOver = 308;				// 游戏结束广播
+
+	CS_Reguest_Ping = 501;
+	SC_Response_Ping = 502;
+
+	MaxValue = 1000;
+}
+// 游戏类型
+enum GameType
+{
+	GAME_UNKONW = 0;
+	GAME_Type1 = 1;
+	GAME_Type2 = 2;
+}
+//服务器也可以发送命令
+//roleId ==0时说明该命令是服务器发的
+enum CommandID
+{
+	UNKNOW_CMD = 0;		// 空命令
+	RELEASE_SKILL = 1;	// 释放技能
+	MOVE_TO_POINT = 2;	// 移动到到指定地点
+	CREATE_MONSTER = 3;	// 创建角色
+}
+
+//--------------------------------------------复用消息类-------------------------------------------------------
+message Point2D
+{
+	int32 x = 1;
+	int32 y = 2;
+}
+
+message Point3D
+{
+	int32 x = 1;
+	int32 y = 2;
+	int32 z = 3;
+}
+
+message PlayerInfo
+{
+	int32 playerId = 1;
+	string account = 2;
+	string name = 3;
+	int32 moveSpeed = 4;		  //基础速度
+	int32 moveSpeedAddition = 5; //固定加成
+	int32 moveSpeedPercent = 6;  //百分比加成
+	int32 attackSpeed = 7;		  	//基础攻速
+	int32 attackSpeedAddition = 8;	//固定加成
+	int32 attackSpeedPercent = 9; //百分比
+	int32 maxBlood = 10;
+	int32 nowBlood = 11;
+	int32 type = 12;
+}
+message MonsterInfo
+{
+	int32 id = 1;
+	string name = 2;
+	int32 moveSpeed = 3;		  //基础速度
+	int32 moveSpeedAddition = 4; //固定加成
+	int32 moveSpeedPercent = 5;  //百分比加成
+	int32 attackSpeed = 6;		  	//基础攻速
+	int32 attackSpeedAddition = 7;	//固定加成
+	int32 attackSpeedPercent = 8; //百分比
+	int32 maxBlood = 9;
+	int32 nowBlood = 10;
+	int32 type = 11;
+}
+message OperationCommand
+{
+	int64 id = 1;
+	int32 type = 2;
+	bytes data = 3; //帧数据
+	int64 frame = 4; //所在帧
+	int64 frametime = 5; //所在帧的时间
+}
+message CMD_ReleaseSkill
+{
+	int32 roleId= 1;
+	int32 skillId = 2;
+	Point3D mouseposition = 3;
+}
+	
+message CMD_MoveToPoint
+{
+	int32 roleId = 1;
+	Point3D position = 2;
+	Point3D direction = 3;
+	Point3D destination = 4;
+}
+
+message CMD_CreateMonster
+{
+	int32 id = 1;
+	MonsterInfo monster = 2;
+	Point3D position = 3;
+	Point3D direction = 4;
+}
+
+//--------------------------------------------请求与反馈消息类-------------------------------------------------------
+
+// 注册请求
+message RequestRegigter{
+	string account = 1;
+	string password = 2;
+}
+// 注册反馈
+message ResponseRegister{
+	bool result = 1;
+	string reason = 2;
+}
+// 登录请求
+message RequestLogin{
+	string token = 1;
+	string account = 2;
+	string password = 3;
+}
+// 登录反馈
+message ResponseLogin{
+	bool result = 1;
+	string token = 2;
+	string reason = 3;
+}
+// 请求匹配
+message RequestMatch{
+	string token = 1;
+}
+// 请求匹配反馈
+message ResponseRequestMatch{
+
+}
+// 取消匹配
+message RequestCancelMatch{
+	string token = 1;
+}
+// 取消匹配反馈
+message ResponseCancelMatch{
+	
+}
+// 广播  进入战场准备房间
+message BroadEnterReadyRoom{
+	repeated PlayerInfo commands = 1;
+}
+// 房间被操作请求
+message RequestRoomOperation{
+	string token = 1;
+	int32 opType = 2;
+}
+// 广播  玩家在准备房间内的操作
+message BroadRoomOperation{
+	int32 playerId = 1;
+	int32 operationType = 2;
+	bytes operationParameter = 3;
+}
+// 广播 玩家准备完成
+message BroadPlayerReady
+{
+	int32 roleId  = 1;
+	Point3D position = 2;
+	Point3D direction = 3;
+}
+
+// 广播  游戏开始
+message BroadBattleGameStart{
+	int32 battleID = 1;		// 战场Id
+	int32 randSeed = 2; 	// 随机数种子
+	int32 udpPort = 3;		// UDP端口号
+    int32 frameInterval = 4;// 帧时间 毫秒
+}
+// 玩家操作
+message PlayerFrameCommand
+{
+	string token = 1;
+	int32 roleId =2;
+	int64 frame = 3;		// 客户端当前帧
+	int64 frametime = 4;	// 所在帧的时间
+	repeated OperationCommand commands = 5;
+}
+// 广播 玩家操作
+message BroadPlayerFrameCommand
+{
+	int64 frame = 1; 		// 服务器当前帧
+	int64 frametime = 2;	// 所在帧的时间
+	repeated OperationCommand commands = 4;
+}
+// 请求服务器下发丢失帧
+message RequestDeltaFrames{
+	string token = 1;
+	int32 roleId =2;
+	int64 DeltaStartFrame = 3;		// 丢失帧开始帧
+	int64 DeltaStartFrametime = 4;	// 丢失帧所在帧的时间
+}
+// 服务器下发丢失帧 反馈
+message ResponseDeltaFrames{
+	repeated BroadPlayerFrameCommand commands = 1;
+}
+// 广播 玩家断开连接
+message BroadPlayerDisConnect{
+	int32 roleId = 1;
+}
+// 广播 玩家重新连接
+message BroadPlayerReConnect{
+	int32 roleId = 1;
+}
+// 广播 游戏结束
+message BroadGameOver{
+
+}
+
+message RequestPing{
+	int32 uid =1;
+	string token = 2;
+}
+message ResponsePing{
+	int32 uid = 1;
+	string token = 2;
+}

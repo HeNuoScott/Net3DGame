@@ -18,3 +18,6 @@ F:\UnityDevelopProject\Net3DGame\Server\Server\obj\Debug\Server.csproj.CoreCompi
 F:\UnityDevelopProject\Net3DGame\Server\Server\obj\Debug\Server.csproj.CopyComplete
 F:\UnityDevelopProject\Net3DGame\Server\Server\obj\Debug\Server.exe
 F:\UnityDevelopProject\Net3DGame\Server\Server\obj\Debug\Server.pdb
+F:\UnityDevelopProject\Net3DGame\Server\Server\bin\Debug\UnityEditor.dll
+F:\UnityDevelopProject\Net3DGame\Server\Server\bin\Debug\UnityEngine.dll
+F:\UnityDevelopProject\Net3DGame\Server\Server\bin\Debug\UnityEngine.UI.dll

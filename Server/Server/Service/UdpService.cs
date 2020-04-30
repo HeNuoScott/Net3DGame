@@ -130,7 +130,7 @@ namespace Server
                                     c.udpAdress = ip; // 更新Session的IP地址
                                 }
 
-                                c.OnReceiveMessageUDP(new MessageInfo(buffer, c));
+                                c.OnReceiveMessageUDP(buffer);
                             }
                         }
                     }

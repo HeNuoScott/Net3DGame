@@ -1,5 +1,7 @@
-﻿using System;
+﻿using PBMessage;
+using System;
 using System.IO;
+using UnityEngine;
 
 namespace Server
 {
@@ -83,5 +85,94 @@ namespace Server
                 return ProtoBuf.Meta.RuntimeTypeModel.Default.Deserialize(ms, null, type);
             }
         }
+
+
+        public static MonsterInfo Get(LifeEntity info)
+        {
+            MonsterInfo monsterInfo = new MonsterInfo
+            {
+                Id = info.roleid,
+                Name = info.name,
+                MoveSpeed = info.moveSpeed,
+                MoveSpeedAddition = info.moveSpeedAddition,
+                MoveSpeedPercent = info.moveSpeedPercent,
+                AttackSpeed = info.attackSpeed,
+                AttackSpeedAddition = info.attackSpeedAddition,
+                AttackSpeedPercent = info.attackSpeedPercent,
+                MaxBlood = info.maxBlood,
+                NowBlood = info.nowBlood,
+                Type = info.type
+            };
+            return monsterInfo;
+        }
+
+        public static LifeEntity Get(PlayerInfo info)
+        {
+            LifeEntity lifeEntity = new LifeEntity
+            {
+                roleid = info.PlayerId,
+                name = info.Name,
+                moveSpeed = info.MoveSpeed,
+                moveSpeedAddition = info.MoveSpeedAddition,
+                moveSpeedPercent = info.MoveSpeedPercent,
+                attackSpeed = info.AttackSpeed,
+                attackSpeedAddition = info.AttackSpeedAddition,
+                attackSpeedPercent = info.AttackSpeedPercent,
+                maxBlood = info.MaxBlood,
+                nowBlood = info.NowBlood,
+                type = info.Type
+            };
+            return lifeEntity;
+        }
+
+        public static LifeEntity Get(MonsterInfo info)
+        {
+            LifeEntity lifeEntity = new LifeEntity
+            {
+                roleid = info.Id,
+                name = info.Name,
+                moveSpeed = info.MoveSpeed,
+                moveSpeedAddition = info.MoveSpeedAddition,
+                moveSpeedPercent = info.MoveSpeedPercent,
+                attackSpeed = info.AttackSpeed,
+                attackSpeedAddition = info.AttackSpeedAddition,
+                attackSpeedPercent = info.AttackSpeedPercent,
+                maxBlood = info.MaxBlood,
+                nowBlood = info.NowBlood,
+                type = info.Type
+            };
+            return lifeEntity;
+        }
+
+        public static OperationCommand Get(Command command)
+        {
+            OperationCommand cmd = new OperationCommand()
+            {
+                Id = command.Id,
+                Frame = command.Frame,
+                Frametime = command.Time,
+                Type = command.Type,
+                Data = Google.Protobuf.ByteString.CopyFrom(command.Data),
+            };
+            return cmd;
+        }
+
+        public static Vector3Int Get(Point3D gmpoint)
+        {
+            Vector3Int point = new Vector3Int(gmpoint.X, gmpoint.Y, gmpoint.Z);
+            return point;
+        }
+
+        public static Point3D Get(Vector3Int point)
+        {
+            Point3D gmpoint = new Point3D
+            {
+                X = point.x,
+                Y = point.y,
+                Z = point.z
+            };
+            return gmpoint;
+        }
+
     }
 }

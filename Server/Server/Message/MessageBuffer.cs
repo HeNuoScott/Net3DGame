@@ -31,13 +31,13 @@ namespace Server
             Buffer.BlockCopy(data, 0, mBuffer, 0, data.Length);
         }
 
-        public MessageBuffer(int messageId, byte[] data, int extra)
+        public MessageBuffer(int messageId, byte[] data, int clientId)
         {
             mBuffer = new byte[MESSAGE_HEAD_SIZE + data.Length];
             Buffer.BlockCopy(BitConverter.GetBytes(messageId), 0, mBuffer, MESSAGE_ID_OFFSET, 4);
             Buffer.BlockCopy(BitConverter.GetBytes(data.Length), 0, mBuffer, MESSAGE_BODY_SIZE_OFFSET, 4);
             Buffer.BlockCopy(BitConverter.GetBytes(MESSAGE_VERSION), 0, mBuffer, MESSAGE_VERSION_OFFSET, 4);
-            Buffer.BlockCopy(BitConverter.GetBytes(extra), 0, mBuffer, MESSAGE_EXTRA_OFFSET, 4);
+            Buffer.BlockCopy(BitConverter.GetBytes(clientId), 0, mBuffer, MESSAGE_EXTRA_OFFSET, 4);
             Buffer.BlockCopy(data, 0, mBuffer, MESSAGE_BODY_OFFSET, data.Length);
         }
 
